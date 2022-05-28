@@ -165,7 +165,7 @@
 // --------- some software stuff  ---------
 #define LOGFILE       "/status.log"
 #define MAXCHAR       30
-#define MAXLOGSIZE    4096
+#define MAXLOGSIZE    10240
 
 #define FOREVER         while(1)delay(1);
 #define DEAD            while(1);
