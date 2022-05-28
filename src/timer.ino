@@ -157,18 +157,16 @@ TimeDB::TimeDB(String server, String zone)
   Serial.print(server);
   Serial.print(" / Timezone: ");
   Serial.println(zone);
-  configTime(MY_TZ, MY_NTP_SERVER); // --> Here is the IMPORTANT ONE LINER needed in your sketch!
+  configTime(MY_TZ, MY_NTP_SERVER);   // --> Here is the IMPORTANT ONE LINER needed in your sketch!
   time(&e_now);                       // read the current time
-  localtime_r(&e_now, &tm_t);           // update the structure tm with the current time
+  localtime_r(&e_now, &tm_t);         // update the structure tm with the current time
 }
-
 
 time_t TimeDB::getTime(){
 // get the time from whereever you want and pit it in here
   Serial.println("gettime in TimeDB");
   return 0;
 }
-
 
 String TimeDB::zeroPad(int number) {
   if (number < 10) {
