@@ -12,6 +12,7 @@
 #ifndef _TIMER_H_
 #define _TIMER_H_
 
+#include <time.h>
 #include  <Ticker.h>
 #include  <TimeLib.h> // https://github.com/PaulStoffregen/Time  
 
@@ -43,16 +44,15 @@ void LEDControl(long mode, long time);
 
 class TimeDB{
   public:
-    TimeDB(String apiKey);
+    TimeDB(String server, String zone);
     time_t getTime();
     String zeroPad(int number);
     String getTimestr();
+    String showTime();
 
   private:
-    const char* servername = "api.timezonedb.com";  // remote server we will connect to
-    String myApiKey;
-    String myLat;
-    String myLon;
+    time_t e_now;                         // this is the epoch
+    tm tm_t;                              // the structure tm holds time information in a more convient way
 }; 
 #endif // _TIMER_H_
 
