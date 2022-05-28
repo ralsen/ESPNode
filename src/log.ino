@@ -18,7 +18,7 @@
 #include <LittleFS.h>
 #include  "timer.h"
 
-TimeDB TimeDB("############## H A A A A A L L L L L O O O O O #################");
+//TimeDB TimeDB("############## H A A A A A L L L L L O O O O O #################");
 
 log_CL::log_CL(String filename, int level){
   DBGF("log_CL::log_CL()")
