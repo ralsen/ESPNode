@@ -48,35 +48,7 @@ const String  MyName  = {"\r\n**************************************************
 const String  Version = "\r\n-----> V" VERNR " vom " __DATE__ " " __TIME__ " " RELEASE " <-----\r\n";
 
 log_CL logit(LOGFILE, 11);
-
-time_t e_now;                         // this is the epoch
-tm tm;                              // the structure tm holds time information in a more convient way
-
-void showTime() {
-  configTime(MY_TZ, MY_NTP_SERVER); // --> Here is the IMPORTANT ONE LINER needed in your sketch!
-
-  time(&e_now);                       // read the current time
-  localtime_r(&e_now, &tm);           // update the structure tm with the current time
-  Serial.print("year:");
-  Serial.print(tm.tm_year + 1900);  // years since 1900
-  Serial.print("\tmonth:");
-  Serial.print(tm.tm_mon + 1);      // January = 0 (!)
-  Serial.print("\tday:");
-  Serial.print(tm.tm_mday);         // day of month
-  Serial.print("\thour:");
-  Serial.print(tm.tm_hour);         // hours since midnight  0-23
-  Serial.print("\tmin:");
-  Serial.print(tm.tm_min);          // minutes after the hour  0-59
-  Serial.print("\tsec:");
-  Serial.print(tm.tm_sec);          // seconds after the minute  0-61*
-  Serial.print("\twday");
-  Serial.print(tm.tm_wday);         // days since Sunday 0-6
-  if (tm.tm_isdst == 1)             // Daylight Saving Time flag
-    Serial.print("\tDST");
-  else
-    Serial.print("\tstandard");
-  Serial.println();
-}
+TimeDB TimeDB(MY_NTP_SERVER, MY_TZ);
 
 //------------------------------------------
 void setup() {
@@ -97,6 +69,7 @@ void setup() {
   Init_Key();
   Serial.println("Key service started!");
   CntmTicks.attach_ms(10, milli_ISR);
+
 
   LEDControl(BLKMODEON, BLKALLERT);
 
@@ -162,7 +135,8 @@ void setup() {
     Serial.println("NO LOGFILE");
   }
 
-  Serial.println("everything is initialized, let's go ahead now ->\r\n");
+  Serial.println("\r\neverything is initialized, let's go ahead now ->\r\n");
+
   delay(1000);
 }
 
@@ -243,7 +217,6 @@ void DoNormStuff() {
   WiFiClient client;
   const int httpPort = MyServerPort;
 
-  showTime();
 
   DBGL("\r\n------------------------------------------------------------------------------------\r\n");
   DBGL("Verbindungsaufbau zu Server: ");
@@ -294,6 +267,8 @@ void DoNormStuff() {
     sysData.CntBadTrans++;
   }
 
+  Serial.print(TimeDB.showTime());
+  logit.entry("message send");
   // Auswertung was der Server gemeldet hat und entsprechend handeln
   DBGL("\r\n------------------------------------------------------------------------------------\r\n");
   sysData.TransmitCycle = cfgData.TransmitCycle;
