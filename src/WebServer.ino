@@ -449,11 +449,12 @@ void handleLED(){
   DBGF(server.arg(server.args()-1));
   if(server.args() == 1){
     server.arg(server.args()-1) == "On" ? cfgData.LED = H_TRUE : cfgData.LED = H_FALSE;
+    DBGF("so ist die LED jetzt")
     DBGF(cfgData.LED);
     SaveConfig();
     output = F("Yippie");
     sysData.CntPageDelivered++;
-    server.send(200, F(W_TEXT_HTML), buildConfPage (output));
+    server.send(200, F(W_TEXT_HTML), buildConfPage (F("")));
   }
 }
 
@@ -646,10 +647,14 @@ void ScanStart(){
    // building the frame for all Pages
    // setup the pages with the content thats the same for all pages
    DBGF("buildPageFrame(String content)")
+   DBGF(strlen(content.c_str()))
+//   DBGF(content)
+
    String WebPage = FPSTR(H_HOME_PAGE);
    WebPage.replace(F("{hostname}"), (String)cfgData.hostname);
    WebPage.replace(F("{title}"), (String)cfgData.hostname);
    WebPage.replace(F("{content}"), content);
+//   DBGF(WebPage)
    return WebPage;
  }
 
@@ -677,6 +682,8 @@ String buildConfPage(String content){
 
 String buildMainPage(String content){
   DBGF("buildMainPage(String content)")
+  DBGF(strlen(content.c_str()))
+  //DBGF(content)
   String  WebPage = buildPageFrame(content);
   WebPage.replace(F("{appmenu}"), FPSTR(H_APPMENU));
   WebPage.replace(F("{appmenu}"), F(""));

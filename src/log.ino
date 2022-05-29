@@ -5,7 +5,7 @@
 
   ToDos:    ???
 
-  hints:    ???
+  hints:    pio run --target uploadfs
 */
 
 
@@ -33,6 +33,7 @@ String log_CL::show(){
     fstr += (char)(flog.read());
   }
   flog.close();
+  //DBGF(fstr)
   return fstr;
 }
 
