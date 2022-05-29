@@ -165,7 +165,7 @@
 // --------- some software stuff  ---------
 #define LOGFILE       "/status.log"
 #define MAXCHAR       30
-#define MAXLOGSIZE    10240
+#define MAXLOGSIZE    6000  // bigger values than ~ 6600 causes error in string processing and sending to server. No solution yet
 
 #define FOREVER         while(1)delay(1);
 #define DEAD            while(1);
