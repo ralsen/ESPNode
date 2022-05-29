@@ -165,7 +165,8 @@
 // --------- some software stuff  ---------
 #define LOGFILE       "/status.log"
 #define MAXCHAR       30
-#define MAXLOGSIZE    6000  // bigger values than ~ 6600 causes error in string processing and sending to server. No solution yet
+#define MAXLOGSIZE    6000  // bigger values than ~ 6600 causes error in string processing and sending to server. No solution yet look ->
+                            // https://github.com/esp8266/Arduino/issues/3205
 
 #define FOREVER         while(1)delay(1);
 #define DEAD            while(1);
