@@ -52,6 +52,7 @@
 # define H_LED           H_TRUE
 # define H_RELAY         H_TRUE
 # define H_TOF           H_FALSE
+# define H_TFT_18        H_FALSE
 
 #elif defined(SONOFF_S20_SWITCH)
 # define DEV_TYPE       "SONOFF_S20"
@@ -63,6 +64,7 @@
 # define H_LED           H_TRUE
 # define H_RELAY         H_TRUE
 # define H_TOF           H_FALSE
+# define H_TFT_18        H_FALSE
 
 #elif defined(NODEMCU_SWITCH)
 # define DEV_TYPE       "NODEMCU"
@@ -74,6 +76,7 @@
 # define H_LED           H_TRUE
 # define H_RELAY         H_TRUE
 # define H_TOF           H_FALSE
+# define H_TFT_18        H_FALSE
 
 #elif defined(NODEMCU_DS1820)
 # define DEV_TYPE       "NODEMCU"
@@ -85,6 +88,7 @@
 # define H_LED           H_TRUE
 # define H_RELAY         H_FALSE
 # define H_TOF           H_FALSE
+# define H_TFT_18        H_FALSE
 
 #elif defined(D1MINI_DS1820)
 # define DEV_TYPE       "D1Mini"
@@ -96,6 +100,7 @@
 # define H_LED           H_TRUE
 # define H_RELAY         H_FALSE
 # define H_TOF           H_FALSE
+# define H_TFT_18        H_TRUE
 
 #elif defined(D1MINI_TOF)
 # define DEV_TYPE       "D1Mini"
@@ -107,6 +112,7 @@
 # define H_LED           H_TRUE
 # define H_RELAY         H_FALSE
 # define H_TOF           H_TRUE
+# define H_TFT_18        H_FALSE
 
 #elif defined(NODEMCU_PIR)
 # define DEV_TYPE       "NODEMCU"
@@ -118,6 +124,7 @@
 # define H_LED           H_TRUE
 # define H_RELAY         H_FALSE
 # define H_TOF           H_FALSE
+# define H_TFT_18        H_FALSE
 
 #else
 #error "Hey! welche Version???"
@@ -151,7 +158,7 @@
 
 
 #if (H_DS1820 == H_TRUE)
-# define H_DS1820_PIN     D3
+# define H_DS1820_PIN     D0
 # define H_DS180_MAX_DEV  10
 #endif
 

@@ -20,6 +20,10 @@ Arduino
 #include  "WiFi.h"
 #include  <string>
 
+#include <Adafruit_GFX.h>    // Core graphics library
+#include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
+#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
+
 #include <ArduinoOTA.h>
 #include "LittleFS.h"
 #include <SPI.h>
@@ -41,14 +45,30 @@ Arduino
 #define MY_NTP_SERVER "at.pool.ntp.org"
 #define MY_TZ "CET-1CEST,M3.5.0,M10.5.0/3"   
 
+#if (H_TFT_18 == H_TRUE)
+  #define TFT_CS        4
+  #define TFT_RST       0 // Or set to -1 and connect to Arduino RESET pin
+  #define TFT_DC        2
+  // initialize ST7735 TFT library with hardware SPI module
+  //SCK (CLK) ---> NodeMCU pin D5 (GPIO14)
+  //MOSI(DIN) ---> NodeMCU pin D7 (GPIO13)
+  // BLK an 3,3V VCC  
+#endif
+
 const String  MyName  = {"\r\n*************************************************************************************\r\n"
                              "*******************************     E S P N o d e      ******************************\r\n"
                              "*************************************************************************************"
                         };
+                      
 const String  Version = "\r\n-----> V" VERNR " vom " __DATE__ " " __TIME__ " " RELEASE " <-----\r\n";
 
 log_CL logit(LOGFILE, 11);
 TimeDB TimeDB(MY_NTP_SERVER, MY_TZ);
+
+#if (H_TFT_18 == H_TRUE)
+  // For 1.44" and 1.8" TFT with ST7735 use:
+  Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
+#endif
 
 //------------------------------------------
 void setup() {
@@ -62,14 +82,26 @@ void setup() {
   ontime = offtime = cycles = 0;
 #endif
 
-
   Serial.println( MyName );
   Serial.println( Version );
 
   Init_Key();
   Serial.println("Key service started!");
-  CntmTicks.attach_ms(10, milli_ISR);
 
+  CntmTicks.attach_ms(10, milli_ISR);
+  Serial.println("Timer service started!");
+
+#if (H_TFT_18 == H_TRUE)
+  tft.initR(INITR_BLACKTAB);
+  tft.fillScreen(ST77XX_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextColor(ST77XX_WHITE);
+  tft.setTextWrap(true);
+  Serial.println("TFT-Display initialized");
+  tft.println("*********************");
+  tft.println("*** E S P N o d e ***");
+  tft.println("*********************");
+#endif 
 
   LEDControl(BLKMODEON, BLKALLERT);
 
@@ -84,6 +116,9 @@ void setup() {
   // do default configuration if conf not valid
   //EraseConfig();
   if (!TestHashConfig()) {
+#if (H_TFT_18 == H_TRUE)
+    tft.println("Hash FAILED !!!");
+#endif
     Serial.println( " Hash FAILED !!!" );
     Serial.print ("load default configuration, size is: ");
     Serial.println(sizeof(cfgData));
@@ -93,6 +128,9 @@ void setup() {
   }
   else {
     Serial.printf(("Hash: 0x%lx"), cfgData.hash);
+#if (H_TFT_18 == H_TRUE)
+    tft.println("Hash: ok");
+#endif
     Serial.println(" is ok");
     sysData.mode = MODE_CHG_TO_STA;
     sysData.status = STATUS_OK;
@@ -102,9 +140,34 @@ void setup() {
   Serial.println( cfgData.hostname );
   Serial.print( "Hardware:          ");
   Serial.println(DEV_TYPE);
+  Serial.print("Function: ");
+  Serial.println(FNC_TYPE);
   Serial.print( "MAC-Adress:        " );
   Serial.println( cfgData.MACAddress);
   Serial.println( "" );
+
+#if (H_TFT_18 == H_TRUE)
+  tft.print("Name: ");
+  tft.println(cfgData.hostname);
+  tft.print("HARDW: ");
+  tft.println(DEV_TYPE);
+  tft.print("Func: ");
+  tft.println(FNC_TYPE);
+  tft.print("MAC:");
+  tft.println(cfgData.MACAddress);
+  tft.print("WLAN:");
+  tft.println(cfgData.SSID);
+  tft.print("AP:");
+  tft.println(cfgData.APname);
+  tft.print("Service:");
+  tft.println(cfgData.service);
+  tft.print("Server:");
+  tft.println(cfgData.server);
+  tft.print("cfg: 0x");
+  tft.println(String(sizeof(cfgData), HEX));
+  tft.println("let's go ahead now ->");
+  tft.println("waiting for WLAN ...");
+#endif
 
   CntTicks.attach(1, sec_ISR);
   Serial.println("timer services started!");
@@ -134,6 +197,7 @@ void setup() {
   else {
     Serial.println("NO LOGFILE");
   }
+
 
   Serial.println("\r\neverything is initialized, let's go ahead now ->\r\n");
 
@@ -187,6 +251,10 @@ void loop() {
           sysData.mode = MODE_CHG_TO_AP;
         }
         else {
+          #if (H_TFT_18 == H_TRUE)
+          tft.print("IP:");
+          tft.println(WiFi.localIP().toString());
+          #endif
           startWebServer();
           sysData.mode = MODE_STA;
           if (!cfgData.TransmitCycle) LEDControl(BLKMODEFLASH, BLKFLASHOFF);
@@ -274,6 +342,7 @@ void DoNormStuff() {
   sysData.TransmitCycle = cfgData.TransmitCycle;
   LEDControl(BLKMODEOFF, -1);
 }
+
 
 /*
   History:
