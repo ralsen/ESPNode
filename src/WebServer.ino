@@ -11,14 +11,12 @@
 
 #include  "settings.h"
 #include  "Config.h"
-#include  "WebServer.H"
-#include  "timer.h"
+//#include  "WebServer.H"
+//#include  "timer.h"
 #include  "log.h"
 #include  "ToF.h"
-#include  <string>
-#include  <iostream>
-#include  <SPI.h>
-#include "LittleFS.h"
+//#include  <string>
+//#include  <iostream>
 
 // -----------------------------------------
 // Server stuff
@@ -487,7 +485,7 @@ void handleMeasCyc(){
       SaveConfig();
       sysData.MeasuringCycle = cfgData.MeasuringCycle;
     }
-    else DBGF("is not a number")
+    else Serial.println("is not a number");
   }
 }
 
