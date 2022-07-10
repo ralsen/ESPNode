@@ -1,7 +1,7 @@
 /*
   log.h
 
-  !!! for history see end of file !!!
+    !!! for history see settings.h !!!
 
   ToDos:    -
 

@@ -1,7 +1,7 @@
 /*
   WebServer.ino
 
-  !!! for history see end of file !!!
+  !!! for history see settings.h !!!
 
   ToDos:    ???
 
@@ -945,74 +945,3 @@ bool string_isNumber(String str) {
   }
   return H_TRUE;
 }
-
-/*
-  history:
-  --------------------- V2.1c
-  26.05.22  LED Radio-buttons with defaults ("checked=\"checked\"")
-  --------------------- V2.0a
-  21.11.21  lot of changes for 2.xx, made for arduino IDE and 
-            many changes to improve stability, performance etc.
-            all Webpages build with String / no longer use of sprintf
-  --------------------- V1.4
-  19.01.21  ToF pages added
-  --------------------- V1.4
-
-  07.05.20  V1.30b: Switches sending uptime twice, removed
-  06.05.20  V1.30a: new WiFi-state machine, sending a message after boot
-  20.04.20  V1.30 from now we use platformio instead of the Arduiono stuff
-            a lot of pointer castings changed
-            string from checkinput is terminated with 0
-            URL contains more information
-  11.07.19  V1.24: switches dont send cyclic
-  08.07.19  V1.23: some changes on the status-site
-  05.03.19  V1.03: config or DS1820 added (Meascyx, Transcyc and pagereload)
-            count the messages to server, the pagereloads (good and bad trys)
-  03.03.19  V1.02: many changes on Webdesign and website structure
-  02.03.19  V1.01 Website optimization (code and design)
-            Server- and Servicename input added
-  23.02.19  first Version wirh new Version management. Released for Sonoff S20 and Sonoff Basic
-  19.02.19  V0.06 OTA implemented
-            some little changes in Website source code and design
-  19.01.19  V0.04 first version to re released
-            debuging and error-check for all versions is to be done
-
-  29.12.18  set deafults and some tiny stuff
-
-  02.10.18  version 1.17
-            device type added
-  31.05.18  version 1.15
-            cycles added
-  17.05.18  version 1.13
-            lifetimer added
-
-  30.03.18  Version1.12
-            scan displays RSSI and Crypt value in scan mode
-            in status chip-id, mac and ip added
-  24.03.18  version 1.11
-            all PROGMEM-HTML strings changed for better readability in source code and on
-            receivers
-
-  03.01.18  version 1.10
-            improvments website
-            Name and network changing works
-  02.03.18  Version 1.09
-            network config added to webpage
-  01.03.18  version 1.08
-            new Webpage
-  29.02.18  version 1.07
-            improvements (Radio buttons for Scan, hostname can be changed etc.
-  27.02.18  Version 1.06
-            radio buttons testing
-            STA-MODE-button added
-            #defines for text added
-  23.02.18  version 1.05
-            Webserver scan Wifi
-
- todos:
-  22.02.19  v0.07 crashes during scan with Advanced IP Scanner (or takes a long time until its working again)
-            mesurement and transmit cycles for i.e. DS1820
-            eraseconfig
-  04.03.19  counting messages during uptime/lifetime good and bad ones and displaying them on Status-website
-
-*/

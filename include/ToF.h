@@ -1,7 +1,7 @@
 /*
   ToFh
 
-  !!! for history see end of file !!!
+  !!! for history see settings.h !!!
 
   ToDos:    -
 
@@ -26,15 +26,3 @@
 
 # endif // _TOF_H_
 #endif //(H_TOF == H_TRUE)
-/*
-  history:
-  --------------------- V2.0a
-  21.11.21  lot of changes for 2.xx, made for arduino IDE and 
-            many changes to improve stability, performance etc.
-
-  13.01.21  first initial versions for V1.4xx
-
-  todo:   -
-
-  hibts:  -
-*/

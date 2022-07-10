@@ -3,7 +3,7 @@
 
   ToF -> time of Flight Sensor (VL53L1X from ST-Microelectronics)
 
-  !!! for history see end of file !!!
+  !!! for history see settings.h !!!
 
   ToDos:    ???
 
@@ -62,15 +62,3 @@ void ToFDistance(void){
 }
 
 #endif //(H_TOF == H_TRUE)
-/*
-
-  History:
-  --------------------- V2.0a
-  21.11.21  lot of changes for 2.xx, made for arduino IDE and 
-            many changes to improve stability, performance etc.
-  
-  13.01.21  first initial version
-
-  todos:
-  ???
- */

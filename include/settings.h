@@ -257,6 +257,10 @@
 
 /*
   history
+  --------------------- V2.2a
+  10.07.22  TFT-Display and some changes for logging
+  --------------------- V2.1c
+  26.05.22  LED Radio-buttons with defaults ("checked=\"checked\"")
   --------------------- V2.0c
   26.11.21  "Info" and "Status" on all webpages in the same order
   --------------------- V2.0b
@@ -288,6 +292,7 @@
   24.01.21  if TransCyc = 0 the LED shows a heartbeat
   24.01.21  the LED could be switch off on the Config-Pages
             but the LED is always during boot und WiFi-connect
+  19.01.21  ToF pages added on webserver
   18.01.21  FNC_TYPE isnt displayed in headline of status page anymore
   18.01.21  Version is only displayed in hardline og status page
   18.01.21  first messge is send after going into MODE_STA
@@ -297,17 +302,39 @@
             boot. MACAddress is appended to the device name instead of the
             Chip-Number because this number is not realy unique, espressif
             stated
-
+  12.08.20  V1.30d: hash is displayed in hex on debug port
+            Transcyc and MeasCyc is transmitted additionaly to the server
+  14.05.20  V1.30C: bonjour service added
+  07.05.20  V1.30b: measuring only in MODE_STA
+  06.05.20  V1.30a: new WiFi-state machine, sending a message after boot
   20.04.20  V1.30 from now we use platformio instead of the Arduiono stuff
             therefore we dont need the defines NODEMCU_SWITCH and so an.
             this is now in with platformio.ini
   06.11.19  working on:
             after reboot send a message immendently
             send a long message with all infos that are needed on server
-
+  11.07.19  V1.24: switches dont send cyclic
+  08.07.19  V1.23: some changes on the status-site
+  16.06.19  V1.20 switches send their status after TransmitCycle
+  26.04.19  V1.11 removed an error on switching the LED. Sonoff-Basic has no
+            LED in parallel with the relay so we have to use the same one for
+            blinking and relais state. On Sonoff S20 the LED is dedicated for
+            blinking and the relais state is indicated with the blue (sometimes red)
+            LED parallel to the relays
+  17.04.19  V1.10 using new routine for server communication in DoNormStuff
+            -> https://arduino-esp8266.readthedocs.io/en/latest/esp8266wifi/client-examples.html?highlight=client.available
   16.04.19  V1.1x should send status to the server in adjustable time
             Versions and Hardware sitch should be clarified
             why is there a delay after the server responce in DoNormStuff in Homa_xxx.ino?
+  16.04.19  V1.06 found the error why the devices disconnected from WLAN
+            in DoNormStuff was a Wfifi.disconnect() on communication errors
+  05.03.19  V1.03: config or DS1820 added (Meascyx, Transcyc and pagereload)
+            count the messages to server, the pagereloads (good and bad trys)
+            server and service now variable
+  03.03.19  V1.02: renamed TempLoop to MeasuringLoop which runs from now in sec_ISR.
+                    renamed ISR_count to sec_ISR which contains now Measuring and transmit counters
+  02.03.19  V1.01 Website optimization (code and design)
+            Server- and Servicename input added
   23.02.19  first Version wirh new Version management. Released for Sonoff S20 and Sonoff Basic
   19.01.19  V0.04 first version to re released
             debuging and error-check for all versions is to be done

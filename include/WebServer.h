@@ -1,7 +1,7 @@
 /*
   WebServer.h
 
-  !!! for history see end of file !!!
+  !!! for history see settings.h !!!
 
   ToDos:    -
 
@@ -59,26 +59,3 @@ String BuildURL (void);
 
 #endif // _WEBSERVER_H_
 
-/*
-  history:
-  --------------------- V2.0a
-  21.11.21  lot of changes for 2.xx, made for arduino IDE and 
-            many changes to improve stability, performance etc.
-  --------------------- V1.4
-  18.01.21  FNC_TYPE isnt displayed in headline of status page anymore
-  18.01.21  Version is only displayed in hardline og status page
-  18.01.21  first messge is send after going into MODE_STA
-  17.01.21  ToF sensor added
-  17.01.21  if cfg.TransmitCycle is 0 nothing is send to the Server
-            MAC-Address is used for identification and is displayed during
-            boot. MACAddress is appended to the device name instead of the
-            Chip-Number because this number is not realy unique, espressif
-            stated
-  --------------------- V1.4
-
-  20.04.20  V1.30 from now we use platformio instead of the Arduiono stuff
-  23.02.19  first Version wirh new Version management. Released for Sonoff S20 and Sonoff Basic
-  19.01.19  V0.04 first version to re released
-            debuging and error-check for all versions is to be done
-
- */

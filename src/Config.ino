@@ -2,7 +2,7 @@
 hallo
   Config.ino
 
-  !!! for history see end of file !!!
+  !!! for history see settings.h !!!
 
   ToDos:
 
@@ -102,21 +102,3 @@ int TestHashConfig(){
   LoadConfig();
   return ((CalcHashConfig()-cfgData.hash) ? 0:1);
 }
-
-/*
-  history
-  20.04.20  V1.30 from now we use platformio instead of the Arduiono stuff
-            many changes for debugging and some type castings
-            SEND_AFTER_BOOT implemented in sysData
-            setToDefaults erases the EEPROM at first
-  18.04.20  some debug output changed
-            send a message after boot
-  08.03.19  server and service now variable
-  23.02.19  first Version wirh new Version management. Released for Sonoff S20 and Sonoff Basic
-  19.01.19  V0.04 first version to re released
-            debuging and error-check for all versions is to be done
-
-  19.02.18  first version
-            routines are from http://www.kriwanek.de/index.php/de/homeautomation/esp8266/364-eeprom-f%C3%BCr-parameter-verwenden
-
-*/

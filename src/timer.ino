@@ -1,7 +1,7 @@
 /*
   timer.ino
 
-  !!! for history see end of file !!!
+  !!! for history see settings.h !!!
 
   ToDos:    ???
 
@@ -212,39 +212,3 @@ String TimeDB::getTimestr(){
   str+= zeroPad(tm_t.tm_hour)+":"+zeroPad(tm_t.tm_min)+":"+zeroPad(tm_t.tm_sec);
   return str;
 }
- 
-/*
-  history
-  --------------------- V2.0a
-  21.11.21  lot of changes for 2.xx, made for arduino IDE and 
-            many changes to improve stability, performance etc.
-  --------------------- V1.4
-  29.01.21  LEDControl() added
-  19.01.21  D1MINI_ToF added
-  --------------------- V1.4
-
-  06.05.20  V1.30a: new WiFi-state machine, sending a message after boot
-  20.04.20  V1.30 from now we use platformio instead of the Arduiono stuff
-            sysData.TransmitCycle is always decremented
-  26.04.19  V1.11 removed an error on switching the LED. Sonoff-Basic has no
-            LED in parallel with the relay so we have to use the same one for
-            blinking and relais state. On Sonoff S20 the LED is dedicated for
-            blinking and the relais state is indicated with the blue (sometimes red)
-            LED parallel to the relays
-  03.03.19  V1.02: renamed TempLoop to MeasuringLoop which runs from now in sec_ISR.
-                    renamed ISR_count to sec_ISR which contains now Measuring and transmit counters
-  23.02.19  first Version wirh new Version management. Released for Sonoff S20 and Sonoff Basic
-  19.01.19  V0.04 first version to re released
-            debuging and error-check for all versions is to be done
-  16.12.18  porting/modificatios to/for SensClient
-  19.05.18  Version 1.14
-            all lifwtimw stuff moved to timer.ino/timer.h
-  17.05.18  version 1.13
-            lifetimer added
-  27.03.18  version 1.11
-            Sonoff-Basic needs different LED control
-  21.02.18  back to time control :-P. there are only 2 modes: AP and STA.
-            thats easy toggle with key pressed time
-  20.02.18  key detection via key count not time pressed
-  16.02.18  first version
-*/

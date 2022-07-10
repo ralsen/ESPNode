@@ -5,7 +5,7 @@
   here weÂ´re doing all the stuff to communicate with the DS1820, calculate the Temp-value
   put the results into an array, handle the DS1820-Addresses etc.
 
-  !!! for history see end of file !!!
+  !!! for history see settings.h !!!
 
   todos:    done: measurement frequency and transmit frequency has do be defined (default values and configuration values in webserver)
 
@@ -105,23 +105,3 @@ void DS1820_Measuring(void){
 }
 
 #endif //(H_DS1820 == H_TRUE)
-
-/*
-  History:
-  --------------------- V1.4
-  14.01.21  Chip-ID is not longer used because its not realy a UID
-  --------------------- V1.4
-
-  07.05.20  V1.30b: measuring only in MODE_STA
-  16.03.19  added chipID to devicename in URL for unique identification on server when
-
-  05.03.19  V1.03: config or DS1820 added (Meascyx, Transcyc and pagereload)
-            count the messages to server, the pagereloads (good and bad trys)
-
-  03.03.19  V1.02: renamed TempLoop to MeasuringLoop which runs from now in sec_ISR.
-  23.02.19  first Version wirh new Version management. Released for Sonoff S20 and Sonoff Basic
-  19.01.19  V0.04 first version to re released
-            debuging and error-check for all versions is to be done
-
-  16.12.18  extract the routines from the main-File
-*/

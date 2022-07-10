@@ -1,7 +1,7 @@
 /*
   log.ino
 
-  !!! for history see end of file !!!
+  !!! for history see settings.h !!!
 
   ToDos:    ???
 
@@ -46,7 +46,7 @@ void log_CL::entry(String entry){
   }
   flog.close();
   flog = LittleFS.open(logfile, "w");
-  fstr = TimeDB.getTimestr()+" --> "+entry+"\r\n"+fstr;
+  fstr = TimeDB.getTimestr() + " --> " + entry + "\r\n" + fstr;
   flog.print(fstr.substring(0, MAXLOGSIZE));
   flog.close();
 }

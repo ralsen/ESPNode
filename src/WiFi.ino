@@ -1,7 +1,7 @@
 /*
   WiFi.ino
 
-  !!! for history see end of file !!!
+  !!! for history see settings.h !!!
 
   ToDos:    testing why the DNS isn´t working when changing the device name (needs a reset to work)
 
@@ -119,27 +119,3 @@ int8_t getWifiQuality() {
   }
 }
 
-/*
-  history:
-  --------------------- V2.0a
-  21.11.21  lot of changes for 2.xx, made for arduino IDE and 
-            many changes to improve stability, performance etc.
-
-  20.04.20  V1.30 from now we use platformio instead of the Arduiono stuff
-            ESP8266_WiFiMulti is used
-            Devicename in URL is now the name plus the Chip-ID
-            changed the WiFi-login to mDNS
-  23.02.19  first Version wirh new Version management. Released for Sonoff S20 and Sonoff Basic
-  19.02.19  problem below solved
-  16.02.19  DNS is working except when changing the device name and changes the name after a while
-            to "unknownMACADRESSface"
-  19.01.19  V0.04 first version to re released
-            debuging and error-check for all versions is to be done
-
-  23.02.18  version 1.05
-            WifiScan removed here because it isn't a Mode change in sysData.Wifi
-  22.02.18  version 1.04
-            network scan added
-  21.02.18  first version
-
- */

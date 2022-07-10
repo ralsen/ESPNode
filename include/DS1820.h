@@ -1,7 +1,7 @@
 /*
   DS1820.h
 
-  !!! for history see end of file !!!
+  !!! for history see settings.h !!!
 
   all functions for the DS1820. the functions handle up to ONE_WIRE_MAX_DEV DS1820.
   here weÂ´re doing all the stuff to communicate with the DS1820, calculate the Temp-value
@@ -31,15 +31,3 @@
 
 #  endif // _DS1820_H_
 #endif //(H_DS1820 == H_TRUE)
-
-/*
-  History:
-  20.04.20  V1.30 from now we use platformio instead of the Arduiono stuff
-  23.02.19  first Version wirh new Version management. Released for Sonoff S20 and Sonoff Basic
-  19.01.19  V0.04 first version to re released
-            debuging and error-check for all versions is to be done
-
-  16.12.18  extract the routines from the main-File
-
-  todos:
-*/
