@@ -339,7 +339,7 @@ void DoNormStuff() {
     sysData.CntBadTrans++;
   }
 
-  Serial.print(TimeDB.showTime());
+  // Serial.print(TimeDB.showTime());
   // Auswertung was der Server gemeldet hat und entsprechend handeln
   DBGL("\r\n------------------------------------------------------------------------------------\r\n");
   sysData.TransmitCycle = cfgData.TransmitCycle;
