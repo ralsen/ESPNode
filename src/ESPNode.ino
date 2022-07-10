@@ -6,7 +6,7 @@ Arduino
 
   universal system for Sonoffs, NodeMCCUs and other ESP8266 devices.
 
-  !!! for history see end of file !!!
+  !!! for history see settings.h !!!
 
   ToDos:    ???
 
@@ -140,7 +140,7 @@ void setup() {
   Serial.println( cfgData.hostname );
   Serial.print( "Hardware:          ");
   Serial.println(DEV_TYPE);
-  Serial.print("Function: ");
+  Serial.print("Function:          ");
   Serial.println(FNC_TYPE);
   Serial.print( "MAC-Adress:        " );
   Serial.println( cfgData.MACAddress);
@@ -202,6 +202,7 @@ void setup() {
   Serial.println("\r\neverything is initialized, let's go ahead now ->\r\n");
 
   delay(1000);
+  logit.entry("starting ...");
 }
 
 int toggle = 0;
@@ -234,7 +235,8 @@ void loop() {
       }
     case MODE_AP: {
         if (!sysData.APTimeout) {
-          DBGLN(" !! Restarting now !!!");
+          DBGLN(" !!! Restarting now !!!");
+          logit.entry(" !!! Restarting now !!!");
           ESP.restart();
         }
         break;
@@ -244,6 +246,7 @@ void loop() {
         startWebServer();
         sysData.APTimeout = cfgData.APTimeout;
         sysData.mode = MODE_AP;
+        logit.entry("switching into AP mode");
         break;
       }
     case MODE_CHG_TO_STA: {
@@ -260,6 +263,7 @@ void loop() {
           if (!cfgData.TransmitCycle) LEDControl(BLKMODEFLASH, BLKFLASHOFF);
           else LEDControl(BLKMODEOFF, -1);
           MDNS.addService("http", "tcp", 80);
+          logit.entry("WebServer started");
         }
         sysData.MeasuringCycle = 0;
         if (sysData.TransmitCycle) {
@@ -267,6 +271,7 @@ void loop() {
           DBGL("sending first message in ");
           DBG(SEND_AFTER_BOOT_SEC);
           DBGNL(" seconds");
+          logit.entry("sending first message");
         }
         break;
 
@@ -284,7 +289,6 @@ void DoNormStuff() {
 
   WiFiClient client;
   const int httpPort = MyServerPort;
-
 
   DBGL("\r\n------------------------------------------------------------------------------------\r\n");
   DBGL("Verbindungsaufbau zu Server: ");
@@ -336,54 +340,9 @@ void DoNormStuff() {
   }
 
   Serial.print(TimeDB.showTime());
-  logit.entry("message send");
   // Auswertung was der Server gemeldet hat und entsprechend handeln
   DBGL("\r\n------------------------------------------------------------------------------------\r\n");
   sysData.TransmitCycle = cfgData.TransmitCycle;
   LEDControl(BLKMODEOFF, -1);
 }
 
-
-/*
-  History:
-  --------------------- V1.4
-  19.01.21  prettier the hello message
-  17.01.21  if cfgData.TransmitCycle is 0 nothing is send to the Server
-            MAC-Address is used for identification and is displayed during
-            boot. MACAddress is appended to the device name instead of the
-            Chip-Number because this number is not realy unique, espressif
-            stated
-  --------------------- V1.4
-  12.08.20  V1.30d: hash is displayed in hex on debug port
-            Transcyc and MeasCyc is transmitted additionaly to the server
-  14.05.20  V1.30C: bonjour service added
-  06.05.20  V1.30a: new WiFi-state machine, sending a message after boot
-  20.04.20  V1.30 from now we use platformio instead of the Arduiono stuff
-            SEND_AFTER_BOOT_SEC
-  18.06.19  switches status when their status every time when they are switched
-  16.06.19  V1.20 switches send their status after TransmitCycle
-  17.04.19  V1.10 using new routine for server communication in DoNormStuff
-            -> https://arduino-esp8266.readthedocs.io/en/latest/esp8266wifi/client-examples.html?highlight=client.available
-  16.04.19  V1.06 found the error why the devices disconnected from WLAN
-            in DoNormStuff was a Wfifi.disconnect() on communication errors
-  31.03.19  error the brings the WiFi connection down found
-  05.03.19  V1.03: config or DS1820 added (Meascyx, Transcyc and pagereload)
-            count the messages to server, the pagereloads (good and bad trys)
-            server and service now variable
-  03.03.19  V1.02: renamed TempLoop to MeasuringLoop which runs from now in sec_ISR.
-  02.03.19  V1.01 Website optimization (code and design)
-            Serer- and Servicename input added
-  23.02.19  first Version wirh new Version management. Released for Sonoff S20 and Sonoff Basic
-  19.01.19  V0.04 first version to re released
-            debuging and error-check for all versions is to be done
-
-  22.12.18  Version 0.03  implementation of first version control functionality
-  20.12.18  Version 0.02  cleaned up the WiFi and System.Mode switching
-            debug enhancements
-  16.12.18  Version 0.01  the DS1820-stuff from here to DS1820.ino/h
-            AP-Mode dont work now
-  28.11.18  Version 0.00  first version. sends a url-string to the php-server
-
-  todos:
-            done: zyklische Statusmeldung an Server senden, z.B. täglich
-*/
