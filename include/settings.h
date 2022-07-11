@@ -158,7 +158,7 @@
 
 
 #if (H_DS1820 == H_TRUE)
-# define H_DS1820_PIN     D0
+# define H_DS1820_PIN     D3
 # define H_DS180_MAX_DEV  10
 #endif
 
