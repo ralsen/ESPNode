@@ -47,7 +47,7 @@ Arduino
 
 #if (H_TFT_18 == H_TRUE)
   #define TFT_CS        4
-  #define TFT_RST       0 // Or set to -1 and connect to Arduino RESET pin
+  #define TFT_RST       5 // Or set to -1 and connect to Arduino RESET pin
   #define TFT_DC        2
   // initialize ST7735 TFT library with hardware SPI module
   //SCK (CLK) ---> NodeMCU pin D5 (GPIO14)
@@ -101,6 +101,11 @@ void setup() {
   tft.println("*********************");
   tft.println("*** E S P N o d e ***");
   tft.println("*********************");
+  tft.print("Version: V");
+  tft.println(VERNR);
+  tft.print( __DATE__);
+  tft.print(" ");
+  tft.println( __TIME__);
 #endif 
 
   LEDControl(BLKMODEON, BLKALLERT);
