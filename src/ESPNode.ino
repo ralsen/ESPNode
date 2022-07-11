@@ -89,7 +89,7 @@ void setup() {
   Serial.println("Key service started!");
 
   CntmTicks.attach_ms(10, milli_ISR);
-  Serial.println("Timer service started!");
+  Serial.println("10ms Timer service started!");
 
 #if (H_TFT_18 == H_TRUE)
   tft.initR(INITR_BLACKTAB);
@@ -170,12 +170,13 @@ void setup() {
 #endif
 
   CntTicks.attach(1, sec_ISR);
-  Serial.println("timer services started!");
+  Serial.println("1s timer services started!");
 
   //Setup DS18b20 temperature sensor
-#if (H_DS1820 == H_TRUE)
+//#if (H_DS1820 == H_TRUE)
+  DBGLN("intialiesiere die DS1820")
   SetupDS18B20();
-#endif
+//#endif
 #if (H_TOF == H_TRUE)
   SetupToF();
 #endif
