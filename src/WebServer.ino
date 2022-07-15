@@ -535,7 +535,7 @@ void handleSTAMode(){
 void handleAPMode(){
   DBGF(server.uri());
   String message= F("look me up under 192.168.4.1 (my name is: ");
-  message += (String)cfgData.APname;
+  message += String(cfgData.APname);
   message += F(")");
   buildNetworkPage(message);
   sysData.CntPageDelivered++;
