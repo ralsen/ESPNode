@@ -15,6 +15,7 @@
 #include <ESP8266WiFiMulti.h>
 #include <stdio.h>
 #include "WiFi.h"
+#include  "tft.h"
 
 ESP8266WiFiMulti wifiMulti;     // Create an instance of the ESP8266WiFiMulti class, called 'wifiMulti'
 // for AP-Mode see here
@@ -22,6 +23,9 @@ ESP8266WiFiMulti wifiMulti;     // Create an instance of the ESP8266WiFiMulti cl
 
 void WiFiStartAP(){
   DBGF( "WiFiStartAP()" )
+  tft_initR(INITR_BLACKTAB);
+  tft_fillScreen(ST77XX_RED);
+  tft_setCursor(0, 0);
   LEDControl(BLKMODEON, BLKWIFIAP);
   DBGLN( "Disconnect and WIFI_OFF" )
   WiFi.disconnect();
@@ -30,12 +34,17 @@ void WiFiStartAP(){
   delay(2*DELAY_WIFI_TRY);
 
   DBGLN( "Start WIFI in AP-Mode" )
+  tft_println("Start WIFI in AP-Mode");
   WiFi.mode(WIFI_AP);
   DBGLN("WiFi.mode is done");
+  tft_println("wifi.mode is done.");
   WiFi.softAP(cfgData.APname);
   delay(DELAY_WIFI_TRY);
   server.begin();
+  tft_print("SSID: ");
+  tft_println(String(cfgData.APname));
   DBGLN(WiFi.softAPIP());
+  //tft_println(WiFi.softAPIP());
 }
 
 int WiFiStartClient(){
