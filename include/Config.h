@@ -47,6 +47,7 @@ typedef struct {
   long  CntPageDelivered;
   long  CntMeasCyc;
   long  APTimeout;
+  long  DspTimeout;
 } sysData_t;
 
   extern  cfgData_t cfgData;
