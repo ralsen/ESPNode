@@ -257,6 +257,8 @@
 
 /*
   history
+  --------------------- V2.3a
+  21.07.22  TFT in DS1820-App included
   --------------------- V2.2a
   10.07.22  TFT-Display and some changes for logging
   --------------------- V2.1c
