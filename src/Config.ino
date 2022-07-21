@@ -59,6 +59,7 @@ void LoadConfig() {
   sysData.TransmitCycle = SEND_AFTER_BOOT_SEC+1;
   sysData.APTimeout = DEFAULT_APTIMEOUT;
   sysData.blinkmode = BLKMODEOFF;
+  sysData.DspTimeout = 100;
 }
 
 void SetToDefault(){

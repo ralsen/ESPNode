@@ -152,8 +152,6 @@ void setup() {
   tft_print("cfg: 0x");
   tft_println(String(sizeof(cfgData), HEX));
   tft_println("let's go ahead now ->");
-  tft_println("waiting for WLAN ...");
-
   CntTicks.attach(1, sec_ISR);
   Serial.println("1s timer services started!");
 
@@ -197,15 +195,23 @@ char buf[80];
 // -----------------------------------------------------------------------------
 
 void loop() {
+  int x, y;
 
   // beides wird inTasmota nicht gemacht, aber mdns.advertise, mdns.addserver u.ae.
   MDNS.update();
   server.handleClient();
   //ArduinoOTA.handle(); 
+
   
   switch ( sysData.mode ) {
     case MODE_STA: {
-        if ((cfgData.TransmitCycle) && (!sysData.TransmitCycle)) DoNormStuff();
+        if ((cfgData.TransmitCycle) && (!sysData.TransmitCycle)){
+           DoNormStuff();
+        }
+        if(!sysData.DspTimeout){
+          sysData.DspTimeout = 100;
+          tft_display2Temps(47, 11);
+        }
 #if (H_RELAY == H_TRUE)
         if ( key && ( toggle == 0 )) {
           DBGLN( "KEY" );
@@ -236,10 +242,15 @@ void loop() {
         break;
       }
     case MODE_CHG_TO_STA: {
+        tft.setTextColor(ST7735_WHITE, ST7735_BLUE);
+        x = tft.getCursorX();
+        y = tft.getCursorY();
+        tft_print("wait for WLAN");
         if (!WiFiStartClient()) {
           sysData.mode = MODE_CHG_TO_AP;
         }
         else {
+          tft.setCursor(x,y);
           tft_print("IP:");
           tft_println(WiFi.localIP().toString());
           startWebServer();
@@ -248,6 +259,8 @@ void loop() {
           else LEDControl(BLKMODEOFF, -1);
           MDNS.addService("http", "tcp", 80);
           logit.entry("WebServer started");
+          tft_textWait(5);
+          tft_init2Temps();
         }
         sysData.MeasuringCycle = 0;
         if (sysData.TransmitCycle) {

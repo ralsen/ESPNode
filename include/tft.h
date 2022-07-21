@@ -16,13 +16,25 @@
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 #include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
 #define TFT_CS        4
-#define TFT_RST       5 // Or set to -1 and connect to Arduino RESET pin
-#define TFT_DC        2
+#define TFT_RST       16 // Or set to -1 and connect to Arduino RESET pin
+#define TFT_DC        15
+
+// color and text defintions for display2Temps()
+#define BG_COLOR          0xad55
+#define TEXT_COLOR        ST7735_WHITE
+#define VALUE_TEXT_COLOR  ST7735_WHITE
+#define VALUE_BG_COLOR    0x0617
+#define HEAD_TEXT_SIZE    1
+#define VALUE_TEXT_SIZE   5
+
 // initialize ST7735 TFT library with hardware SPI module
 //SCK (CLK) ---> NodeMCU pin D5 (GPIO14)
 //MOSI(DIN) ---> NodeMCU pin D7 (GPIO13)
 // BLK an 3,3V VCC  
 
+void tft_init2Temps(void);
+void tft_display2Temps(int t1, int t2);
+void tft_textWait(int s);
 void tft_initR(int color);
 void tft_fillScreen(int color);
 void tft_setCursor(int x, int y);

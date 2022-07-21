@@ -55,6 +55,8 @@ void Init_Key()
 
 void milli_ISR()
 {
+  if(sysData.DspTimeout) sysData.DspTimeout--;
+
   key = !DIG_READ(H_BUTTON_PIN);
 
   if( key ){

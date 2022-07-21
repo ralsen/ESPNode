@@ -5,8 +5,71 @@
 
   // For 1.44" and 1.8" TFT with ST7735 use:
   Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
+int i = 10;
 
+void tft_init2Temps(){
+  tft.fillScreen(BG_COLOR);
+  Serial.println(i);
+  tft.setCursor(0,0);
+  tft.setTextSize(2);
+  tft.setRotation(1);
 
+  tft.fillRoundRect(4, 8, 152, 52, 5, VALUE_BG_COLOR);
+  tft.fillRoundRect(4, 69, 152, 52, 5, VALUE_BG_COLOR);
+}
+
+void tft_display2Temps(int t1, int t2){
+  Serial.println(i%2);
+  tft.setCursor(45,4);
+  if (i%2){
+    tft.setTextColor(TEXT_COLOR, BG_COLOR);
+  }
+  else{
+    tft.setTextColor(BG_COLOR, TEXT_COLOR);
+  }
+  tft.setTextSize(HEAD_TEXT_SIZE);
+  tft.println(" Wohnzimmer ");
+
+  tft.setCursor(22,17);
+  tft.setTextColor(VALUE_TEXT_COLOR, VALUE_BG_COLOR);
+  tft.setTextSize(VALUE_TEXT_SIZE);
+  sprintf(buf,"%i%cC", t1, 0xf7);
+  sprintf(buf,"%i%cC", i, 0xf7);
+  i++;
+  tft.println(buf);
+
+  tft.setCursor(50,65);
+  if (i%2){
+    tft.setTextColor(TEXT_COLOR, BG_COLOR);
+  }
+  else{
+    tft.setTextColor(BG_COLOR, TEXT_COLOR);
+  }
+  tft.setTextSize(HEAD_TEXT_SIZE);
+  tft.println(" Aquarium ");
+
+  tft.setCursor(22, 78);
+  tft.setTextColor(VALUE_TEXT_COLOR, VALUE_BG_COLOR);
+  tft.setTextSize(VALUE_TEXT_SIZE);
+  sprintf(buf,"%i%cC", t2, 0xf7);
+  sprintf(buf,"%i%cC", abs(i-109), 0xf7);
+  tft.println(buf);
+  if(i>99) i=10;
+}
+
+void tft_textWait(int s){
+  int x, y;
+  tft.setTextColor(ST7735_WHITE, ST7735_BLUE);
+  x = tft.getCursorX();
+  y = tft.getCursorY();
+  while(s--){
+    tft.print("waiting: ");
+    tft.print(s);
+    tft.print("\r");
+    tft.setCursor(x,y);
+    delay(1000);
+  }
+}
 void tft_initR(int color){
     tft.initR(color);
 }
