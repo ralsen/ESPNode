@@ -23,9 +23,13 @@ ESP8266WiFiMulti wifiMulti;     // Create an instance of the ESP8266WiFiMulti cl
 
 void WiFiStartAP(){
   DBGF( "WiFiStartAP()" )
+  #if(H_TFT_18 == H_TRUE)
   tft_initR(INITR_BLACKTAB);
   tft_fillScreen(ST77XX_RED);
+  tft.setTextColor(ST77XX_WHITE, ST77XX_RED);
+  tft.setTextSize(1);
   tft_setCursor(0, 0);
+  #endif
   LEDControl(BLKMODEON, BLKWIFIAP);
   DBGLN( "Disconnect and WIFI_OFF" )
   WiFi.disconnect();
@@ -34,15 +38,21 @@ void WiFiStartAP(){
   delay(2*DELAY_WIFI_TRY);
 
   DBGLN( "Start WIFI in AP-Mode" )
+  #if(H_TFT_18 == H_TRUE)
   tft_println("Start WIFI in AP-Mode");
+  #endif
   WiFi.mode(WIFI_AP);
   DBGLN("WiFi.mode is done");
+  #if(H_TFT_18 == H_TRUE)
   tft_println("wifi.mode is done.");
+  #endif
   WiFi.softAP(cfgData.APname);
   delay(DELAY_WIFI_TRY);
   server.begin();
+  #if(H_TFT_18 == H_TRUE)
   tft_print("SSID: ");
   tft_println(String(cfgData.APname));
+  #endif
   DBGLN(WiFi.softAPIP());
   //tft_println(WiFi.softAPIP());
 }
