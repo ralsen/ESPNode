@@ -20,30 +20,31 @@ Arduino
 #include  "WiFi.h"
 #include  <string>
 
-#include <Adafruit_GFX.h>    // Core graphics library
-#include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
-#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
-
 #include <ArduinoOTA.h>
 #include "LittleFS.h"
 #include <SPI.h>
 #include  "log.h"
+#include <ESP8266mDNS.h>
+#include <Ticker.h>
+#include <time.h>
 
+#if(H_TFT_18 == H_TRUE)
+#include <Adafruit_GFX.h>    // Core graphics library
+#include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
+#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
 #include "tft.h"
+#endif
 
 #if (H_TOF == H_TRUE)
 #include  "ToF.h"
 #endif
 
-#if ((H_DS1820 == H_TRUE) || (H_TOF == H_TRUE))
+#if ((H_DS1820 == H_TRUE) || (H_TOF == H_TRUE)) //FOL warumist hier H_TOF drin???
 #include  "DS1820.h"
 #include  <DallasTemperature.h>
 #endif
 
-#include <ESP8266mDNS.h>
-#include <Ticker.h>
-#include <DallasTemperature.h>
-#include <time.h>
+#include <DallasTemperature.h> //FOL muss da sein wenn H_DS1820==H_FALSE, sehr merkwuerdig
 
 #define MY_NTP_SERVER "at.pool.ntp.org"
 #define MY_TZ "CET-1CEST,M3.5.0,M10.5.0/3"   
@@ -52,7 +53,8 @@ const String  MyName  = {"\r\n**************************************************
                              "*******************************     E S P N o d e      ******************************\r\n"
                              "*************************************************************************************"
                         };
-                      
+
+
 const String  Version = "\r\n-----> V" VERNR " vom " __DATE__ " " __TIME__ " " RELEASE " <-----\r\n";
 
 log_CL logit(LOGFILE, 11);
@@ -79,20 +81,9 @@ void setup() {
   CntmTicks.attach_ms(10, milli_ISR);
   Serial.println("10ms Timer service started!");
 
-  tft_initR(INITR_BLACKTAB);
-  tft_fillScreen(ST77XX_BLUE);
-  tft_setCursor(0, 0);
-  tft_setTextColor(ST77XX_WHITE);
-  tft_setTextWrap(true);
-  Serial.println("TFT-Display initialized");
-  tft_println("*********************");
-  tft_println("*** E S P N o d e ***");
-  tft_println("*********************");
-  tft_print("Version: V");
-  tft_println(VERNR);
-  tft_print( __DATE__);
-  tft_print(" ");
-  tft_println( __TIME__);
+  #if(H_TFT_18 == H_TRUE)
+  tft_hello();
+  #endif
 
   LEDControl(BLKMODEON, BLKALLERT);
 
@@ -107,7 +98,9 @@ void setup() {
   // do default configuration if conf not valid
   //EraseConfig();
   if (!TestHashConfig()) {
+  #if(H_TFT_18 == H_TRUE)
     tft_println("Hash FAILED !!!");
+  #endif
     Serial.println( " Hash FAILED !!!" );
     Serial.print ("load default configuration, size is: ");
     Serial.println(sizeof(cfgData));
@@ -117,7 +110,9 @@ void setup() {
   }
   else {
     Serial.printf(("Hash: 0x%lx"), cfgData.hash);
+  #if(H_TFT_18 == H_TRUE)
     tft_println("Hash: ok");
+  #endif
     Serial.println(" is ok");
     sysData.mode = MODE_CHG_TO_STA;
     sysData.status = STATUS_OK;
@@ -133,25 +128,9 @@ void setup() {
   Serial.println( cfgData.MACAddress);
   Serial.println( "" );
 
-  tft_print("Name: ");
-  tft_println(cfgData.hostname);
-  tft_print("HARDW: ");
-  tft_println(DEV_TYPE);
-  tft_print("Func: ");
-  tft_println(FNC_TYPE);
-  tft_print("MAC:");
-  tft_println(cfgData.MACAddress);
-  tft_print("WLAN:");
-  tft_println(cfgData.SSID);
-  tft_print("AP:");
-  tft_println(cfgData.APname);
-  tft_print("Service:");
-  tft_println(cfgData.service);
-  tft_print("Server:");
-  tft_println(cfgData.server);
-  tft_print("cfg: 0x");
-  tft_println(String(sizeof(cfgData), HEX));
-  tft_println("let's go ahead now ->");
+  #if(H_TFT_18 == H_TRUE)
+    tft_info();
+  #endif
   CntTicks.attach(1, sec_ISR);
   Serial.println("1s timer services started!");
 
@@ -195,8 +174,9 @@ char buf[80];
 // -----------------------------------------------------------------------------
 
 void loop() {
+  #if(H_TFT_18 == H_TRUE)
   int x, y;
-
+  #endif
   // beides wird inTasmota nicht gemacht, aber mdns.advertise, mdns.addserver u.ae.
   MDNS.update();
   server.handleClient();
@@ -210,7 +190,9 @@ void loop() {
         }
         if(!sysData.DspTimeout){
           sysData.DspTimeout = 100;
+          #if(H_TFT_18 == H_TRUE)
           tft_display2Temps(47, 11);
+          #endif
         }
 #if (H_RELAY == H_TRUE)
         if ( key && ( toggle == 0 )) {
@@ -231,6 +213,13 @@ void loop() {
           logit.entry(" !!! Restarting now !!!");
           ESP.restart();
         }
+        #if(H_TFT_18 == H_TRUE)
+        else{
+        tft.setCursor(0,30);
+        sprintf(buf,"leaving in: %lis", sysData.APTimeout);
+        tft_print(buf);
+        }
+        #endif
         break;
       }
     case MODE_CHG_TO_AP: {
@@ -242,25 +231,31 @@ void loop() {
         break;
       }
     case MODE_CHG_TO_STA: {
+        #if(H_TFT_18 == H_TRUE)
         tft.setTextColor(ST7735_WHITE, ST7735_BLUE);
         x = tft.getCursorX();
         y = tft.getCursorY();
         tft_print("wait for WLAN");
+        #endif
         if (!WiFiStartClient()) {
           sysData.mode = MODE_CHG_TO_AP;
         }
         else {
+          #if(H_TFT_18 == H_TRUE)
           tft.setCursor(x,y);
           tft_print("IP:");
           tft_println(WiFi.localIP().toString());
+          #endif
           startWebServer();
           sysData.mode = MODE_STA;
           if (!cfgData.TransmitCycle) LEDControl(BLKMODEFLASH, BLKFLASHOFF);
           else LEDControl(BLKMODEOFF, -1);
           MDNS.addService("http", "tcp", 80);
           logit.entry("WebServer started");
+          #if(H_TFT_18 == H_TRUE)
           tft_textWait(5);
           tft_init2Temps();
+          #endif
         }
         sysData.MeasuringCycle = 0;
         if (sysData.TransmitCycle) {
