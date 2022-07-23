@@ -49,7 +49,6 @@ void tft_info(){
 
 void tft_init2Temps(){
   tft.fillScreen(BG_COLOR);
-  Serial.println(i);
   tft.setCursor(0,0);
   tft.setTextSize(2);
   tft.setRotation(1);
@@ -59,7 +58,6 @@ void tft_init2Temps(){
 }
 
 void tft_display2Temps(int t1, int t2){
-  Serial.println(i%2);
   tft.setCursor(45,4);
   if (i%2){
     tft.setTextColor(TEXT_COLOR, BG_COLOR);
