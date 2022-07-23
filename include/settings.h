@@ -100,6 +100,18 @@
 # define H_LED           H_TRUE
 # define H_RELAY         H_FALSE
 # define H_TOF           H_FALSE
+# define H_TFT_18        H_FALSE
+
+#elif defined(D1MINI_DS1820_TFT_18)
+# define DEV_TYPE       "D1Mini"
+# define FNC_TYPE       "DS1820"
+# define H_SWITCH        H_FALSE
+# define H_DS1820        H_TRUE
+# define H_PIR           H_FALSE
+# define H_BUTTON        H_TRUE
+# define H_LED           H_TRUE
+# define H_RELAY         H_FALSE
+# define H_TOF           H_FALSE
 # define H_TFT_18        H_TRUE
 
 #elif defined(D1MINI_TOF)
@@ -257,6 +269,8 @@
 
 /*
   history
+  --------------------- V2.3b
+  23.07.22  TFT code cleanup
   --------------------- V2.3a
   21.07.22  TFT in DS1820-App included
   --------------------- V2.2a
