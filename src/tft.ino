@@ -7,6 +7,46 @@
   Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 int i = 10;
 
+void tft_hello(){
+  tft_initR(INITR_BLACKTAB);
+  tft_fillScreen(ST77XX_BLUE);
+  tft_setCursor(0, 0);
+  tft_setTextColor(ST77XX_WHITE);
+  tft_setTextWrap(true);
+  Serial.println("TFT-Display initialized");
+  tft_println("*********************");
+  tft_println("*** E S P N o d e ***");
+  tft_println("*********************");
+  tft_print("Version: V");
+  tft_println(VERNR);
+  tft_print( __DATE__);
+  tft_print(" ");
+  tft_println( __TIME__);
+}
+
+void tft_info(){
+  tft_print("Name: ");
+  tft_println(cfgData.hostname);
+  tft_print("HARDW: ");
+  tft_println(DEV_TYPE);
+  tft_print("Func: ");
+  tft_println(FNC_TYPE);
+  tft_print("MAC:");
+  tft_println(cfgData.MACAddress);
+  tft_print("WLAN:");
+  tft_println(cfgData.SSID);
+  tft_print("AP:");
+  tft_println(cfgData.APname);
+  tft_print("Service:");
+  tft_println(cfgData.service);
+  tft_print("Server:");
+  tft_println(cfgData.server);
+  tft_print("cfg: 0x");
+  tft_println(String(sizeof(cfgData), HEX));
+  tft_println("let's go ahead now ->");
+  
+}
+
 void tft_init2Temps(){
   tft.fillScreen(BG_COLOR);
   Serial.println(i);
@@ -289,34 +329,5 @@ void mediabuttons() {
   tft.fillRoundRect(69, 98, 20, 45, 5, ST77XX_RED);
   // play color
   tft.fillTriangle(42, 20, 42, 60, 90, 40, ST77XX_GREEN);
-}
-#else //(H_TFT == H_TRUE)
-
-void tft_initR(int color){
-    return;
-}
-
-void tft_fillScreen(int color){
-    return;
-}
-
-void tft_setCursor(int x, int y){
-    return;
-}
-
-void tft_setTextColor(int color){
-    return;
-}
-
-void tft_setTextWrap(int mode){
-    return;
-}
-
-void tft_println(String str){
-    return;
-}
-
-void tft_print(String str){
-    return;
 }
 #endif //(H_TFT == H_TRUE)

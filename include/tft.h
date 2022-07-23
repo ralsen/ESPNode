@@ -32,6 +32,8 @@
 //MOSI(DIN) ---> NodeMCU pin D7 (GPIO13)
 // BLK an 3,3V VCC  
 
+void tft_hello(void);
+void tft_info(void);
 void tft_init2Temps(void);
 void tft_display2Temps(int t1, int t2);
 void tft_textWait(int s);
