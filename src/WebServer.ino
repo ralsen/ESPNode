@@ -41,7 +41,7 @@ const char H_HOME_PAGE[] PROGMEM = {
   "body {\r\n"
     "  font-family: Verdana, sans-serif;\r\n"
     "  font-size: 87.5%;\r\n"
-    "  background-color: #ffe9b4;\r\n"
+    "  background-color: #e8e8e8;\r\n"
     "  color: black;\r\n"
     "  padding: 0;\r\n"
     "  margin:0;\r\n"
@@ -57,7 +57,7 @@ const char H_HOME_PAGE[] PROGMEM = {
   "}\r\n"
 
   ".vertical-menu a {\r\n"
-    "  background-color: #eee;\r\n"
+    "  background-color: #b9d8e9;\r\n"
     "  color: black;\r\n"
     "  display: block;\r\n"
     "  padding: 12px;\r\n"
@@ -66,7 +66,7 @@ const char H_HOME_PAGE[] PROGMEM = {
 
   ".vertical-menu {\r\n"
     "  width: 100px;\r\n"
-    "  background-color: #e9b4;\r\n" //menuefarbe ???
+    "  background-color: #e8e8e8;\r\n" //menuefarbe ???
   "}\r\n"
 
   ".vertical-menu a:hover {\r\n"
