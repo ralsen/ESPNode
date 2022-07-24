@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<TITLE>{title}</TITLE>
+<meta name="viewport" content="width=device-width, initial-scale=0.5">
+<style>
+body {
+    font-family: "Verdana", sans-serif;
+    font-size: 87.5%;
+    background-color: #e8e8e8;
+    color: black;
+    padding: 0;
+    margin:0;
+}
+  
+div1 {
+    width: 100%;
+    color: black;
+    padding: 10px;
+    position: absolute;
+    top: 60px;
+    left: 150px;
+}
+  
+.vertical-menu a {
+    background-color: #b9d8e9;
+    color: black;
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+}
+  
+.vertical-menu {
+    width: 100px;
+    background-color: #e8e8e8;
+}
+  
+.vertical-menu a:hover {
+    background-color: #4CAFf0;
+}
+  
+.vertical-menu a.active {
+    background-color: #4CAFf0;
+    color: white;
+}
+  
+</style>
+</head>
+<body>
+  
+<h1>{hostname}</h1>
+<div1>{content}</div1>
+<div class="vertical-menu">
+  <a href=" W_URL_INFO  ">Info</a><br>
+{appmenu}
+{mainpage}
+{networkpage}
+{confpage}
+</div>
+</body>
+</html>
+  
