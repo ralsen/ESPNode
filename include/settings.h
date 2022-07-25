@@ -90,6 +90,18 @@
 # define H_TOF           H_FALSE
 # define H_TFT_18        H_FALSE
 
+#elif defined(NODEMCU_DS1820_TFT_18)
+# define DEV_TYPE       "NODEMCU"
+# define FNC_TYPE       "DS1820"
+# define H_SWITCH        H_FALSE
+# define H_DS1820        H_TRUE
+# define H_PIR           H_FALSE
+# define H_BUTTON        H_TRUE
+# define H_LED           H_TRUE
+# define H_RELAY         H_FALSE
+# define H_TOF           H_FALSE
+# define H_TFT_18        H_TRUE
+
 #elif defined(D1MINI_DS1820)
 # define DEV_TYPE       "D1Mini"
 # define FNC_TYPE       "DS1820"
@@ -153,7 +165,7 @@
 #   define H_LED_PIN      13
 #   define H_RELAY_PIN    12
 //# elif    (DEV_TYPE == "NODEMCU") || (DEV_TYPE == "D1MINI")
-# elif    defined(NODEMCU_SWITCH) || defined(NODEMCU_DS1820) || defined(D1MINI_DS1820) || defined(D1MINI_TOF) || defined(D1MINI_DS1820_TFT_18)
+# elif    defined(NODEMCU_SWITCH) || defined(NODEMCU_DS1820) || defined(D1MINI_DS1820) || defined(D1MINI_TOF) || defined(D1MINI_DS1820_TFT_18) || defined(NODEMCU_DS1820_TFT_18)
 #   define H_LED_PIN      2
 #   define H_RELAY_PIN    3
 # else

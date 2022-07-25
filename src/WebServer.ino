@@ -372,7 +372,7 @@ void handleMeasCyc(){
   String buf;
 
   DBGF(server.uri());
-  x = checkInput(F("wie oft soll gemessen werden?"), F("meascyc"));
+  x = checkInput("wie oft soll gemessen werden?", "meascyc");
   DBGF(x)
   if( x ){
     buf = server.arg(server.args()-1);
@@ -802,8 +802,10 @@ int checkInput(String text, String URLText){
   String output;
   int x;
 
-  DBGF("checkInput()")
-
+  DBGF("checkInput()");
+  Serial.print(text);
+  Serial.print(" - ");
+  Serial.println(URLText);
   output = NameHTML;
   output.replace(F("{nametext}"), text);
   output.replace(F("{urltext}"), URLText);
