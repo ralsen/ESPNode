@@ -22,6 +22,7 @@ Arduino
 
 #include <ArduinoOTA.h>
 #include "LittleFS.h"
+//FOL das waere cool ---> #include <ESPFtpServer.h>
 #include <SPI.h>
 #include  "log.h"
 #include <ESP8266mDNS.h>
@@ -191,7 +192,7 @@ void loop() {
         if(!sysData.DspTimeout){
           sysData.DspTimeout = 100;
           #if(H_TFT_18 == H_TRUE)
-          tft_display2Temps(47, 11);
+          tft_display2Temps((int)(tempDev[1]), (int)(tempDev[0]));
           #endif
         }
 #if (H_RELAY == H_TRUE)

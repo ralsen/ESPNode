@@ -22,7 +22,8 @@
 # define     ONE_WIRE_BUS      H_DS1820_PIN    //Pin to which is attached a temperature sensor
 # define     ONE_WIRE_MAX_DEV  H_DS180_MAX_DEV //The maximum number of devices
 
-  extern int  numberOfDevices;
+  extern float  tempDev[];
+  extern int    numberOfDevices;
   extern DeviceAddress     devAddr[];
   void        DS1820_Measuring(void);
   String      GetAddressToString(DeviceAddress deviceAddress);

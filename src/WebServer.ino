@@ -803,9 +803,6 @@ int checkInput(String text, String URLText){
   int x;
 
   DBGF("checkInput()");
-  Serial.print(text);
-  Serial.print(" - ");
-  Serial.println(URLText);
   output = NameHTML;
   output.replace(F("{nametext}"), text);
   output.replace(F("{urltext}"), URLText);
