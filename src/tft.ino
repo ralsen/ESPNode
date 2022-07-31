@@ -71,9 +71,7 @@ void tft_display2Temps(int t1, int t2){
   tft.setCursor(22,17);
   tft.setTextColor(VALUE_TEXT_COLOR, VALUE_BG_COLOR);
   tft.setTextSize(VALUE_TEXT_SIZE);
-  Serial.println(tempDev[0]);
   sprintf(buf,"%i%cC", t1, 0xf7);
-  i++;
   tft.println(buf);
 
   tft.setCursor(50,65);
@@ -89,10 +87,8 @@ void tft_display2Temps(int t1, int t2){
   tft.setCursor(22, 78);
   tft.setTextColor(VALUE_TEXT_COLOR, VALUE_BG_COLOR);
   tft.setTextSize(VALUE_TEXT_SIZE);
-  Serial.println(tempDev[1]);
   sprintf(buf,"%i%cC", t2, 0xf7);
   tft.println(buf);
-  if(i>99) i=10;
 }
 
 void tft_textWait(int s){

@@ -281,6 +281,11 @@
 
 /*
   history
+  --------------------- V2.3d
+  23.07.22  in some cases the blue-LED remains on when with TFT
+            Display on Info Page
+  --------------------- V2.3c
+  23.07.22  first version with TFT and DS1820
   --------------------- V2.3b
   23.07.22  TFT code cleanup
   --------------------- V2.3a

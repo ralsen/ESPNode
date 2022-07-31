@@ -752,6 +752,8 @@ void buildInfoPage(){
 
   output = F("</h3>");
   output += Version + F("\r\n\r\n<br><br>")+ F("\r\n<br>Type: ") + F(FNC_TYPE) + F("\r\n<br>Hardw: ") + F(DEV_TYPE);
+  output += F("\r\n<br>Display: ");
+  output += (H_TFT_18 == H_TRUE) ? F("True") : F("False");
   output += F("\r\n<br>MAC-Address: ") + (String)cfgData.MACAddress;
   output += F("\r\n<br>Network: ") + (String)cfgData.SSID;
   output += F("\r\n<br>Network-IP: ") + WiFi.localIP().toString();

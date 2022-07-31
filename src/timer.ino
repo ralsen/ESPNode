@@ -142,6 +142,10 @@ void LEDControl(long mode, long time){
     DIG_WRITE (H_LED_PIN, HIGH);
   #elif defined(D1MINI_DS1820)
     DIG_WRITE (H_LED_PIN, HIGH);
+  #elif defined(D1MINI_DS1820_TFT_18)
+    DIG_WRITE (H_LED_PIN, HIGH);
+  #elif defined(NODEMCU_DS1820_TFT_18)
+    DIG_WRITE (H_LED_PIN, HIGH);
   #endif
 
   sysData.blinktime = time;
