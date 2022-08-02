@@ -73,7 +73,8 @@ void tft_display2Temps(int t1, int t2){
   tft.setTextSize(VALUE_TEXT_SIZE);
   sprintf(buf,"%i%cC", t1, 0xf7);
   tft.println(buf);
-
+  i++;
+  
   tft.setCursor(50,65);
   if (i%2){
     tft.setTextColor(TEXT_COLOR, BG_COLOR);
