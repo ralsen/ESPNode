@@ -21,8 +21,14 @@ static long blkcnt;
 int LEDCrit;
 
 // count object for ISR
-Ticker CntTicks;
 Ticker CntmTicks;
+Ticker TIs_Uptime;
+Ticker TIs_TransmitCycle;
+Ticker TIs_APTimeout;
+Ticker TIs_MeasuringCycle;
+Ticker TIms_DspTimeout;
+Ticker TIms_Key;
+Ticker TIms_LED;
 
 long uptime;
 #if (H_RELAY == H_TRUE)
@@ -53,24 +59,8 @@ void Init_Key()
 }
 
 
-void milli_ISR()
+void TISms_LED()
 {
-  if(sysData.DspTimeout) sysData.DspTimeout--;
-
-  key = !DIG_READ(H_BUTTON_PIN);
-
-  if( key ){
-    if( tiki ) tiki--;
-  }
-  else {
-    if( tiki == 0 ){
-      if( (sysData.mode == MODE_AP) || (sysData.mode == MODE_STA) ){
-        sysData.mode = (sysData.mode == MODE_AP) ? MODE_CHG_TO_STA:MODE_CHG_TO_AP;
-      }
-    }
-    tiki = KEY_WAIT;
-  }
-
   if (blkcnt) blkcnt--;
 
   while (LEDCrit);
@@ -88,30 +78,49 @@ void milli_ISR()
   }
 }
 
+void TISms_Key(){
+  key = !DIG_READ(H_BUTTON_PIN);
 
+  if( key ){
+    if( tiki ) tiki--;
+  }
+  else {
+    if( tiki == 0 ){
+      if( (sysData.mode == MODE_AP) || (sysData.mode == MODE_STA) ){
+        sysData.mode = (sysData.mode == MODE_AP) ? MODE_CHG_TO_STA:MODE_CHG_TO_AP;
+      }
+    }
+    tiki = KEY_WAIT;
+  }
+}
+
+void TISms_DspTimeout(){
+  if(sysData.DspTimeout) sysData.DspTimeout--;
+}
+
+void TISs_Uptime(){
+  uptime++;
+}
+
+void TISs_APTimeout(){
+  if( sysData.APTimeout ) sysData.APTimeout--;
+}
+
+void TISs_TransmitCycle(){
+  if( sysData.TransmitCycle ) sysData.TransmitCycle--;
+}
 
 //  ISR_count() counts the life tickers
-void sec_ISR()
-{
 # if (H_RELAY == H_TRUE)
+void TIS_Relay(){
   if( DIG_READ(H_RELAY_PIN) )
     ontime++;
   else
     offtime++;
+}
 # endif
 
-/*DBGL("LED: ")
-DBGF(cfgData.LED)
-DBGL("blink: ")
-DBGF(sysData.blinkmode)
-DBGL("Mode: ")
-DBGF(sysData.mode)
-*/
-  uptime++;
-  if( sysData.APTimeout ) sysData.APTimeout--;
-
-  if( sysData.TransmitCycle ) sysData.TransmitCycle--;
-
+void TISs_MeasuringCycle(){
   if(sysData.mode == MODE_STA){
     if( sysData.MeasuringCycle )
       sysData.MeasuringCycle--;
@@ -126,7 +135,6 @@ DBGF(sysData.mode)
       }
   }
 }
-
 
 void LEDControl(long mode, long time){
   DBGF( "LEDControl()" );

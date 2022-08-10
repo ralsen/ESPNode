@@ -79,8 +79,10 @@ void setup() {
   Init_Key();
   Serial.println("Key service started!");
 
-  CntmTicks.attach_ms(10, milli_ISR);
-  Serial.println("10ms Timer service started!");
+  TIms_LED.attach_ms(10, TISms_LED);
+  TIms_DspTimeout.attach_ms(10, TISms_DspTimeout);
+  TIms_Key.attach_ms(10, TISms_Key);
+  Serial.println("10ms Timer services started!");
 
   #if(H_TFT_18 == H_TRUE)
   tft_hello();
@@ -132,7 +134,14 @@ void setup() {
   #if(H_TFT_18 == H_TRUE)
     tft_info();
   #endif
-  CntTicks.attach(1, sec_ISR);
+  TIs_Uptime.attach(1, TISs_Uptime);
+  TIs_TransmitCycle.attach(1, TISs_TransmitCycle);
+  TIs_APTimeout.attach(1, TISs_APTimeout);
+  TIs_MeasuringCycle.attach(1, TISs_MeasuringCycle);
+  #if (H_RELAY == H_TRUE)
+  Relais.attach(1, TIS_Relais);
+  #endif
+
   Serial.println("1s timer services started!");
 
   //Setup DS18b20 temperature sensor

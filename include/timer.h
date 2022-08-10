@@ -34,8 +34,17 @@ extern long offtime;
 extern long cycles;
 #endif
 
-extern  Ticker CntTicks;
 extern  Ticker CntmTicks;
+extern  Ticker TIs_Uptime;
+extern  Ticker TIs_TransmitCycle;
+extern  Ticker TIs_APTimeout;
+extern  Ticker TIs_MeasuringCycle;
+extern  Ticker TIms_DspTimeout;
+extern  Ticker TIms_Key;
+extern  Ticker TIms_LED;
+#if (H_RELAY == H_TRUE)
+extern  Ticker TI_sRelais;
+#endif
 
 void milli_ISR(void);
 void sec_ISR(void);
