@@ -139,9 +139,8 @@ void setup() {
   TIs_APTimeout.attach(1, TISs_APTimeout);
   TIs_MeasuringCycle.attach(1, TISs_MeasuringCycle);
   #if (H_RELAY == H_TRUE)
-  Relais.attach(1, TIS_Relais);
+  TIs_Relais.attach(1, TISs_Relais);
   #endif
-
   Serial.println("1s timer services started!");
 
   //Setup DS18b20 temperature sensor

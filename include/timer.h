@@ -43,7 +43,7 @@ extern  Ticker TIms_DspTimeout;
 extern  Ticker TIms_Key;
 extern  Ticker TIms_LED;
 #if (H_RELAY == H_TRUE)
-extern  Ticker TI_sRelais;
+extern  Ticker TIs_Relais;
 #endif
 
 void milli_ISR(void);

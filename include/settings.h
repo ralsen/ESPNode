@@ -281,6 +281,10 @@
 
 /*
   history
+  --------------------- V2.3f
+  10.08.22  H_RELAY is also working with new timer interrupt
+  --------------------- V2.3e
+  10.08.22  timer service routines are seperated for each service
   --------------------- V2.3d
   23.07.22  in some cases the blue-LED remains on when with TFT
             Display on Info Page

@@ -30,14 +30,15 @@ Ticker TIms_DspTimeout;
 Ticker TIms_Key;
 Ticker TIms_LED;
 
-long uptime;
 #if (H_RELAY == H_TRUE)
+Ticker TIs_Relais;
 long ontime;
 long offtime;
 long cycles;
 #endif
 
 long Intervall;
+long uptime;
 
 /* ---------------------------------------------------------------
  *
@@ -112,7 +113,7 @@ void TISs_TransmitCycle(){
 
 //  ISR_count() counts the life tickers
 # if (H_RELAY == H_TRUE)
-void TIS_Relay(){
+void TISs_Relais(){
   if( DIG_READ(H_RELAY_PIN) )
     ontime++;
   else
@@ -144,6 +145,8 @@ void LEDControl(long mode, long time){
     DIG_WRITE (H_LED_PIN, !DIG_READ(H_RELAY_PIN));
   #elif defined(SONOFF_S20_SWITCH)
     DIG_WRITE (H_LED_PIN, HIGH);
+  #elif defined(NODEMCU_SWITCH)
+    DIG_WRITE(H_LED_PIN, !DIG_READ(H_RELAY_PIN));
   #elif defined (NODEMCU_DS1820)
     DIG_WRITE (H_LED_PIN, HIGH);
   #elif defined(D1MINI_ToF)
