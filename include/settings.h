@@ -281,6 +281,8 @@
 
 /*
   history
+  --------------------- V2.3g
+  10.08.22  obviously we dont need the while loop with wifi.multirun
   --------------------- V2.3f
   10.08.22  H_RELAY is also working with new timer interrupt
   --------------------- V2.3e

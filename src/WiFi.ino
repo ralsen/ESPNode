@@ -84,6 +84,7 @@ int WiFiStartClient(){
   DBGL( "PASS: " );
   DBGLN( cfgData.password );
   while ( wifiMulti.run() != WL_CONNECTED ) {
+    return false;
     delay(DELAY_WIFI_TRY);
     Serial.print(wheel[err%4]);
     Serial.print("\b");
