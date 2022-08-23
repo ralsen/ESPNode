@@ -15,6 +15,7 @@
 //#include  "timer.h"
 #include  "log.h"
 #include  "ToF.h"
+#include  "html.h"
 //#include  <string>
 //#include  <iostream>
 
@@ -42,7 +43,21 @@ String RadioLEDEndHTML;
 String NameHTML;
 
 void initHTML(){
-  HomeHTML = readHTML("Home.html");
+  HomeHTML = FPSTR(H_HOME_PAGE);
+  AppMenueHTML = FPSTR(H_APPMENU);
+  StatusMenueSwitchHTML = FPSTR(H_STATUSMENU);
+  InfoMenueHTML = FPSTR(H_INFOMENU);
+  NetWorkMenueHTML = FPSTR(H_NETWORKMENU);
+  ConfMenueHTML = FPSTR(H_CONFMENU);
+  ConfMenueMeasHTML = FPSTR(H_CONFMENUMEAS);
+  RadioWifiStartHTML = FPSTR(H_RADIO_WIFI_START);
+  RadioWifiLinetHTML = FPSTR(H_RADIO_WIFI_LINE);
+  RadioWifiEndHTML = FPSTR(H_RADIO_WIFI_END);
+  RadioLEDStartHTML = FPSTR(H_RADIO_LED_START);
+  RadioLEDEndHTML = FPSTR(H_RADIO_LED_END);
+  NameHTML = FPSTR(H_NAME);
+
+/*  HomeHTML = readHTML("Home.html");
   AppMenueHTML = readHTML("AppMenue.html");
   StatusMenueSwitchHTML = readHTML("StatusMenueSwitch.html");
   InfoMenueHTML = readHTML("InfoMenue.html");
@@ -54,7 +69,7 @@ void initHTML(){
   RadioWifiEndHTML = readHTML("RadioWifiEnd.html");
   RadioLEDStartHTML = readHTML("RadioLEDStart.html");
   RadioLEDEndHTML = readHTML("RadioLEDEnd.html");
-  NameHTML = readHTML("Name.html");
+  NameHTML = readHTML("Name.html");*/
 }
 
 String readHTML(String fname){

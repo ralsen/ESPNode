@@ -281,6 +281,8 @@
 
 /*
   history
+  --------------------- V2.3h
+  10.08.22  new websites in seperate file (html.h)
   --------------------- V2.3g
   10.08.22  obviously we dont need the while loop with wifi.multirun
   --------------------- V2.3f
