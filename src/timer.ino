@@ -15,6 +15,8 @@
 #include  "Config.h"
 #include  <Ticker.h>
 
+#include  <string.h>
+
 int key;            // holds the button codes for internal use
 static int  tiki;           // counts the ticks how long a key is pressed
 static long blkcnt;
@@ -141,23 +143,18 @@ void LEDControl(long mode, long time){
   DBGF( "LEDControl()" );
 
   LEDCrit = H_TRUE;
-  #if defined(SONOFF_BASIC_SWITCH)
+  
+  if(!strcmp(DEV_TYPE, "NODEMCU"))
+    DIG_WRITE (H_LED_PIN, HIGH);
+
+  if(!strcmp(DEV_TYPE, "SONOFF_BASIC"))
     DIG_WRITE (H_LED_PIN, !DIG_READ(H_RELAY_PIN));
-  #elif defined(SONOFF_S20_SWITCH)
+
+  if(!strcmp(DEV_TYPE, "SONOFF_S20"))
     DIG_WRITE (H_LED_PIN, HIGH);
-  #elif defined(NODEMCU_SWITCH)
-    DIG_WRITE(H_LED_PIN, !DIG_READ(H_RELAY_PIN));
-  #elif defined (NODEMCU_DS1820)
+
+  if(!strcmp(DEV_TYPE, "D1MINI"))
     DIG_WRITE (H_LED_PIN, HIGH);
-  #elif defined(D1MINI_ToF)
-    DIG_WRITE (H_LED_PIN, HIGH);
-  #elif defined(D1MINI_DS1820)
-    DIG_WRITE (H_LED_PIN, HIGH);
-  #elif defined(D1MINI_DS1820_TFT_18)
-    DIG_WRITE (H_LED_PIN, HIGH);
-  #elif defined(NODEMCU_DS1820_TFT_18)
-    DIG_WRITE (H_LED_PIN, HIGH);
-  #endif
 
   sysData.blinktime = time;
   if(cfgData.LED)
