@@ -103,7 +103,7 @@
 # define H_TFT_18        H_TRUE
 
 #elif defined(D1MINI_DS1820)
-# define DEV_TYPE       "D1Mini"
+# define DEV_TYPE       "D1MINI"
 # define FNC_TYPE       "DS1820"
 # define H_SWITCH        H_FALSE
 # define H_DS1820        H_TRUE
@@ -115,7 +115,7 @@
 # define H_TFT_18        H_TRUE
 
 #elif defined(D1MINI_DS1820_TFT_18)
-# define DEV_TYPE       "D1Mini"
+# define DEV_TYPE       "D1MINI"
 # define FNC_TYPE       "DS1820"
 # define H_SWITCH        H_FALSE
 # define H_DS1820        H_TRUE
@@ -127,7 +127,7 @@
 # define H_TFT_18        H_TRUE
 
 #elif defined(D1MINI_TOF)
-# define DEV_TYPE       "D1Mini"
+# define DEV_TYPE       "D1MINI"
 # define FNC_TYPE       "ToF"
 # define H_SWITCH        H_FALSE
 # define H_DS1820        H_FALSE
