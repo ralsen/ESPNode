@@ -191,7 +191,7 @@ void loop() {
   server.handleClient();
   //ArduinoOTA.handle(); 
 
-  
+  //logit.entry("...");
   switch ( sysData.mode ) {
     case MODE_STA: {
         if ((cfgData.TransmitCycle) && (!sysData.TransmitCycle)){
@@ -219,7 +219,7 @@ void loop() {
     case MODE_AP: {
         if (!sysData.APTimeout) {
           DBGLN(" !!! Restarting now !!!");
-          logit.entry(" !!! Restarting now !!!");
+          //logit.entry(" !!! Restarting now !!!");
           ESP.restart();
         }
         #if(H_TFT_18 == H_TRUE)
@@ -236,7 +236,7 @@ void loop() {
         startWebServer();
         sysData.APTimeout = cfgData.APTimeout;
         sysData.mode = MODE_AP;
-        logit.entry("switching into AP mode");
+        //logit.entry("switching into AP mode");
         break;
       }
     case MODE_CHG_TO_STA: {
@@ -260,7 +260,7 @@ void loop() {
           if (!cfgData.TransmitCycle) LEDControl(BLKMODEFLASH, BLKFLASHOFF);
           else LEDControl(BLKMODEOFF, -1);
           MDNS.addService("http", "tcp", 80);
-          logit.entry("WebServer started");
+          //logit.entry("WebServer started");
           #if(H_TFT_18 == H_TRUE)
           tft_textWait(5);
           tft_init2Temps();
@@ -272,7 +272,7 @@ void loop() {
           DBGL("sending first message in ");
           DBG(SEND_AFTER_BOOT_SEC);
           DBGNL(" seconds");
-          logit.entry("sending first message");
+          //logit.entry("sending first message");
         }
         break;
 
@@ -340,7 +340,7 @@ void DoNormStuff() {
     sysData.CntBadTrans++;
   }
 
-  // Serial.print(TimeDB.showTime());
+  //Serial.print(TimeDB.showTime());
   // Auswertung was der Server gemeldet hat und entsprechend handeln
   DBGL("\r\n------------------------------------------------------------------------------------\r\n");
   sysData.TransmitCycle = cfgData.TransmitCycle;

@@ -140,7 +140,7 @@ void TISs_MeasuringCycle(){
 }
 
 void LEDControl(long mode, long time){
-  DBGF( "LEDControl()" );
+  //DBGF( "LEDControl()" );
 
   LEDCrit = H_TRUE;
   
@@ -167,20 +167,18 @@ void LEDControl(long mode, long time){
 
 TimeDB::TimeDB(String server, String zone)
 {
-  Serial.print("getting time from: ");
-  Serial.print(server);
-  Serial.print(" / Timezone: ");
-  Serial.println(zone);
   configTime(MY_TZ, MY_NTP_SERVER);   // --> Here is the IMPORTANT ONE LINER needed in your sketch!
   time(&e_now);                       // read the current time
   localtime_r(&e_now, &tm_t);         // update the structure tm with the current time
 }
 
+/*
 time_t TimeDB::getTime(){
 // get the time from whereever you want and pit it in here
   Serial.println("gettime in TimeDB");
   return 0;
 }
+*/
 
 String TimeDB::zeroPad(int number) {
   if (number < 10) {
@@ -190,25 +188,26 @@ String TimeDB::zeroPad(int number) {
   }
 }
 
+
 String TimeDB::showTime(){
   String str;
 
   time(&e_now);                       // read the current time
   localtime_r(&e_now, &tm_t);           // update the structure tm with the current time
   str = ("year:");
-  str += tm_t.tm_year + 1900;  // years since 1900
+  str += String(tm_t.tm_year + 1900);  // years since 1900
   str += "\tmonth:";
-  str += tm_t.tm_mon + 1;      // January = 0 (!)
+  str += String(tm_t.tm_mon + 1);      // January = 0 (!)
   str += "\tday:";
-  str += tm_t.tm_mday;         // day of month
+  str += String(tm_t.tm_mday);         // day of month
   str += "\thour:";
-  str += tm_t.tm_hour;         // hours since midnight  0-23
+  str += String(tm_t.tm_hour);         // hours since midnight  0-23
   str += "\tmin:";
-  str += tm_t.tm_min;          // minutes after the hour  0-59
+  str += String(tm_t.tm_min);          // minutes after the hour  0-59
   str += "\tsec:";
-  str += tm_t.tm_sec;          // seconds after the minute  0-61*
+  str += String(tm_t.tm_sec);          // seconds after the minute  0-61*
   str += "\twday";
-  str += tm_t.tm_wday;         // days since Sunday 0-6
+  str += String(tm_t.tm_wday);         // days since Sunday 0-6
   if (tm_t.tm_isdst == 1)             // Daylight Saving Time flag
     str += "\tDST";
   else
@@ -216,6 +215,7 @@ String TimeDB::showTime(){
   str += "\n\r";
   return str;
 }
+
 
 String TimeDB::getTimestr(){
   String str;
