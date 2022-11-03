@@ -18,7 +18,7 @@
 #include "log.h"
 #include <SPI.h>
 #include <LittleFS.h>
-//#include "timer.h"
+#include "timer.h"
 
 log_CL::log_CL(String filename, int level){
   DBGF("log_CL::log_CL()")
@@ -39,17 +39,21 @@ String log_CL::show(){
   return fstr;
 }
 
+extern TimeDB TimeServ;
+
 void log_CL::entry(String entry){
   DBGF("log_CL::entry(String entry)")
   File flog = LittleFS.open(logfile, "r");
-  String fstr="";
+  String fstr = "";
+  String tstr = "";
   while(flog.available()){
     fstr += (char)(flog.read());
   }
   flog.close();
   flog = LittleFS.open(logfile, "w");
-  //FOL fstr = TimeDB.getTimestr() + " --> " + entry + "\r\n" + fstr;
-  fstr = "muss noch sinnvoll gefuellt werden!!!";
+  tstr = TimeServ.getTimestr() + " --> " + entry;
+  fstr = tstr + "\r\n" + fstr;
+  DBGF(tstr);
   flog.print(fstr.substring(0, MAXLOGSIZE));
   flog.close();
 }
