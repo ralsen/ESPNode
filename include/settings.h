@@ -263,14 +263,15 @@
 #define DEFAULT_APNAME        "ESPnet"
 #define DEFAULT_MEASCYCLE     150       // Measurement cycle in sec.
 #define DEFAULT_PAGERELOAD    10        // page reload cycle in sec.
-#define DEFAULT_APTIMEOUT     300       // stay for this in AP-Mode before
-                                        // retrying STA-Mode again
 
 #if (H_SWITCH == H_FALSE)
   #define DEFAULT_TRANSCYCLE    300     // transmit cycle to server in sec.
 #else
   #define DEFAULT_TRANSCYCLE    3600
 #endif
+
+#define MY_NTP_SERVER "at.pool.ntp.org"
+#define MY_TZ "CET-1CEST,M3.5.0,M10.5.0/3"   
 
 #define DEFAULT_SERVICE       "/DummyServ.php/"
 #define DEFAULT_SERVER        "192.168.1.6"
