@@ -57,7 +57,6 @@ void LoadConfig() {
   EEPROM.end();
   sysData.MeasuringCycle = SEND_AFTER_BOOT_SEC; //cfgData.MeasuringCycle;
   sysData.TransmitCycle = SEND_AFTER_BOOT_SEC+1;
-  sysData.APTimeout = DEFAULT_APTIMEOUT;
   sysData.blinkmode = BLKMODEOFF;
   sysData.DspTimeout = 100;
 }
@@ -79,7 +78,6 @@ void SetToDefault(){
   cfgData.MeasuringCycle = DEFAULT_MEASCYCLE;
   cfgData.TransmitCycle = DEFAULT_TRANSCYCLE;
   cfgData.PageReload  = DEFAULT_PAGERELOAD;
-  cfgData.APTimeout = DEFAULT_APTIMEOUT;
   //cfgData.hash = CalcHashConfig();
   SaveConfig();
 }
