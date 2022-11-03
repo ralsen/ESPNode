@@ -35,7 +35,6 @@ int LEDCrit;
 Ticker CntmTicks;
 Ticker TIs_Uptime;
 Ticker TIs_TransmitCycle;
-Ticker TIs_APTimeout;
 Ticker TIs_MeasuringCycle;
 Ticker TIms_DspTimeout;
 Ticker TIms_Key;
@@ -171,11 +170,11 @@ void LEDControl(long mode, long time){
 }
 
 TimeDB::TimeDB(String server, String zone)
-{/* //FOL
+{ //FOL
   configTime(MY_TZ, MY_NTP_SERVER);   // --> Here is the IMPORTANT ONE LINER needed in your sketch!
   time(&e_now);                       // read the current time
   localtime_r(&e_now, &tm_t);         // update the structure tm with the current time
-  */
+  
 }
 
 /*
