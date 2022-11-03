@@ -283,6 +283,8 @@
 
 /*
   history
+  --------------------- V4.0a
+  03.11.22  change to cpp-files instead ino. Networkpage removed (we use the WiFiManager), Platformio with new library management, lots of other minor things
   --------------------- V3.0a
   09.10.22  doing the Wifi-Stuff with the WifiManager from github
   --------------------- V2.3j
