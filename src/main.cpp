@@ -185,8 +185,8 @@ void setup() {
 
   Serial.println("\r\neverything is initialized, let's go ahead and connect now ->\r\n");
 
-  sysData.WifiRes = wm.autoConnect("AutoConnectAP");
-
+  sysData.WifiRes = wm.autoConnect(DEFAULT_APNAME);
+  Serial.println("---> " + WiFi.macAddress());
   if(!sysData.WifiRes) {
         Serial.print("Failed to connect!!! -> Result: ");
         ESP.restart();
@@ -194,10 +194,8 @@ void setup() {
   else {
         //if you get here you have connected to the WiFi    
         Serial.print("connected to: ");
-        //FOL Serial.print(WiFi.SSID());
-        Serial.print(" -> Result: ");
+        Serial.print(WiFi.SSID());
   } 
-  Serial.println(sysData.WifiRes);
 
   LEDControl(BLKMODEOFF, -1);
   delay(1000);
