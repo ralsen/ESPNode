@@ -49,7 +49,7 @@ void DoNormStuff(void);
 
 
 #if (H_TOF == H_TRUE)
-#include  "ToF.h"
+#include  "ToF.h"MY_NTP_SERVER
 #endif
 
 #if (H_DS1820 == H_TRUE)
@@ -57,22 +57,19 @@ void DoNormStuff(void);
 #include  <DallasTemperature.h>
 #endif
 
-#define MY_NTP_SERVER "at.pool.ntp.org"
-#define MY_TZ "CET-1CEST,M3.5.0,M10.5.0/3"   
-
 const String  MyName  = {"\r\n*************************************************************************************\r\n"
                              "*******************************     E S P N o d e      ******************************\r\n"
                              "*************************************************************************************"
                         };
 
 
-const String  Version = "\r\n-----> V" VERNR " vom " __DATE__ " " __TIME__ " " RELEASE " <-----\r\n";
+String Version = "\r\n-----> V" VERNR " vom " __DATE__ " " __TIME__ " " RELEASE " <-----\r\n";
 extern long Intervall;
 extern long uptime;
 extern ESP8266WebServer server;
 
 log_CL logit(LOGFILE, 11);
-//FOL TimeDB TimeDB(MY_NTP_SERVER, MY_TZ);
+TimeDB TimeServ(MY_NTP_SERVER, MY_TZ);
 WiFiManager wm;
 
 //------------------------------------------
