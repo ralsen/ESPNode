@@ -1,4 +1,8 @@
 
+#include <Arduino.h>
+#include "settings.h"
+#include "Config.h"
+
 #if (H_TFT_18 == H_TRUE)
 
 #include "tft.h"
@@ -58,6 +62,7 @@ void tft_init2Temps(){
 }
 
 void tft_display2Temps(int t1, int t2){
+  char buf[80];
   tft.setCursor(45,4);
   if (i%2){
     tft.setTextColor(TEXT_COLOR, BG_COLOR);

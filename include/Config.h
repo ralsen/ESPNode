@@ -7,6 +7,7 @@
 
   hints:    -
 */
+#include <Arduino.h>
 
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
@@ -34,7 +35,7 @@ typedef struct {
 } cfgData_t;
 
 typedef struct {
-  int   mode;
+  int   WifiRes;
   long  blinkmode;
   long  blinktime;
   int   status;
@@ -54,9 +55,12 @@ typedef struct {
   extern  sysData_t sysData;
 
   void eraseConfig(void);
-  void saveConfig(void);
+  void SaveConfig(void);
   void loadConfig(void);
-
+  void SetToDefault(void);
+  long CalcHashConfig(void);
+  int TestHashConfig(void);
+  
 #define SEND_AFTER_BOOT_SEC   5
 
 #endif //_CONFIG_H_

@@ -10,9 +10,14 @@
   hints:    ???
 */
 
+#include <Arduino.h>
+#include "settings.h"
+#include "Config.h"
 
 #if (H_TOF == H_TRUE)
-
+ #include "settings.h"
+ #include "Config.h"
+ 
  #include "ToF.h"
  #include "SparkFun_VL53L1X.h" //Click here to get the library: http://librarymanager/All#SparkFun_VL53L1X
  //#include <Wire.h>

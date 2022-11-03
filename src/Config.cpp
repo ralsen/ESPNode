@@ -9,8 +9,8 @@ hallo
   hints:    ???
 */
 
+#include <Arduino.h>
 #include  "Settings.h"
-#include  "WebServer.H"
 #include  "Config.h"
 
 #include <EEPROM.h>
@@ -71,7 +71,7 @@ void SetToDefault(){
   strcpy (cfgData.password,DEFAULT_PASSWORD);
   strcpy (cfgData.hostname, DEFAULT_HOSTNAME);
   strcpy (cfgData.APname, DEFAULT_APNAME);
-  strcpy (cfgData.MACAddress, (WiFi.macAddress()).c_str());
+  //FOL strcpy (cfgData.MACAddress, (WiFi.macAddress()).c_str());
   cfgData.LocalIP[0]=0;
   cfgData.fixip[0]=0;
   strcpy (cfgData.server, DEFAULT_SERVER);
@@ -80,7 +80,7 @@ void SetToDefault(){
   cfgData.TransmitCycle = DEFAULT_TRANSCYCLE;
   cfgData.PageReload  = DEFAULT_PAGERELOAD;
   cfgData.APTimeout = DEFAULT_APTIMEOUT;
-  cfgData.hash = CalcHashConfig();
+  //cfgData.hash = CalcHashConfig();
   SaveConfig();
 }
 

@@ -11,6 +11,8 @@
 
   hints:    -
 */
+#include <Arduino.h>
+#include "settings.h"
 
 #if (H_DS1820 == H_TRUE)
 # ifndef _DS1820_H_
@@ -24,11 +26,12 @@
 
   extern float  tempDev[];
   extern int    numberOfDevices;
-  extern DeviceAddress     devAddr[];
-  void        DS1820_Measuring(void);
-  String      GetAddressToString(DeviceAddress deviceAddress);
-  void        SetupDS18B20(void);
-  void        TempLoop(long now);
+  extern        DeviceAddress devAddr[];
+  
+  void          DS1820_Measuring(void);
+  String        GetAddressToString(DeviceAddress deviceAddress);
+  void          SetupDS18B20(void);
+  void          TempLoop(long now);
 
 #  endif // _DS1820_H_
 #endif //(H_DS1820 == H_TRUE)

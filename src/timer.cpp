@@ -7,12 +7,21 @@
 
   hints:    ???
 */
-
+#include <Arduino.h>
 #include  "Settings.h"
-#include  "timer.h"
-#include  "DS1820.h"
-#include  "version.h"
 #include  "Config.h"
+
+#include  "timer.h"
+
+#if( H_DS1820 == H_TRUE )
+  #include  "DS1820.h"
+#endif
+
+#if( H_TOF == H_TRUE )
+  #include  "ToF.h"
+#endif
+
+#include  "version.h"
 #include  <Ticker.h>
 
 #include  <string.h>
@@ -54,7 +63,7 @@ void Init_Key()
 {
  // Setup the button with an internal pull-up :
   pinMode(H_BUTTON_PIN,INPUT_PULLUP);
-  sysData.mode = MODE_STA;       // normal mode at start
+  sysData.WifiRes = MODE_STA;       // normal mode at start
   key = KEY_NO;           // no key is pressed
   blkcnt = BLKMODEOFF;
   tiki = KEY_WAIT;
@@ -75,7 +84,7 @@ void TISms_LED()
 
     if( sysData.blinkmode != BLKMODEOFF ){
       blkcnt = sysData.blinktime;
-      if(!((sysData.mode == MODE_STA) && (cfgData.LED == H_FALSE)))
+      if(!((sysData.WifiRes == MODE_STA) && (cfgData.LED == H_FALSE)))
         DIG_WRITE (H_LED_PIN, !DIG_READ(H_LED_PIN));
     }
   }
@@ -89,8 +98,8 @@ void TISms_Key(){
   }
   else {
     if( tiki == 0 ){
-      if( (sysData.mode == MODE_AP) || (sysData.mode == MODE_STA) ){
-        sysData.mode = (sysData.mode == MODE_AP) ? MODE_CHG_TO_STA:MODE_CHG_TO_AP;
+      if( (sysData.WifiRes == MODE_AP) || (sysData.WifiRes == MODE_STA) ){
+        sysData.WifiRes = (sysData.WifiRes == MODE_AP) ? MODE_CHG_TO_STA:MODE_CHG_TO_AP;
       }
     }
     tiki = KEY_WAIT;
@@ -103,10 +112,6 @@ void TISms_DspTimeout(){
 
 void TISs_Uptime(){
   uptime++;
-}
-
-void TISs_APTimeout(){
-  if( sysData.APTimeout ) sysData.APTimeout--;
 }
 
 void TISs_TransmitCycle(){
@@ -124,7 +129,7 @@ void TISs_Relais(){
 # endif
 
 void TISs_MeasuringCycle(){
-  if(sysData.mode == MODE_STA){
+  if(sysData.WifiRes){
     if( sysData.MeasuringCycle )
       sysData.MeasuringCycle--;
       else{
@@ -166,10 +171,11 @@ void LEDControl(long mode, long time){
 }
 
 TimeDB::TimeDB(String server, String zone)
-{
+{/* //FOL
   configTime(MY_TZ, MY_NTP_SERVER);   // --> Here is the IMPORTANT ONE LINER needed in your sketch!
   time(&e_now);                       // read the current time
   localtime_r(&e_now, &tm_t);         // update the structure tm with the current time
+  */
 }
 
 /*

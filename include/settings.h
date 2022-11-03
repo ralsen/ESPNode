@@ -7,6 +7,7 @@
 
   hints:    -
 */
+#include <Arduino.h>
 
 #ifndef __SETTINGS_H
 #define __SETTINGS_H
@@ -112,7 +113,7 @@
 # define H_LED           H_TRUE
 # define H_RELAY         H_FALSE
 # define H_TOF           H_FALSE
-# define H_TFT_18        H_TRUE
+# define H_TFT_18        H_FALSE
 
 #elif defined(D1MINI_DS1820_TFT_18)
 # define DEV_TYPE       "D1MINI"
@@ -281,6 +282,10 @@
 
 /*
   history
+  --------------------- V3.0a
+  09.10.22  doing the Wifi-Stuff with the WifiManager from github
+  --------------------- V2.3j
+  08.09.22  removed some lines with TimeDB and log.entry because of problems and crashes
   --------------------- V2.3h
   10.08.22  new websites in seperate file (html.h)
   --------------------- V2.3g

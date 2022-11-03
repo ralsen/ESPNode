@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "settings.h"
 
 const char H_HOME_PAGE[] PROGMEM = {

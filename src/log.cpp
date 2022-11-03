@@ -10,13 +10,15 @@
 
 
 
+#include <Arduino.h>
+#include "settings.h"
+#include "Config.h"
 
-#include  "settings.h"
-#include  <string>
-#include  "log.h"
-#include  <SPI.h>
+#include <string>
+#include "log.h"
+#include <SPI.h>
 #include <LittleFS.h>
-#include  "timer.h"
+//#include "timer.h"
 
 log_CL::log_CL(String filename, int level){
   DBGF("log_CL::log_CL()")
@@ -46,7 +48,8 @@ void log_CL::entry(String entry){
   }
   flog.close();
   flog = LittleFS.open(logfile, "w");
-  fstr = TimeDB.getTimestr() + " --> " + entry + "\r\n" + fstr;
+  //FOL fstr = TimeDB.getTimestr() + " --> " + entry + "\r\n" + fstr;
+  fstr = "muss noch sinnvoll gefuellt werden!!!";
   flog.print(fstr.substring(0, MAXLOGSIZE));
   flog.close();
 }

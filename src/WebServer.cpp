@@ -8,14 +8,26 @@
   hints:    ???
 */
 
+#include <Arduino.h>
+#include "settings.h"
+#include "Config.h"
 
-#include  "settings.h"
-#include  "Config.h"
-//#include  "WebServer.H"
-//#include  "timer.h"
-#include  "log.h"
-#include  "ToF.h"
-#include  "html.h"
+#include "WebServer.h"
+#include <ESP8266WebServer.h>
+#include <LittleFS.h>
+
+#include  "timer.h"
+#include "log.h"
+#include "ToF.h"
+#include "html.h"
+#include "DS1820.h"
+
+//FOL extern const String  Version;
+const String  Version = "hier muss ich noch was tun!!!";
+
+extern long Intervall;
+extern long uptime;
+
 //#include  <string>
 //#include  <iostream>
 
@@ -81,6 +93,7 @@ String readHTML(String fname){
   fhtml.close();
   return fstr;
 }
+
 void startWebServer(){
   initHTML();
   DBGF("startWebServer()")
@@ -115,12 +128,9 @@ void startWebServer(){
   server.on(F("/" "status"), handleStatus);
   server.on(F("/" "server"), handleServer);
   server.on(F("/" "service"), handleService);
-  server.on(F("/" "scan"), handleScan);
   server.on(F("/" "info"), handleInfo);
   server.on(F("/"), handleInfo);
   server.on(F("/" "reset"), handleReset);
-  server.on(F("/" "ap-mode"), handleAPMode);
-  server.on(F("/" "sta-mode"), handleSTAMode);
   server.on(F("/" "hostname"), handleHostName);
   server.on(F("/" "led"), handleLED);
   server.on(F("/" "default"), handleSetDefault);
@@ -147,7 +157,7 @@ void startWebServer(){
     if (upload.status == UPLOAD_FILE_START) {
       DBGLN("UPLOAD_FILE_START");
       Serial.setDebugOutput(true);
-      WiFiUDP::stopAll();
+      //FOL WiFiUDP::stopAll();
       Serial.printf(("Update: %s\n"), upload.filename.c_str());
       uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
       DBGL("maxSketchSpace: ");
@@ -182,6 +192,7 @@ void startWebServer(){
   });
 
   server.begin();
+  DBGF("startWebServer() done.")
 }
 
 /*  all webserver handlers
@@ -437,26 +448,6 @@ void handlePagereload(){
   }
 }
 
-void handleSTAMode(){
-  DBGF(server.uri());
-  sysData.CntPageDelivered++;
-  server.send(200, F(W_TEXT_HTML), buildNetworkPage( F("switching to STA-Mode")));
-  delay(1000);
-  sysData.mode = MODE_CHG_TO_STA;
-}
-
-void handleAPMode(){
-  DBGF(server.uri());
-  String message= F("look me up under 192.168.4.1 (my name is: ");
-  message += String(cfgData.APname);
-  message += F(")");
-  buildNetworkPage(message);
-  sysData.CntPageDelivered++;
-  server.send(200, F(W_TEXT_HTML), buildNetworkPage(message));
-  delay(1000);
-  sysData.mode = MODE_CHG_TO_AP;
-}
-
 void handleReset(){
   DBGF(server.uri());
   sysData.CntPageDelivered++;
@@ -468,88 +459,6 @@ void handleReset(){
 
 }
 
-void handleScan(){
-  String message;
-  int x;
-
-  DBGF(server.uri());
-
-  if( server.args() == 0 ){
-    ScanStart();
-  }
-  else
-    if( server.args() == 2 ){
-      ScanEnd();
-// string laenge von SSID und password ueberpruefen
-      x = strlen(server.arg(server.args()-2).c_str());
-      strncpy( cfgData.SSID, server.arg(server.args()-2).c_str(), x);
-      cfgData.SSID[x] = 0;
-      x = strlen(server.arg(server.args()-1).c_str());
-      strncpy( cfgData.password, server.arg(server.args()-1).c_str(), x);
-      cfgData.password[x] = 0;
-      SaveConfig();
-      handleSTAMode();
-      startWebServer();
-    }
-    else {
-      ScanStart();
-    }
-}
-
-void ScanEnd(){
-  DBGF("ScanEnd()")
-  // Fehlerhandling wenn parameter falsch und handling wenn alles ok
-  sysData.CntPageDelivered++;
-  server.send(200, F(W_TEXT_HTML), buildNetworkPage(F("")));
-}
-
-void ScanStart(){
-  DBGF("ScanStart()")
-  //printUrlArg();
-  String output = F("");
-  String  sbuf;
-
-  delay(100);
-  // WiFi.scanNetworks will return the number of networks found
-  int n = WiFi.scanNetworks();
-  if (n == 0)
-    output += F("no networks found");
-  else
-  {
-    DBGL(n);
-    DBG((" networks found"));
-    Serial.println("");
-    output += RadioWifiStartHTML;
-
-    for (int i = 0; i < n; ++i)
-    {
-      // Print SSID and RSSI for each network found
-      output += F("<br>");
-      DBGLN(i + 1);
-      DBG(": ");
-      DBG((WiFi.encryptionType(i) == ENC_TYPE_NONE)?"  ":"* ");
-      DBG(WiFi.SSID(i));
-      output += RadioWifiLinetHTML;
-      if( WiFi.encryptionType(i) == ENC_TYPE_NONE )
-        output.replace( F("{CRYPT}"),F(" - "));
-      else
-        output.replace( F("{CRYPT}"),F(" * "));
-      output.replace(F("{SSID}"), WiFi.SSID(i));
-      sbuf = String(WiFi.RSSI(i));
-      output.replace(F("{RSSI}"), (String)(sbuf));
-      DBG(" (");
-      DBG(WiFi.RSSI(i));
-      DBG(")");
-      Serial.println("");
-      delay(10);
-    }
-    output += F("<h6>");
-    output += RadioWifiEndHTML;
-    output += F("</h6>");
-  }
-  sysData.CntPageDelivered++;
-  server.send(200, F(W_TEXT_HTML), buildNetworkPage(output));
-}
 
 /*  all webpage building routines
  *
@@ -631,7 +540,7 @@ String buildURL (){
   DBGF("buildURL()");
   url = String(F("?Host=")) + (String)cfgData.hostname + String(F("_")) + (String)cfgData.MACAddress;
   url.replace (F(":"), F("_"));
-  url += String(F("&IP=")) + WiFi.localIP().toString();
+  //FOL url += String(F("&IP=")) + WiFi.localIP().toString();
   url += String(F("&Type=")) + String(F(FNC_TYPE));
   url += String(F("&Version=")) + String(F(VERNR));
   url += String(F("&Hardw=")) + String(F(DEV_TYPE));
@@ -771,7 +680,7 @@ void buildInfoPage(){
   output += (H_TFT_18 == H_TRUE) ? F("True") : F("False");
   output += F("\r\n<br>MAC-Address: ") + (String)cfgData.MACAddress;
   output += F("\r\n<br>Network: ") + (String)cfgData.SSID;
-  output += F("\r\n<br>Network-IP: ") + WiFi.localIP().toString();
+  //FOL output += F("\r\n<br>Network-IP: ") + WiFi.localIP().toString();
   output += F("\r\n<br>Devicename: ") + (String)cfgData.hostname;
   output += F("\r\n<br>AP-Name: ") + (String)cfgData.APname;
   output += F("\r\n<br>Hash: 0x") + String(cfgData.hash, HEX);

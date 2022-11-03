@@ -12,10 +12,13 @@
   hints:    ???
 */
 
+#include <Arduino.h>
+#include "settings.h"
+
 #if (H_DS1820 == H_TRUE)
 
-#include  "Settings.h"
-#include  <OneWire.h>
+#include  "Config.h"
+#include  "OneWire.h"
 #include  "DS1820.h"
 #include  <string.h>
 
@@ -92,7 +95,7 @@ void SetupDS18B20(){
 // interruptservice !!!
 //Loop measuring the temperature
 void DS1820_Measuring(void){
-  if( sysData.mode == MODE_STA) {
+  if( sysData.WifiRes == MODE_STA) {
     DBGF("!!! I S R !!! DS1820_Measuring()");
       for(int i=0; i<numberOfDevices; i++){
         float tempC = DS18B20.getTempC( devAddr[i] ); //Measuring temperature in Celsius
