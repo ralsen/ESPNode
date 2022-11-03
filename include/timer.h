@@ -49,7 +49,6 @@ void LEDControl(long, long);
 extern  Ticker CntmTicks;
 extern  Ticker TIs_Uptime;
 extern  Ticker TIs_TransmitCycle;
-extern  Ticker TIs_APTimeout;
 extern  Ticker TIs_MeasuringCycle;
 extern  Ticker TIms_DspTimeout;
 extern  Ticker TIms_Key;

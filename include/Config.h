@@ -30,7 +30,6 @@ typedef struct {
   long  MeasuringCycle;
   long  TransmitCycle;
   long  PageReload;
-  long  APTimeout;
   long  hash;                        // hash, must be the very last value
 } cfgData_t;
 
@@ -47,7 +46,6 @@ typedef struct {
   long  CntBadTrans;
   long  CntPageDelivered;
   long  CntMeasCyc;
-  long  APTimeout;
   long  DspTimeout;
 } sysData_t;
 

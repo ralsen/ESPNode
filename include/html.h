@@ -62,7 +62,6 @@ const char H_HOME_PAGE[] PROGMEM = {
   "<a href=\"info\">Info</a><br>"
   "{appmenu}"
   "{mainpage}"
-  "{networkpage}"
   "{confpage}"
   "</div>\r\n"
   "</body>\r\n"
@@ -78,17 +77,9 @@ const char H_STATUSMENU[] PROGMEM = {
    };
 
 const char H_INFOMENU[] PROGMEM = {
-  "<a href=\"network\">Network</a>"
   "<a href=\"config\">Config</a><br>"
   "<a href=\"showlog\">show log</a>"
   "<a href=\"showdir\">show Dir</a>"
-  };
-
-const char H_NETWORKMENU[] PROGMEM = {
-  "<a href=\"scan\">Scan</a>"
-  "<a href=\"sta-mode\">STA-Mode</a>"
-  "<a href=\"ap-mode\">AP-Mode</a>"
-  "<a href=\"W_URL_FIX_IP\">Fixed IP</a></p>"
   };
 
 const char H_CONFMENUMEAS[] PROGMEM = {
