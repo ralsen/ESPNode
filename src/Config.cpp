@@ -12,6 +12,7 @@ hallo
 #include <Arduino.h>
 #include  "Settings.h"
 #include  "Config.h"
+#include <ESP8266WiFi.h>
 
 #include <EEPROM.h>
 
@@ -70,7 +71,9 @@ void SetToDefault(){
   strcpy (cfgData.password,DEFAULT_PASSWORD);
   strcpy (cfgData.hostname, DEFAULT_HOSTNAME);
   strcpy (cfgData.APname, DEFAULT_APNAME);
-  //FOL strcpy (cfgData.MACAddress, (WiFi.macAddress()).c_str());
+  strcpy (cfgData.MACAddress, (WiFi.macAddress()).c_str());
+  //FOL strcpy (cfgData.hostname, String(ESP.getChipId()).c_str());
+  itoa (ESP.getChipId(), cfgData.ChipID, 16); 
   cfgData.LocalIP[0]=0;
   cfgData.fixip[0]=0;
   strcpy (cfgData.server, DEFAULT_SERVER);

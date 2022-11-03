@@ -656,15 +656,19 @@ void buildInfoPage(){
 
   output = F("</h3>");
   output += Version + F("\r\n\r\n<br><br>")+ F("\r\n<br>Type: ") + F(FNC_TYPE) + F("\r\n<br>Hardw: ") + F(DEV_TYPE);
-  output += F("\r\n<br>Display: ");
-  output += (H_TFT_18 == H_TRUE) ? F("True") : F("False");
+  output += F("\r\n<br>Chip-ID: 0x") + (String)cfgData.ChipID;
   output += F("\r\n<br>MAC-Address: ") + (String)cfgData.MACAddress;
-  output += F("\r\n<br>Network: ") + (String)cfgData.SSID;
-  //FOL output += F("\r\n<br>Network-IP: ") + WiFi.localIP().toString();
+  output += F("\r\n<br>Network: ") + (String)WiFi.SSID();
+  output += F("\r\n<br>Network-IP: ") + WiFi.localIP().toString();
   output += F("\r\n<br>Devicename: ") + (String)cfgData.hostname;
   output += F("\r\n<br>AP-Name: ") + (String)cfgData.APname;
   output += F("\r\n<br>Hash: 0x") + String(cfgData.hash, HEX);
   output += F("\r\n<br>cfg-Size: 0x") + String(sizeof(cfgData), HEX);
+  output += F("\r\n<br>Hash: 0x") + String(cfgData.hash, HEX);
+  output += F("\r\n<br>");
+
+  output += F("\r\n<br>Display: ");
+  output += (H_TFT_18 == H_TRUE) ? F("True") : F("False");
   output += F("\r\n<br>");
 
   output += F("\r\n<br>uptime: ");
