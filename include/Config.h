@@ -23,6 +23,7 @@ typedef struct {
   char  hostname[MAXCHAR+4];     // hostname
   char  APname[MAXCHAR+4];       // Access point name
   char  MACAddress[MAXCHAR+4];   // holds MAC
+  char  ChipID[MAXCHAR+4];
   char  LocalIP[MAXCHAR+4];
   char  fixip[MAXCHAR+4];       // if fixed IP is used store it here
   char  server[MAXCHAR+4];
