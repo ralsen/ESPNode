@@ -23,7 +23,8 @@
 #include "DS1820.h"
 
 //FOL extern const String  Version;
-const String  Version = "hier muss ich noch was tun!!!";
+//const String  Version = "hier muss ich noch was tun!!!";
+extern String Version;
 
 extern long Intervall;
 extern long uptime;
@@ -44,7 +45,6 @@ String HomeHTML;
 String AppMenueHTML;
 String StatusMenueSwitchHTML;
 String InfoMenueHTML;
-String NetWorkMenueHTML;
 String ConfMenueHTML;
 String ConfMenueMeasHTML;
 String RadioWifiStartHTML;
@@ -59,7 +59,6 @@ void initHTML(){
   AppMenueHTML = FPSTR(H_APPMENU);
   StatusMenueSwitchHTML = FPSTR(H_STATUSMENU);
   InfoMenueHTML = FPSTR(H_INFOMENU);
-  NetWorkMenueHTML = FPSTR(H_NETWORKMENU);
   ConfMenueHTML = FPSTR(H_CONFMENU);
   ConfMenueMeasHTML = FPSTR(H_CONFMENUMEAS);
   RadioWifiStartHTML = FPSTR(H_RADIO_WIFI_START);
@@ -68,20 +67,6 @@ void initHTML(){
   RadioLEDStartHTML = FPSTR(H_RADIO_LED_START);
   RadioLEDEndHTML = FPSTR(H_RADIO_LED_END);
   NameHTML = FPSTR(H_NAME);
-
-/*  HomeHTML = readHTML("Home.html");
-  AppMenueHTML = readHTML("AppMenue.html");
-  StatusMenueSwitchHTML = readHTML("StatusMenueSwitch.html");
-  InfoMenueHTML = readHTML("InfoMenue.html");
-  NetWorkMenueHTML = readHTML("NetWorkMenue.html");
-  ConfMenueHTML = readHTML("ConfMenue.html");
-  ConfMenueMeasHTML = readHTML("ConfMenueMeas.html");
-  RadioWifiStartHTML = readHTML("RadioWifiStart.html");
-  RadioWifiLinetHTML = readHTML("RadioWifiLine.html");
-  RadioWifiEndHTML = readHTML("RadioWifiEnd.html");
-  RadioLEDStartHTML = readHTML("RadioLEDStart.html");
-  RadioLEDEndHTML = readHTML("RadioLEDEnd.html");
-  NameHTML = readHTML("Name.html");*/
 }
 
 String readHTML(String fname){
@@ -483,9 +468,7 @@ String buildNetworkPage(String content){
   String WebPage = buildPageFrame(content);
   WebPage.replace(F("{appmenu}"), F(""));
   WebPage.replace(F("{mainpage}"), F(""));
-  WebPage.replace(F("{networkpage}"), NetWorkMenueHTML);
   WebPage.replace(F("{confpage}"), F(""));
-  sysData.APTimeout = cfgData.APTimeout;
   return WebPage;
 }
 
@@ -500,7 +483,6 @@ String buildConfPage(String content){
   #else
   WebPage.replace(F("{confpage}"), ConfMenueHTML);
   #endif
-  sysData.APTimeout = cfgData.APTimeout;
   return WebPage;
 }
 
@@ -514,7 +496,6 @@ String buildMainPage(String content){
   WebPage.replace(F("{mainpage}"), InfoMenueHTML);
   WebPage.replace(F("{networkpage}"), F(""));
   WebPage.replace(F("{confpage}"), F(""));
-  sysData.APTimeout = cfgData.APTimeout;
   return WebPage;
 }
 
@@ -530,7 +511,6 @@ String buildAppPage(String content){
   WebPage.replace(F("{mainpage}"), F(""));
   WebPage.replace(F("{networkpage}"), F(""));
   WebPage.replace(F("{confpage}"), F(""));
-  sysData.APTimeout = cfgData.APTimeout;
   return WebPage;
 }
 
