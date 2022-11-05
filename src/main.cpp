@@ -49,7 +49,7 @@ void DoNormStuff(void);
 
 
 #if (H_TOF == H_TRUE)
-#include  "ToF.h"MY_NTP_SERVER
+#include  "ToF.h"
 #endif
 
 #if (H_DS1820 == H_TRUE)
@@ -80,38 +80,24 @@ void setup() {
   DIG_MODE(H_LED_PIN, OUTPUT)
   DIG_MODE(H_RELAY_PIN, OUTPUT)
   Intervall = uptime = 0;
-  //while (1);
-    Serial.println("Hurra ich lebe !!!\r\n");
 #if (H_RELAY == H_TRUE)
   ontime = offtime = cycles = 0;
 #endif
 
-  String FullName=(String)cfgData.hostname + "_" + (String)cfgData.MACAddress;
   Serial.println( MyName );
   Serial.println( Version );
 
+  //FOL here Init_key and below TISms_key???
   Init_Key();
   Serial.println("Key service started!");
-
+  
   TIms_LED.attach_ms(10, TISms_LED);
-  TIms_DspTimeout.attach_ms(10, TISms_DspTimeout);
-  TIms_Key.attach_ms(10, TISms_Key);
-  Serial.println("10ms Timer services started!");
+  Serial.println("LED Key 10ms Timer services started!");
 
   #if(H_TFT_18 == H_TRUE)
   tft_hello();
   #endif
 
-  // if many systems on the some time try to connect, some are not scheduled from DHCP
-  // don´t no why but this delay depending on the ChipID my help
-  /*Serial.print( "waiting " );
-    Serial.print(ESP.getChipId() % 10000);
-    Serial.println( "ms to subscribe to WiFi.\r\n" );
-    delay (ESP.getChipId() % 10000);*/
-
-  //Setup WIFI
-  // do default configuration if conf not valid
-  //EraseConfig();
   if (!TestHashConfig()) {
     LEDControl(BLKMODEON, BLKALLERT);
   #if(H_TFT_18 == H_TRUE)
@@ -134,6 +120,7 @@ void setup() {
     LEDControl(BLKMODEON, BLKWIFISTA);
     sysData.status = STATUS_OK;
   }
+  String FullName=(String)cfgData.hostname + "_" + (String)cfgData.MACAddress;
   Serial.println( "" );
   Serial.print( "Hello from device: " );
   Serial.println( cfgData.hostname );
@@ -145,18 +132,7 @@ void setup() {
   Serial.println( cfgData.MACAddress);
   Serial.println( "" );
 
-  #if(H_TFT_18 == H_TRUE)
-    tft_info();
-  #endif
-  TIs_Uptime.attach(1, TISs_Uptime);
-  TIs_TransmitCycle.attach(1, TISs_TransmitCycle);
-  TIs_MeasuringCycle.attach(1, TISs_MeasuringCycle);
-  #if (H_RELAY == H_TRUE)
-  TIs_Relais.attach(1, TISs_Relais);
-  #endif
-  Serial.println("1s timer services started!");
-
-  //Setup DS18b20 temperature sensor
+    //Setup DS18b20 temperature sensor
 #if (H_DS1820 == H_TRUE)
   DBGLN("intialiesiere die DS1820")
   SetupDS18B20();
@@ -195,15 +171,33 @@ void setup() {
         //if you get here you have connected to the WiFi    
         Serial.print("connected to: ");
         Serial.print(WiFi.SSID());
+        Serial.print(" with result: ");
+        Serial.println(sysData.WifiRes);
   } 
+
+  TIms_DspTimeout.attach_ms(10, TISms_DspTimeout);
+  TIms_Key.attach_ms(10, TISms_Key);
+  Serial.println("all 10ms Timer services started!");
+
+  TIs_Uptime.attach(1, TISs_Uptime);
+  TIs_TransmitCycle.attach(1, TISs_TransmitCycle);
+  TIs_MeasuringCycle.attach(1, TISs_MeasuringCycle);
+  #if(H_TFT_18 == H_TRUE)
+  tft_info();
+  #endif
+  #if (H_RELAY == H_TRUE)
+  TIs_Relais.attach(1, TISs_Relais);
+  #endif
+  Serial.println("1s timer services started!");
 
   LEDControl(BLKMODEOFF, -1);
   delay(1000);
   logit.entry("starting WebServer...");
-  //FOL server.begin();
-  
+  server.begin();
+
   if (MDNS.begin(FullName)) {  //Start mDNS
-    Serial.println("MDNS started");
+    Serial.print("---> MDNS started with name: ");
+    Serial.println(FullName);
   } 
   else Serial.println("schiete");
 
