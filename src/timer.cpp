@@ -32,7 +32,6 @@ static long blkcnt;
 int LEDCrit;
 
 // count object for ISR
-Ticker CntmTicks;
 Ticker TIs_Uptime;
 Ticker TIs_TransmitCycle;
 Ticker TIs_MeasuringCycle;
@@ -129,8 +128,9 @@ void TISs_Relais(){
 
 void TISs_MeasuringCycle(){
   if(sysData.WifiRes){
-    if( sysData.MeasuringCycle )
+    if( sysData.MeasuringCycle ){
       sysData.MeasuringCycle--;
+      }
       else{
         sysData.MeasuringCycle = cfgData.MeasuringCycle;
         #if( H_DS1820 == H_TRUE )
