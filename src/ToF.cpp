@@ -15,9 +15,6 @@
 #include "Config.h"
 
 #if (H_TOF == H_TRUE)
- #include "settings.h"
- #include "Config.h"
- 
  #include "ToF.h"
  #include "SparkFun_VL53L1X.h" //Click here to get the library: http://librarymanager/All#SparkFun_VL53L1X
  //#include <Wire.h>
@@ -52,8 +49,11 @@ int SetupToF(){
 int ToFRange;
 
 void ToFDistance(void){
-  //DBGF("!!! I S R !!! ToFDistance()");
-
+  if(!ToFPresent){
+    ToFRange = -1;
+    return;
+  }
+  DBGF("!!! I S R !!! ToFDistance()");
   distanceSensor.startRanging(); //Write configuration bytes to initiate measurement
   while (!distanceSensor.checkForDataReady())
   {
