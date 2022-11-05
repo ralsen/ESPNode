@@ -452,8 +452,6 @@ void handleReset(){
    // building the frame for all Pages
    // setup the pages with the content thats the same for all pages
    DBGF("buildPageFrame(String content)")
-   DBGF(strlen(content.c_str()))
-//   DBGF(content)
 
    String WebPage = HomeHTML;
    WebPage.replace(F("{hostname}"), (String)cfgData.hostname);
@@ -488,8 +486,6 @@ String buildConfPage(String content){
 
 String buildMainPage(String content){
   DBGF("buildMainPage(String content)")
-  DBGF(strlen(content.c_str()))
-  //DBGF(content)
   String  WebPage = buildPageFrame(content);
   WebPage.replace(F("{appmenu}"), AppMenueHTML);
   WebPage.replace(F("{appmenu}"), F(""));
