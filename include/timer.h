@@ -46,7 +46,6 @@ extern long cycles;
 //FOL Reihenfolge von Prototyping, externe variablen etc. klaeren
 void LEDControl(long, long);
 
-extern  Ticker CntmTicks;
 extern  Ticker TIs_Uptime;
 extern  Ticker TIs_TransmitCycle;
 extern  Ticker TIs_MeasuringCycle;
