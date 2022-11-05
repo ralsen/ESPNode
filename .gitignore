@@ -1,5 +1,7 @@
 .pio
 .vscode
+.git
 lib
 builds
-
+IDE
+test
