@@ -34,7 +34,7 @@
 
 
  #if (H_DBG == H_TRUE)
-  #define RELEASE         "NOT REALESED"
+  #define RELEASE         "--- DEBUG ---"
 #else
   #define RELEASE
 #endif
