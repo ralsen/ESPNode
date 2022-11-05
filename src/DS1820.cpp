@@ -95,16 +95,14 @@ void SetupDS18B20(){
 // interruptservice !!!
 //Loop measuring the temperature
 void DS1820_Measuring(void){
-  if( sysData.WifiRes == MODE_STA) {
-    DBGF("!!! I S R !!! DS1820_Measuring()");
-      for(int i=0; i<numberOfDevices; i++){
-        float tempC = DS18B20.getTempC( devAddr[i] ); //Measuring temperature in Celsius
-        tempDev[i] = tempC; //Save the measured value to the array
-      }
-      DS18B20.setWaitForConversion(false); //No waiting for measurement
-      DS18B20.requestTemperatures(); //Initiate the temperature measurement
-      sysData.CntMeasCyc++;
+  DBGF("!!! I S R !!! DS1820_Measuring()");
+    for(int i=0; i<numberOfDevices; i++){
+      float tempC = DS18B20.getTempC( devAddr[i] ); //Measuring temperature in Celsius
+      tempDev[i] = tempC; //Save the measured value to the array
     }
+    DS18B20.setWaitForConversion(false); //No waiting for measurement
+    DS18B20.requestTemperatures(); //Initiate the temperature measurement
+    sysData.CntMeasCyc++;
 }
 
 #endif //(H_DS1820 == H_TRUE)
