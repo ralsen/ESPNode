@@ -43,6 +43,7 @@ void handleTransCyc(void);
 void handleFavicon(void);
 void handleNotFound(void);
 void handleHostName(void);
+void handleUpdate(void);
 void startWebServer(void);
 
 void buildInfoPage(void);
