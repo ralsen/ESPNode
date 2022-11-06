@@ -15,8 +15,11 @@
 #include "WebServer.h"
 #include <ESP8266WebServer.h>
 #include <LittleFS.h>
+#include <string.h>
+#include <iostream>
+//#include <WiFi.h>
 
-#include  "timer.h"
+#include "timer.h"
 #include "log.h"
 #include "ToF.h"
 #include "html.h"
@@ -37,9 +40,13 @@ extern long uptime;
 //------------------------------------------
 //HTTP
 
+#include <ESP8266HTTPUpdateServer.h>
+ 
 extern class log_CL logit;
 
 ESP8266WebServer server(MyServerPort);
+
+ESP8266HTTPUpdateServer httpUpdater;
 
 String HomeHTML;
 String AppMenueHTML;
@@ -128,58 +135,19 @@ void startWebServer(){
   server.on(F("/" "transcyc"), handleTransCyc);
   server.on(F("/favicon.ico"), handleFavicon);
   server.onNotFound( handleNotFound );
-  server.on(F("/update"), HTTP_POST, []() {
-    DBGF("handleUpdate_part1()");
-    server.sendHeader(F("Connection"), "close");
-    sysData.CntPageDelivered++;
-    server.send(200, F(W_TEXT_PLAIN), (Update.hasError()) ? F("FAIL") : F("OK"));
-    ESP.restart();
-  }, []() {
-    //DBGF("handleUpdate_part2()");
-    char buf[80];
-    HTTPUpload& upload = server.upload();
-    yield();
-    if (upload.status == UPLOAD_FILE_START) {
-      DBGLN("UPLOAD_FILE_START");
-      Serial.setDebugOutput(true);
-      //FOL WiFiUDP::stopAll();
-      Serial.printf(("Update: %s\n"), upload.filename.c_str());
-      uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
-      DBGL("maxSketchSpace: ");
-      sprintf(buf, "Flash size: 0x%x; needed: 0x%x Byte; row needed 0x%x", ESP.getFlashChipSize(), maxSketchSpace, ESP.getFreeSketchSpace());
-      DBGLN(buf);
-      sprintf(buf, "\r\n act. Sketchsize: 0x%x", ESP.getSketchSize());
-      DBGLN(buf);
-      sprintf(buf, "\r\n act. Chipsize: 0x%x", ESP.getFlashChipSize());
-      DBGLN(buf);
-      if (!Update.begin(maxSketchSpace+0x1000)) { //start with max available size
-        DBGLN("could not begin");
-        Update.printError(Serial);
-      }
-    } else if (upload.status == UPLOAD_FILE_WRITE) {
-      DBG(".");
-      if (Update.write(upload.buf, upload.currentSize) != upload.currentSize) {
-        DBGLN("Update.write");
-        Update.printError(Serial);
-      }
-    } else if (upload.status == UPLOAD_FILE_END) {
-      DBGLN("\r\nUPLOAD_FILE_END");
-      if (Update.end(true)) { //true to set the size to the current progress
-        DBGLN ("Update OK");
-        Serial.printf("Update Success: %u, 0x%x\nRebooting...\n", upload.totalSize, upload.totalSize);
-      } else {
-        DBGLN ("Update failed");
-        Update.printError(Serial);
-      }
-      Serial.setDebugOutput(false);
-    }
-    yield();
-  });
-
+  server.on(F("/updatex"), handleUpdate);
+  httpUpdater.setup(&server);
   server.begin();
   DBGF("startWebServer() done.")
 }
 
+void handleUpdate(){
+    DBGF("handleUpdate");
+    Serial.println("jetzt mach ich ein Update!!!");
+//    httpUpdater.setup(&server);
+//    httpServer.begin();
+    Serial.println("habe fertig!!!");
+}
 /*  all webserver handlers
  */
 void handleSetDefault(){
@@ -454,8 +422,8 @@ void handleReset(){
    DBGF("buildPageFrame(String content)")
 
    String WebPage = HomeHTML;
-   WebPage.replace(F("{hostname}"), (String)cfgData.hostname);
-   WebPage.replace(F("{title}"), (String)cfgData.hostname);
+   WebPage.replace(F("{hostname}"), String(cfgData.hostname));
+   WebPage.replace(F("{title}"), String(cfgData.hostname));
    WebPage.replace(F("{content}"), content);
 //   DBGF(WebPage)
    return WebPage;
@@ -514,7 +482,7 @@ String buildURL (){
   String url;
 
   DBGF("buildURL()");
-  url = String(F("?Host=")) + (String)cfgData.hostname + String(F("_")) + (String)cfgData.MACAddress;
+  url = String(F("?Host=")) + String(cfgData.hostname) + String(F("_")) + String(cfgData.MACAddress);
   url.replace (F(":"), F("_"));
   //FOL url += String(F("&IP=")) + WiFi.localIP().toString();
   url += String(F("&Type=")) + String(F(FNC_TYPE));
@@ -647,18 +615,17 @@ String buildSwitchPage(){
 
 void buildInfoPage(){
   String  output;
-  
+
   DBGF("buildInfoPage()")
 
   output = F("</h3>");
   output += Version + F("\r\n\r\n<br><br>")+ F("\r\n<br>Type: ") + F(FNC_TYPE) + F("\r\n<br>Hardw: ") + F(DEV_TYPE);
-  output += F("\r\n<br>Chip-ID: 0x") + (String)cfgData.ChipID;
-  output += F("\r\n<br>MAC-Address: ") + (String)cfgData.MACAddress;
-  output += F("\r\n<br>Network: ") + (String)WiFi.SSID();
+  output += F("\r\n<br>Chip-ID: 0x") + String(cfgData.ChipID);
+  output += F("\r\n<br>MAC-Address: ") + String(cfgData.MACAddress);
+  output += F("\r\n<br>Network: ") + String(WiFi.SSID());
   output += F("\r\n<br>Network-IP: ") + WiFi.localIP().toString();
-  output += F("\r\n<br>Devicename: ") + (String)cfgData.hostname;
-  output += F("\r\n<br>AP-Name: ") + (String)cfgData.APname;
-  output += F("\r\n<br>Hash: 0x") + String(cfgData.hash, HEX);
+  output += F("\r\n<br>Devicename: ") + String(cfgData.hostname);
+  output += F("\r\n<br>AP-Name: ") + String(cfgData.APname);
   output += F("\r\n<br>cfg-Size: 0x") + String(sizeof(cfgData), HEX);
   output += F("\r\n<br>Hash: 0x") + String(cfgData.hash, HEX);
   output += F("\r\n<br>");
@@ -674,8 +641,8 @@ void buildInfoPage(){
 #endif
   output += F("\r\n<br>Transmit cycle: ") + String(cfgData.TransmitCycle) + F(" s (remaining: ") + String(sysData.TransmitCycle) + F(" s)");
   output += F("\r\n<br>PageReload cycle: ") + String(cfgData.PageReload) + F(" s");
-  output += F("\r\n<br>Service: ")+ (String)cfgData.service;
-  output += F("\r\n<br>Server: ")+ (String)cfgData.server;
+  output += F("\r\n<br>Service: ")+ String(cfgData.service);
+  output += F("\r\n<br>Server: ")+ String(cfgData.server);
   output += F("\r\n<br>LED: ");
   cfgData.LED == H_TRUE ? output += F("on ") : output += F("off ");
   output += F("\r\n\r\n<br><br>good Transmissions: ") + String(sysData.CntGoodTrans);
