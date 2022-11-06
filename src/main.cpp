@@ -120,7 +120,8 @@ void setup() {
     LEDControl(BLKMODEON, BLKWIFISTA);
     sysData.status = STATUS_OK;
   }
-  String FullName=(String)cfgData.hostname + "_" + (String)cfgData.MACAddress;
+  String FullName=String(cfgData.hostname) + "_" + String(cfgData.MACAddress);
+  FullName.replace (F(":"), F("_"));
   Serial.println( "" );
   Serial.print( "Hello from device: " );
   Serial.println( cfgData.hostname );
@@ -201,8 +202,8 @@ void setup() {
   } 
   else Serial.println("schiete");
 
-  MDNS.addService("http", "tcp", 80);
   startWebServer();
+  MDNS.addService("http", "tcp", 80);
 }
 
 
@@ -221,6 +222,17 @@ void loop() {
   if ((cfgData.TransmitCycle) && (!sysData.TransmitCycle)){
       DoNormStuff();
   }
+
+  #if (H_RELAY == true)
+    if ( key ) {
+      DBGLN( "KEY" );
+      DIG_WRITE( H_RELAY_PIN, !DIG_READ(H_RELAY_PIN));
+      DBGL("Relay switched\r\n");
+      cycles++;
+      sysData.TransmitCycle = 0; // send status immediately
+    }
+  #endif
+
   if(!sysData.DspTimeout){
     sysData.DspTimeout = 100;
     #if(H_TFT_18 == H_TRUE)
