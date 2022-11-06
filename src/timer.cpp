@@ -27,7 +27,7 @@
 #include  <string.h>
 
 int key;            // holds the button codes for internal use
-static int  tiki;           // counts the ticks how long a key is pressed
+static int  oldKey;           // counts the ticks how long a key is pressed
 static long blkcnt;
 int LEDCrit;
 
@@ -64,7 +64,7 @@ void Init_Key()
   sysData.WifiRes = MODE_STA;       // normal mode at start
   key = KEY_NO;           // no key is pressed
   blkcnt = BLKMODEOFF;
-  tiki = KEY_WAIT;
+  oldKey = KEY_NO;
   LEDCrit = H_FALSE;
 }
 
@@ -90,18 +90,10 @@ void TISms_LED()
 
 void TISms_Key(){
   key = !DIG_READ(H_BUTTON_PIN);
-
-  if( key ){
-    if( tiki ) tiki--;
-  }
-  else {
-    if( tiki == 0 ){
-      if( (sysData.WifiRes == MODE_AP) || (sysData.WifiRes == MODE_STA) ){
-        sysData.WifiRes = (sysData.WifiRes == MODE_AP) ? MODE_CHG_TO_STA:MODE_CHG_TO_AP;
-      }
-    }
-    tiki = KEY_WAIT;
-  }
+  if (key == oldKey)
+    key = KEY_NO;
+  else
+    oldKey = key;
 }
 
 void TISms_DspTimeout(){
