@@ -271,7 +271,7 @@
 #endif
 
 #define MY_NTP_SERVER "at.pool.ntp.org"
-#define MY_TZ "CET-1CEST,M3.5.0,M10.5.0/3"   
+#define MY_TZ "CET-1CEST,M3.5.0,M10.5.0/3"
 
 #define DEFAULT_SERVICE       "/DummyServ.php/"
 #define DEFAULT_SERVER        "192.168.1.6"
