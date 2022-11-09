@@ -29,14 +29,17 @@ void DoNormStuff(void);
 //FOL das waere cool ---> #include <ESPFtpServer.h>
 #include <SPI.h>
 #include  "log.h"
-#include <ESP8266mDNS.h>
 #include <Ticker.h>
 #include <time.h>
 
 
+#include  "WebServer.h"
+#include <ESP8266mDNS.h>
 #include <ESP8266WiFi.h>
 #include <DNSServer.h>
-//FOL #include <ESP8266WebServer.h>
+#include <ESP8266HTTPClient.h>
+#include <ESP8266WebServer.h>
+#include <WiFiClient.h>
 #include <WiFiManager.h>         // https://github.com/tzapu/WiFiManager
 
 
@@ -64,8 +67,7 @@ const String  MyName  = {"\r\n**************************************************
 
 
 String Version = "\r\n-----> V" VERNR " vom " __DATE__ " " __TIME__ " " RELEASE " <-----\r\n";
-extern long Intervall;
-extern long uptime;
+
 extern ESP8266WebServer server;
 
 log_CL logit(LOGFILE, 11);
@@ -79,9 +81,9 @@ void setup() {
   DBGF("setup()")
   DIG_MODE(H_LED_PIN, OUTPUT)
   DIG_MODE(H_RELAY_PIN, OUTPUT)
-  Intervall = uptime = 0;
+  sysData.uptime = 0;
 #if (H_RELAY == H_TRUE)
-  ontime = offtime = cycles = 0;
+  sysData.ontime = sysData.offtime = sysData.cycles = 0;
 #endif
 
   Serial.println( MyName );
@@ -228,7 +230,7 @@ void loop() {
       DBGLN( "KEY" );
       DIG_WRITE( H_RELAY_PIN, !DIG_READ(H_RELAY_PIN));
       DBGL("Relay switched\r\n");
-      cycles++;
+      sysData.cycles++;
       sysData.TransmitCycle = 0; // send status immediately
     }
   #endif
@@ -242,6 +244,13 @@ void loop() {
 }
 
 // -----------------------------------------------------------------------------
+String header;
+const char* serverName = "http://192.168.1.53:8080/";
+unsigned long lastTime = 0;
+// Timer set to 10 minutes (600000)
+//unsigned long timerDelay = 600000;
+// Set timer to 5 seconds (5000)
+unsigned long timerDelay = 1000;
 
 void DoNormStuff() {
   // !!!hier muss noch zwischen Mess+Transmitzyklen unterschieden werden!!!
@@ -250,62 +259,41 @@ void DoNormStuff() {
 
   LEDControl (BLKMODEON, BLKALLERT);
 
-  WiFiClient client;
-  const int httpPort = MyServerPort;
+    if ((millis() - lastTime) > timerDelay) {
+    //Check WiFi connection status
+      if(WiFi.status()== WL_CONNECTED){
+        WiFiClient client;
+        HTTPClient http;
+        
+        http.begin(client, serverName);
+        http.addHeader("Content-Type", "application/json");
+        String httpRequestData =  buildDict();
+        // Send HTTP POST request
+        int httpResponseCode = http.POST(httpRequestData);
+        if (httpResponseCode == 301){
+          sysData.CntGoodTrans++;
+        }
+        /*else {
+          sysData.CntBadTrans++;
+        }*/
 
-  DBGL("\r\n------------------------------------------------------------------------------------\r\n");
-  DBGL("Verbindungsaufbau zu Server: ");
-  DBGLN(cfgData.server);
-  DBGL("Port: ");
-  DBGLN(httpPort);
-
-  if (client.connect(cfgData.server, httpPort))
-  {
-    DBGLN("connected]");
-    String url = cfgData.service; //Url wird zusammengebaut
-    url += buildURL();
-
-    DBGLN("sending this URL: ");
-    DBGLN(cfgData.server + url);
-
-    DBGLN("[Sending a request]");
-    client.print(String("GET /") + url + " HTTP/1.1\r\n" +
-                 "Host: " + cfgData.server + "\r\n" +
-                 "Connection: close\r\n" +
-                 "\r\n"
-                );
-
-    DBGLN("[Response:]");
-    String line="";
-    while (client.connected() || client.available())
-    {
-      if (client.available())
-      {
-        line += client.readStringUntil('\n');
-        line += "\r\n";
-      }
+        Serial.println(http.getString());
+        Serial.print("HTTP Response code: ");
+        Serial.println(httpResponseCode);
+          
+        // Free resources
+        http.end();
     }
-    client.stop();
-    DBGLN(line);
-    DBGLN(line.indexOf("OK"));
-    if (line.indexOf("OK") == -1){
-      logit.entry("Serverfehler");
+    else {
+      Serial.println("WiFi Disconnected");
     }
-    sysData.CntGoodTrans++;
-    DBGLN("\n[Disconnected]");
+    lastTime = millis();
   }
-  else
-  {
-    DBGLN("[connection failed!]");
-    logit.entry("[connection failed!]");
-    client.stop();
-    sysData.CntBadTrans++;
-  }
-
   //Serial.print(TimeDB.showTime());
   // Auswertung was der Server gemeldet hat und entsprechend handeln
   DBGL("\r\n------------------------------------------------------------------------------------\r\n");
   sysData.TransmitCycle = cfgData.TransmitCycle;
   LEDControl(BLKMODEOFF, -1);
+
 }
 
