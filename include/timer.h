@@ -34,14 +34,6 @@ void TISs_MeasuringCycle(void);
 void TISs_Relais(void);
 
 extern int  key;
-extern long uptime;
-extern long Intervall;
-
-#if (H_RELAY == H_TRUE)
-extern long ontime;
-extern long offtime;
-extern long cycles;
-#endif
 
 //FOL Reihenfolge von Prototyping, externe variablen etc. klaeren
 void LEDControl(long, long);
