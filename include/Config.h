@@ -40,6 +40,7 @@ typedef struct {
   long  blinktime;
   int   status;
   int   wifi;
+  long  uptime;
   long  MeasuringCycle;
   long  MeasuringReloadCycle;
   long  TransmitCycle;
@@ -48,6 +49,11 @@ typedef struct {
   long  CntPageDelivered;
   long  CntMeasCyc;
   long  DspTimeout;
+#if (H_RELAY == H_TRUE)
+  long  ontime;
+  long  offtime;
+  long  cycles;
+#endif  
 } sysData_t;
 
   extern  cfgData_t cfgData;
