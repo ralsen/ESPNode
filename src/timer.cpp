@@ -38,16 +38,9 @@ Ticker TIs_MeasuringCycle;
 Ticker TIms_DspTimeout;
 Ticker TIms_Key;
 Ticker TIms_LED;
-
 #if (H_RELAY == H_TRUE)
 Ticker TIs_Relais;
-long ontime;
-long offtime;
-long cycles;
 #endif
-
-long Intervall;
-long uptime;
 
 /* ---------------------------------------------------------------
  *
@@ -101,7 +94,7 @@ void TISms_DspTimeout(){
 }
 
 void TISs_Uptime(){
-  uptime++;
+  sysData.uptime++;
 }
 
 void TISs_TransmitCycle(){
@@ -112,9 +105,9 @@ void TISs_TransmitCycle(){
 # if (H_RELAY == H_TRUE)
 void TISs_Relais(){
   if( DIG_READ(H_RELAY_PIN) )
-    ontime++;
+    sysData.ontime++;
   else
-    offtime++;
+    sysData.offtime++;
 }
 # endif
 
