@@ -25,23 +25,17 @@
 #include "ToF.h"
 #include "html.h"
 #include "DS1820.h"
+#include <ESP8266HTTPUpdateServer.h>
 
 //FOL extern const String  Version;
 //const String  Version = "hier muss ich noch was tun!!!";
 extern String Version;
-
-extern long Intervall;
-extern long uptime;
-
-//#include  <string>
-//#include  <iostream>
 
 // -----------------------------------------
 // Server stuff
 //------------------------------------------
 //HTTP
 
-#include <ESP8266HTTPUpdateServer.h>
  
 extern class log_CL logit;
 
@@ -61,6 +55,9 @@ String RadioWifiEndHTML;
 String RadioLEDStartHTML;
 String RadioLEDEndHTML;
 String NameHTML;
+String q = String FPSTR("\"");
+String qd = String FPSTR("\":\"");
+String qc = String FPSTR("\",\"");
 
 void initHTML(){
   HomeHTML = FPSTR(H_HOME_PAGE);
@@ -100,7 +97,7 @@ void startWebServer(){
     DBGF("HandleOn()");
     DIG_WRITE( H_LED_PIN, LOW);
     if( DIG_READ( H_RELAY_PIN) == LOW )
-      cycles++;
+      sysData.cycles++;
     DIG_WRITE(H_RELAY_PIN, HIGH);
     handleStatus();
     sysData.TransmitCycle = 0; // send status immediately
@@ -110,7 +107,7 @@ void startWebServer(){
     DBGF("HandleOff()");
     DIG_WRITE( H_LED_PIN, HIGH);
     if( DIG_READ( H_RELAY_PIN) == HIGH )
-      cycles++;
+      sysData.cycles++;
     DIG_WRITE( H_RELAY_PIN, LOW);
     handleStatus();
     sysData.TransmitCycle = 0; // send status immediately
@@ -424,9 +421,9 @@ void handleReset(){
 
    String WebPage = HomeHTML;
    WebPage.replace(F("{hostname}"), String(cfgData.hostname));
+   //WebPage.replace(F("{hostname}"), content);
    WebPage.replace(F("{title}"), String(cfgData.hostname));
    WebPage.replace(F("{content}"), content);
-//   DBGF(WebPage)
    return WebPage;
  }
 
@@ -479,57 +476,54 @@ String buildAppPage(String content){
   return WebPage;
 }
 
-String buildURL (){
+String buildDict (){
+  DBGF("buildDict()");
   String url;
+  String httpRequestData = String(F("{")) + q;
 
-  DBGF("buildURL()");
-  url = String(F("?Host=")) + String(cfgData.hostname) + String(F("_")) + String(cfgData.MACAddress);
-  url.replace (F(":"), F("_"));
-  //FOL url += String(F("&IP=")) + WiFi.localIP().toString();
-  url += String(F("&Type=")) + String(F(FNC_TYPE));
-  url += String(F("&Version=")) + String(F(VERNR));
-  url += String(F("&Hardw=")) + String(F(DEV_TYPE));
-  url += String(F("&Network=")) + String(cfgData.SSID);
-  url += String(F("&MAC=")) + String(cfgData.MACAddress);
-  url += String(F("&APName=")) + String(cfgData.APname);
-  url += String(F("&Hash=0x")) + String(cfgData.hash, HEX);
-  url += String(F("&Size=0x")) + String(sizeof(cfgData));
-  url += String(F("&TransCyc=")) + String(cfgData.TransmitCycle);
-  url += String(F("&MeasCyc=")) + String(cfgData.MeasuringCycle);
-  url += String(F("&PageReload=")) + String(cfgData.PageReload);
-  url += String(F("&Service=")) + String(cfgData.service);
-  url += String(F("&ServerIP=")) + String(cfgData.server);
-  url += String(F("&uptime=")) + String(uptime);
-  url += String(F("&delivPages=")) + String(sysData.CntPageDelivered);
-  url += String(F("&goodTrans=")) + String(sysData.CntGoodTrans);
-  url += String(F("&badTrans=")) + String(sysData.CntBadTrans);
-  url += String(F("&LED=")) + String(cfgData.LED);
-
+  httpRequestData += String F(("name")) + qd + String(cfgData.hostname) + qc;
+  httpRequestData += String F(("IP")) + qd + WiFi.localIP().toString() + qc;
+  httpRequestData += String F(("Type")) + qd + String(F(FNC_TYPE)) + qc;
+  httpRequestData += String F(("Version")) + qd + String(F(VERNR)) + qc;
+  httpRequestData += String F(("Hardware")) + qd + String(F(DEV_TYPE)) + qc;
+  httpRequestData += String F(("Network")) + qd + String(F(FNC_TYPE)) + qc;
+  httpRequestData += String F(("APName")) + qd + String(cfgData.APname) + qc;
+  httpRequestData += String F(("Hash")) + qd + String(cfgData.hash, HEX) + qc;
+  httpRequestData += String F(("Size")) + qd + String(sizeof(cfgData)) + qc;
+  httpRequestData += String F(("TransmitCycle")) + qd + String(cfgData.TransmitCycle) + qc;
+  httpRequestData += String F(("MeasuringCycle")) + qd + String(cfgData.MeasuringCycle) + qc;
+  httpRequestData += String F(("PageReload")) + qd + String(cfgData.PageReload) + qc;
+  httpRequestData += String F(("Service")) + qd + String(cfgData.service) + qc;
+  httpRequestData += String F(("Server")) + qd + String(cfgData.server) + qc;
+  httpRequestData += String F(("uptime")) + qd + String(sysData.uptime) + qc;
+  httpRequestData += String F(("delivPages")) + qd + String(sysData.CntPageDelivered) + qc;
+  httpRequestData += String F(("goodTrans")) + qd + String(sysData.CntGoodTrans) + qc;
+  httpRequestData += String F(("badTrans")) + qd + String(sysData.CntBadTrans) + qc;
+  httpRequestData += String F(("LED")) + qd + String(cfgData.LED) + qc;
 #if (H_DS1820 == H_TRUE)
-  return url + buildDS1820URL();
+  httpRequestData += buildDS1820Dict() + String F(("}"));
 #elif (H_SWITCH == H_TRUE)
-  return url + buildSwitchURL();
+  httpRequestData += buildSwitchDict();
 #elif (H_TOF == H_TRUE)
-  return url + buildToFURL();
+  httpRequestData += buildToFDict();
 #else
 #error "keine Hardwarefunktion definiert"
 #endif
+ return httpRequestData + String F(("}"));
 }
 
 #if (H_DS1820 == H_TRUE)
-String buildDS1820URL (){
+String buildDS1820Dict (){
   char buf[10];
   String url;
-
-  DBGF("buildDS1820URL()");
+  String httpRequestData = "";
+  DBGF("buildDS1820Dict()");
   for(int i=0;i<numberOfDevices;i++){
-    url += ("&Adress_") + String(i) + F("=");
-    url += GetAddressToString( devAddr[i] );
-    url += ("&Value_") + String(i) + F("=");
+    httpRequestData += String F(("Adress_")) + String(i) + qd + GetAddressToString( devAddr[i]) + qc;
     dtostrf(tempDev[i], 2, 2, buf);
-    url += buf;
+    httpRequestData += String F(("Value_")) + String(i) + qd + buf + qc;
   }
-  return url;
+  return httpRequestData.substring(0, httpRequestData.length() - 2);
 }
 
 String buildDS1820Page(){
@@ -554,12 +548,12 @@ String buildDS1820Page(){
 }
 
 #elif (H_TOF == H_TRUE)
-String buildToFURL (){
-  String url = "";
+String buildToFDict (){
+  String httpRequestData = "";
 
-  DBGF("buildToFURL()");
-  url += "&distance=" + String(ToFRange);
-  return url;
+  DBGF("buildToFDict()");
+  httpRequestData += String (F("distance")) + qd + String(ToFRange) + q;
+  return httpRequestData;
 }
 
 String buildToFPage(){
@@ -572,20 +566,20 @@ String buildToFPage(){
 }
 
 #elif (H_SWITCH == H_TRUE)
-String buildSwitchURL(){
-  String url;
+String buildSwitchDict(){
+  String httpRequestData = "";
 
-  DBGF("buildSwitchURL()");
-  url += F("&ontime=") + String(ontime);
-  url += F("&offtime=") + String(offtime);
-  url += F("&cycles=") + String(cycles);
-  url += F("&status=");
+  DBGF("buildSwitchDict()");
+  httpRequestData += String (F("ontime")) + qd + String(sysData.ontime) + qc;
+  httpRequestData += String (F("offtime")) + qd + String(sysData.offtime) + qc;
+  httpRequestData += String (F("cycles")) + qd + String(sysData.cycles) + qc;
+  httpRequestData += String (F("status") + qd);
   if (DIG_READ(H_RELAY_PIN))
-    url += F("AN");
+    httpRequestData += String(F("AN"));
   else
-    url += F("AUS");
-
-  return url;
+    httpRequestData += String (F("AUS"));
+  httpRequestData += q;
+  return httpRequestData;
 }
 
 String buildSwitchPage(){
@@ -636,7 +630,7 @@ void buildInfoPage(){
   output += F("\r\n<br>");
 
   output += F("\r\n<br>uptime: ");
-  output += String(uptime/86400) + F(" days - ") + String((uptime/3600)%24) + F(" hours - ") + String((uptime/60)%60) + F(" minutes - ") + String(uptime%60) + F(" seconds");
+  output += String(sysData.uptime/86400) + F(" days - ") + String((sysData.uptime/3600)%24) + F(" hours - ") + String((sysData.uptime/60)%60) + F(" minutes - ") + String(sysData.uptime%60) + F(" seconds");
 #if (H_DS1820 == H_TRUE) || (H_TOF == H_TRUE)
   output += F("\r\n<br>Measuring cycle: ") + String(cfgData.MeasuringCycle) + F(" s (remainig: ") + String(sysData.MeasuringCycle) + F(" s)");
 #endif
@@ -655,10 +649,10 @@ void buildInfoPage(){
 
 #if (H_RELAY == H_TRUE)
   output += F("\r\n<br>ontime: ");
-  output += String(ontime/86400) + F(" days - ") + String((ontime/3600)%24) + F(" hours - ") + String((ontime/60)%60) + F(" minutes - ") + String(ontime%60) + F(" seconds");
+  output += String(sysData.ontime/86400) + F(" days - ") + String((sysData.ontime/3600)%24) + F(" hours - ") + String((sysData.ontime/60)%60) + F(" minutes - ") + String(sysData.ontime%60) + F(" seconds");
   output += F("\r\n<br>offtime: ");
-  output += String(offtime/86400) + F(" days - ") + String((offtime/3600)%24) + F(" hours - ") + String((offtime/60)%60) + F(" minutes - ") + String(offtime%60) + F(" seconds");
-  output += F("\r\n<br>Cycles:                 ") + String(cycles);
+  output += String(sysData.offtime/86400) + F(" days - ") + String((sysData.offtime/3600)%24) + F(" hours - ") + String((sysData.offtime/60)%60) + F(" minutes - ") + String(sysData.offtime%60) + F(" seconds");
+  output += F("\r\n<br>Cycles:                 ") + String(sysData.cycles);
 #endif
   output += F("</h6>");
   sysData.CntPageDelivered++;
