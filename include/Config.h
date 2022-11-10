@@ -42,7 +42,6 @@ typedef struct {
   int   wifi;
   long  uptime;
   long  MeasuringCycle;
-  long  MeasuringReloadCycle;
   long  TransmitCycle;
   long  CntGoodTrans;
   long  CntBadTrans;
