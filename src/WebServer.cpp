@@ -481,13 +481,18 @@ String buildDict (){
   String url;
   String httpRequestData = String(F("{")) + q;
 
-  httpRequestData += String F(("name")) + qd + String(cfgData.hostname) + qc;
+  String FullName=String(cfgData.hostname) + "_" + String(cfgData.MACAddress);
+  FullName.replace (F(":"), F("_"));
+  httpRequestData += String F(("name")) + qd + FullName + qc;
   httpRequestData += String F(("IP")) + qd + WiFi.localIP().toString() + qc;
   httpRequestData += String F(("Type")) + qd + String(F(FNC_TYPE)) + qc;
   httpRequestData += String F(("Version")) + qd + String(F(VERNR)) + qc;
   httpRequestData += String F(("Hardware")) + qd + String(F(DEV_TYPE)) + qc;
   httpRequestData += String F(("Network")) + qd + String(F(FNC_TYPE)) + qc;
   httpRequestData += String F(("APName")) + qd + String(cfgData.APname) + qc;
+  httpRequestData += String F(("MAC")) + qd + String(cfgData.MACAddress) + qc;
+  httpRequestData += String F(("TransmitCycle")) + qd + String(cfgData.TransmitCycle) + qc;
+  httpRequestData += String F(("MeasuringCycle")) + qd + String(cfgData.MeasuringCycle) + qc;
   httpRequestData += String F(("Hash")) + qd + String(cfgData.hash, HEX) + qc;
   httpRequestData += String F(("Size")) + qd + String(sizeof(cfgData)) + qc;
   httpRequestData += String F(("TransmitCycle")) + qd + String(cfgData.TransmitCycle) + qc;
@@ -501,7 +506,7 @@ String buildDict (){
   httpRequestData += String F(("badTrans")) + qd + String(sysData.CntBadTrans) + qc;
   httpRequestData += String F(("LED")) + qd + String(cfgData.LED) + qc;
 #if (H_DS1820 == H_TRUE)
-  httpRequestData += buildDS1820Dict() + String F(("}"));
+  httpRequestData += buildDS1820Dict();
 #elif (H_SWITCH == H_TRUE)
   httpRequestData += buildSwitchDict();
 #elif (H_TOF == H_TRUE)
