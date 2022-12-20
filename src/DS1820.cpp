@@ -56,9 +56,9 @@ void SetupDS18B20(){
 
   numberOfDevices = DS18B20.getDeviceCount();
 
-//  # if (H_DBG == H_TRUE)
-    //numberOfDevices = 2;
-//  # endif
+  # if (H_DBG == H_TRUE)
+    numberOfDevices = 2;
+  # endif
 
   DBGL( "DS1820 count: " );
   DBGLN( numberOfDevices );

@@ -269,6 +269,8 @@ void DoNormStuff() {
         http.addHeader("Content-Type", "application/json");
         String httpRequestData =  buildDict();
         // Send HTTP POST request
+        Serial.print("sending: ");
+        Serial.println(httpRequestData);
         int httpResponseCode = http.POST(httpRequestData);
         if (httpResponseCode == 301){
           sysData.CntGoodTrans++;
