@@ -42,7 +42,7 @@ void tft_info(){
   tft_print("AP:");
   tft_println(cfgData.APname);
   tft_print("Service:");
-  tft_println(cfgData.service);
+  tft_println(cfgData.port);
   tft_print("Server:");
   tft_println(cfgData.server);
   tft_print("cfg: 0x");

@@ -117,7 +117,7 @@ void startWebServer(){
 
   server.on(F("/" "status"), handleStatus);
   server.on(F("/" "server"), handleServer);
-  server.on(F("/" "service"), handleService);
+  server.on(F("/" "port"), handlePort);
   server.on(F("/" "info"), handleInfo);
   server.on(F("/"), handleInfo);
   server.on(F("/" "reset"), handleReset);
@@ -285,14 +285,14 @@ void handleNotFound(){
   server.send(404, F(W_TEXT_HTML), message);
 }
 
-void handleService(){
+void handlePort(){
   int x;
 
   DBGF(server.uri());
-  x = checkInput(F("wie lautet der Service?"), F("service"));
+  x = checkInput(F("wie lautet der Port?"), F("port"));
   if( x ){
-    strncpy( cfgData.service, server.arg(server.args()-1).c_str(), x);
-    cfgData.service[x] = 0;
+    strncpy( cfgData.port, server.arg(server.args()-1).c_str(), x);
+    cfgData.port[x] = 0;
     SaveConfig();
   }
 }
@@ -498,8 +498,8 @@ String buildDict (){
   httpRequestData += String F(("TransmitCycle")) + qd + String(cfgData.TransmitCycle) + qc;
   httpRequestData += String F(("MeasuringCycle")) + qd + String(cfgData.MeasuringCycle) + qc;
   httpRequestData += String F(("PageReload")) + qd + String(cfgData.PageReload) + qc;
-  httpRequestData += String F(("Service")) + qd + String(cfgData.service) + qc;
   httpRequestData += String F(("Server")) + qd + String(cfgData.server) + qc;
+  httpRequestData += String F(("Port")) + qd + String(cfgData.port) + qc;
   httpRequestData += String F(("uptime")) + qd + String(sysData.uptime) + qc;
   httpRequestData += String F(("delivPages")) + qd + String(sysData.CntPageDelivered) + qc;
   httpRequestData += String F(("goodTrans")) + qd + String(sysData.CntGoodTrans) + qc;
@@ -641,8 +641,8 @@ void buildInfoPage(){
 #endif
   output += F("\r\n<br>Transmit cycle: ") + String(cfgData.TransmitCycle) + F(" s (remaining: ") + String(sysData.TransmitCycle) + F(" s)");
   output += F("\r\n<br>PageReload cycle: ") + String(cfgData.PageReload) + F(" s");
-  output += F("\r\n<br>Service: ")+ String(cfgData.service);
   output += F("\r\n<br>Server: ")+ String(cfgData.server);
+  output += F("\r\n<br>Port: ")+ String(cfgData.port);
   output += F("\r\n<br>LED: ");
   cfgData.LED == H_TRUE ? output += F("on ") : output += F("off ");
   output += F("\r\n\r\n<br><br>good Transmissions: ") + String(sysData.CntGoodTrans);

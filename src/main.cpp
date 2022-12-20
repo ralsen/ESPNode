@@ -22,7 +22,8 @@ void DoNormStuff(void);
 #include  "timer.h"
 #include  "WebServer.h"
 //FOL #include  "WiFi.h"
-#include  <string>
+#include  <string.h>
+#include <iostream>
 
 #include <ArduinoOTA.h>
 #include "LittleFS.h"
@@ -244,8 +245,7 @@ void loop() {
 }
 
 // -----------------------------------------------------------------------------
-String header;
-const char* serverName = "http://192.168.1.53:8080/";
+
 unsigned long lastTime = 0;
 // Timer set to 10 minutes (600000)
 //unsigned long timerDelay = 600000;
@@ -256,6 +256,10 @@ void DoNormStuff() {
   // !!!hier muss noch zwischen Mess+Transmitzyklen unterschieden werden!!!
   DBGF( "############################ DoNormStuff() #######################################" );
   DBGF(cfgData.TransmitCycle);
+
+  String header;
+  String serverName = String(cfgData.server) + String F(":") + String(cfgData.port); //"http://192.168.1.53:8080/";
+  serverName += String F(":");
 
   LEDControl (BLKMODEON, BLKALLERT);
 

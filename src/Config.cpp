@@ -77,7 +77,7 @@ void SetToDefault(){
   cfgData.LocalIP[0]=0;
   cfgData.fixip[0]=0;
   strcpy (cfgData.server, DEFAULT_SERVER);
-  strcpy (cfgData.service, DEFAULT_SERVICE);
+  strcpy (cfgData.port, DEFAULT_PORT);
   cfgData.MeasuringCycle = DEFAULT_MEASCYCLE;
   cfgData.TransmitCycle = DEFAULT_TRANSCYCLE;
   cfgData.PageReload  = DEFAULT_PAGERELOAD;

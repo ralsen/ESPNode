@@ -27,7 +27,7 @@ void WebServerStart(void);
 void handleStatus(void);
 void handleInfo(void);
 void handleServer(void);
-void handleService(void);
+void handlePort(void);
 void handleReset(void);
 void handleLED(void);
 void handleSetDefault(void);

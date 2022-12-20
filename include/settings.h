@@ -273,7 +273,7 @@
 #define MY_NTP_SERVER "at.pool.ntp.org"
 #define MY_TZ "CET-1CEST,M3.5.0,M10.5.0/3"
 
-#define DEFAULT_SERVICE       "/DummyServ.php/"
+#define DEFAULT_PORT          "8080"
 #define DEFAULT_SERVER        "192.168.1.6"
 // --------- some software stuff  ---------
 

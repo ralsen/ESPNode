@@ -27,7 +27,7 @@ typedef struct {
   char  LocalIP[MAXCHAR+4];
   char  fixip[MAXCHAR+4];       // if fixed IP is used store it here
   char  server[MAXCHAR+4];
-  char  service[MAXCHAR+4];
+  char  port[MAXCHAR+4];
   long  MeasuringCycle;
   long  TransmitCycle;
   long  PageReload;
