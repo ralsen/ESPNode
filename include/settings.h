@@ -67,6 +67,18 @@
 # define H_TOF           H_FALSE
 # define H_TFT_18        H_FALSE
 
+#elif defined(SONOFF_S26_SWITCH)
+# define DEV_TYPE       "SONOFF_S26"
+# define FNC_TYPE       "Switch"
+# define H_SWITCH        H_TRUE
+# define H_DS1820        H_FALSE
+# define H_PIR           H_FALSE
+# define H_BUTTON        H_TRUE
+# define H_LED           H_TRUE
+# define H_RELAY         H_TRUE
+# define H_TOF           H_FALSE
+# define H_TFT_18        H_FALSE
+
 #elif defined(NODEMCU_SWITCH)
 # define DEV_TYPE       "NODEMCU"
 # define FNC_TYPE       "Switch"
@@ -162,7 +174,7 @@
 # define  DIG_READ(pin)         digitalRead(pin)
 # define  DIG_MODE(pin, inout)  pinMode(pin, inout);
 
-# if defined(SONOFF_BASIC_SWITCH) || defined(SONOFF_S20_SWITCH)
+# if defined(SONOFF_BASIC_SWITCH) || defined(SONOFF_S20_SWITCH) || defined(SONOFF_S26_SWITCH)
 #   define H_LED_PIN      13
 #   define H_RELAY_PIN    12
 //# elif    (DEV_TYPE == "NODEMCU") || (DEV_TYPE == "D1MINI")
