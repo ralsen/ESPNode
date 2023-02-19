@@ -502,6 +502,7 @@ String buildDict (){
   httpRequestData += String F(("goodTrans")) + qd + String(sysData.CntGoodTrans) + qc;
   httpRequestData += String F(("badTrans")) + qd + String(sysData.CntBadTrans) + qc;
   httpRequestData += String F(("LED")) + qd + String(cfgData.LED) + qc;
+  httpRequestData += String F(("WiFi")) + qd + String(WiFi.RSSI()) + qc;
 #if (H_DS1820 == H_TRUE)
   httpRequestData += buildDS1820Dict();
 #elif (H_SWITCH == H_TRUE)
