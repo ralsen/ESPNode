@@ -477,8 +477,8 @@ String buildDict (){
   DBGF("buildDict()");
   String url;
   String httpRequestData = String(F("{")) + q;
-
   String FullName=String(cfgData.hostname) + "_" + String(cfgData.MACAddress);
+
   FullName.replace (F(":"), F("_"));
   httpRequestData += String F(("name")) + qd + FullName + qc;
   httpRequestData += String F(("IP")) + qd + WiFi.localIP().toString() + qc;
