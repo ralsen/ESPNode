@@ -191,12 +191,12 @@ void handleStatus(){
 #if (H_DS1820 == H_TRUE)
   message = F("Number of devices: ");
   message += numberOfDevices;
-  message += F("\r\n<br>");
+  message += F("<br>");
 
-  message += F("<table border='1'>\r\n");
-  message += F("<tr><td>Device ID</td><td>Temperature</td></tr>\r\n");
+  message += F("<table border='1'>");
+  message += F("<tr><td>Device ID</td><td>Temperature</td></tr>");
   message += buildDS1820Page();
-  message += F("</table>\r\n");
+  message += F("</table>");
   sysData.CntPageDelivered++;
   server.send(200, F(W_TEXT_HTML), buildAppPage(message));
   sysData.CntPageDelivered++;
@@ -204,7 +204,7 @@ void handleStatus(){
 #elif (H_TOF == H_TRUE)
   message = F("<h1>Distance: </h1>");
 
-  //message += F("\r\n<br>");
+  //message += F("<br>");
   message += buildToFPage();
   server.send(200, F(W_TEXT_HTML), buildAppPage(message));
   sysData.CntPageDelivered++;
@@ -243,7 +243,7 @@ void handleShowLog(){
   String str = "Content of log:<br><br>";
   
   str += logit.show();
-  str.replace("\r\n", "<br>");
+  str.replace("", "<br>");
   server.send(200, F(W_TEXT_HTML), buildMainPage(str));
 }
 
@@ -441,7 +441,6 @@ String buildConfPage(String content){
   String WebPage = buildPageFrame(content);
   WebPage.replace(F("{appmenu}"), F(""));
   WebPage.replace(F("{mainpage}"), F(""));
-  WebPage.replace(F("{networkpage}"), F(""));
   #if (H_DS1820 == H_TRUE)||(H_TOF == H_TRUE)
   WebPage.replace(F("{confpage}"), ConfMenueMeasHTML);
   #else
@@ -456,7 +455,6 @@ String buildMainPage(String content){
   WebPage.replace(F("{appmenu}"), AppMenueHTML);
   WebPage.replace(F("{appmenu}"), F(""));
   WebPage.replace(F("{mainpage}"), InfoMenueHTML);
-  WebPage.replace(F("{networkpage}"), F(""));
   WebPage.replace(F("{confpage}"), F(""));
   return WebPage;
 }
@@ -471,7 +469,6 @@ String buildAppPage(String content){
   WebPage.replace(F("{appmenu}"), "");
   #endif
   WebPage.replace(F("{mainpage}"), F(""));
-  WebPage.replace(F("{networkpage}"), F(""));
   WebPage.replace(F("{confpage}"), F(""));
   return WebPage;
 }
@@ -543,11 +540,11 @@ String buildDS1820Page(){
 
     message += F("<tr><td>");
     message += GetAddressToString( devAddr[i] );
-    message += F("</td>\r\n");
+    message += F("</td>");
     message += F("<td>");
     message += temperatureString;
-    message += F("</td></tr>\r\n");
-    message += F("\r\n");
+    message += F("</td></tr>");
+    message += F("");
   }
   return message;
 }
@@ -619,45 +616,47 @@ void buildInfoPage(){
   DBGF("buildInfoPage()")
 
   output = F("</h3>");
-  output += Version + F("\r\n\r\n<br><br>")+ F("\r\n<br>Type: ") + F(FNC_TYPE) + F("\r\n<br>Hardw: ") + F(DEV_TYPE);
-  output += F("\r\n<br>Chip-ID: 0x") + String(cfgData.ChipID);
-  output += F("\r\n<br>MAC-Address: ") + String(cfgData.MACAddress);
-  output += F("\r\n<br>Network: ") + String(WiFi.SSID());
-  output += F("\r\n<br>Network-IP: ") + WiFi.localIP().toString();
-  output += F("\r\n<br>Devicename: ") + String(cfgData.hostname);
-  output += F("\r\n<br>AP-Name: ") + String(cfgData.APname);
-  output += F("\r\n<br>cfg-Size: 0x") + String(sizeof(cfgData), HEX);
-  output += F("\r\n<br>Hash: 0x") + String(cfgData.hash, HEX);
-  output += F("\r\n<br>");
+  output += Version + F("<br><br>")+ F("<br>Type: ") + F(FNC_TYPE) + F("<br>Hardw: ") + F(DEV_TYPE);
+  output += F("<br>Chip-ID: 0x") + String(cfgData.ChipID);
+  output += F("<br>MAC-Address: ") + String(cfgData.MACAddress);
+  output += F("<br>Network: ") + String(WiFi.SSID());
+  output += F("<br>Network-IP: ") + WiFi.localIP().toString();
+  output += F("<br>Devicename: ") + String(cfgData.hostname);
+  output += F("<br>AP-Name: ") + String(cfgData.APname);
+  output += F("<br>cfg-Size: 0x") + String(sizeof(cfgData), HEX);
+  output += F("<br>Hash: 0x") + String(cfgData.hash, HEX);
+  output += F("<br>");
 
-  output += F("\r\n<br>Display: ");
+  output += F("<br>Display: ");
   output += (H_TFT_18 == H_TRUE) ? F("True") : F("False");
-  output += F("\r\n<br>");
+  output += F("<br>");
 
-  output += F("\r\n<br>uptime: ");
+  output += F("<br>uptime: ");
   output += String(sysData.uptime/86400) + F(" days - ") + String((sysData.uptime/3600)%24) + F(" hours - ") + String((sysData.uptime/60)%60) + F(" minutes - ") + String(sysData.uptime%60) + F(" seconds");
 #if (H_DS1820 == H_TRUE) || (H_TOF == H_TRUE)
-  output += F("\r\n<br>Measuring cycle: ") + String(cfgData.MeasuringCycle) + F(" s (remainig: ") + String(sysData.MeasuringCycle) + F(" s)");
+  output += F("<br>Measuring cycle: ") + String(cfgData.MeasuringCycle) + F(" s (remainig: ") + String(sysData.MeasuringCycle) + F(" s)");
 #endif
-  output += F("\r\n<br>Transmit cycle: ") + String(cfgData.TransmitCycle) + F(" s (remaining: ") + String(sysData.TransmitCycle) + F(" s)");
-  output += F("\r\n<br>PageReload cycle: ") + String(cfgData.PageReload) + F(" s");
-  output += F("\r\n<br>Server: ")+ String(cfgData.server);
-  output += F("\r\n<br>Port: ")+ String(cfgData.port);
-  output += F("\r\n<br>LED: ");
+  output += F("<br>Transmit cycle: ") + String(cfgData.TransmitCycle) + F(" s (remaining: ") + String(sysData.TransmitCycle) + F(" s)");
+  output += F("<br>PageReload cycle: ") + String(cfgData.PageReload) + F(" s");
+  output += F("<br>Server: ")+ String(cfgData.server);
+  output += F("<br>Port: ")+ String(cfgData.port);
+  output += F("<br>LED: ");
   cfgData.LED == H_TRUE ? output += F("on ") : output += F("off ");
-  output += F("\r\n\r\n<br><br>good Transmissions: ") + String(sysData.CntGoodTrans);
-  output += F("\r\n<br>bad Transmissions: ") + String(sysData.CntBadTrans);
-  output += F("\r\n<br>Pages delivered: ") + String(sysData.CntPageDelivered);
+  output += F("<br>Signal strength: ");
+  output += String(WiFi.RSSI());
+  output += F("<br><br>good Transmissions: ") + String(sysData.CntGoodTrans);
+  output += F("<br>bad Transmissions: ") + String(sysData.CntBadTrans);
+  output += F("<br>Pages delivered: ") + String(sysData.CntPageDelivered);
 #if (H_DS1820 == H_TRUE) || (H_TOF == H_TRUE)
-  output += F("\r\n<br>Measurements: ") + String(sysData.CntMeasCyc);
+  output += F("<br>Measurements: ") + String(sysData.CntMeasCyc);
 #endif
 
 #if (H_RELAY == H_TRUE)
-  output += F("\r\n<br>ontime: ");
+  output += F("<br>ontime: ");
   output += String(sysData.ontime/86400) + F(" days - ") + String((sysData.ontime/3600)%24) + F(" hours - ") + String((sysData.ontime/60)%60) + F(" minutes - ") + String(sysData.ontime%60) + F(" seconds");
-  output += F("\r\n<br>offtime: ");
+  output += F("<br>offtime: ");
   output += String(sysData.offtime/86400) + F(" days - ") + String((sysData.offtime/3600)%24) + F(" hours - ") + String((sysData.offtime/60)%60) + F(" minutes - ") + String(sysData.offtime%60) + F(" seconds");
-  output += F("\r\n<br>Cycles:                 ") + String(sysData.cycles);
+  output += F("<br>Cycles:                 ") + String(sysData.cycles);
 #endif
   output += F("</h6>");
   sysData.CntPageDelivered++;
