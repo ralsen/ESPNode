@@ -79,6 +79,7 @@ void setup() {
   //Setup Serial port speed
   Serial.begin(115200);
   DBGF("setup()")
+  Serial.setDebugOutput(true);
   DIG_MODE(H_LED_PIN, OUTPUT)
   DIG_MODE(H_RELAY_PIN, OUTPUT)
   sysData.uptime = 0;
@@ -164,7 +165,9 @@ void setup() {
 
   Serial.println("\r\neverything is initialized, let's go ahead and connect now ->\r\n");
 
-  sysData.WifiRes = wm.autoConnect(DEFAULT_APNAME);
+  wm.resetSettings();
+  sysData.WifiRes = wm.autoConnect("janzneu", "D1AFFE1234!");
+  Serial.println("WiFires: " + String(sysData.WifiRes));
   Serial.println("---> " + WiFi.macAddress());
   if(!sysData.WifiRes) {
         Serial.print("Failed to connect!!! -> Result: ");
@@ -195,7 +198,7 @@ void setup() {
 
   LEDControl(BLKMODEOFF, -1);
   delay(1000);
-  logit.entry("starting WebServer...");
+  logit.entry("starting WebServer...<br>");
   server.begin();
 
   if (MDNS.begin(FullName)) {  //Start mDNS
