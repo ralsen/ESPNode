@@ -260,8 +260,8 @@ void DoNormStuff() {
   DBGF(cfgData.TransmitCycle);
 
   String header;
-  String serverName = String(cfgData.server) + String F(":") + String(cfgData.port); //"http://192.168.1.53:8080/";
-  serverName += String F(":");
+  String serverName = String F("http://") + String(cfgData.server) + String F(":") + String(cfgData.port); //"http://192.168.1.53:8080/";
+  //serverName += String F("/");
 
   LEDControl (BLKMODEON, BLKALLERT);
 
