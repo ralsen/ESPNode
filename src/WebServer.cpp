@@ -475,17 +475,15 @@ String buildAppPage(String content){
 
 String buildDict (){
   DBGF("buildDict()");
-  String url;
   String httpRequestData = String(F("{")) + q;
   String FullName=String(cfgData.hostname) + "_" + String(cfgData.MACAddress);
 
   FullName.replace (F(":"), F("_"));
   httpRequestData += String F(("name")) + qd + FullName + qc;
   httpRequestData += String F(("IP")) + qd + WiFi.localIP().toString() + qc;
-  httpRequestData += String F(("Type")) + qd + String(F(FNC_TYPE)) + qc;
   httpRequestData += String F(("Version")) + qd + String(F(VERNR)) + qc;
   httpRequestData += String F(("Hardware")) + qd + String(F(DEV_TYPE)) + qc;
-  httpRequestData += String F(("Network")) + qd + String(F(FNC_TYPE)) + qc;
+  httpRequestData += String F(("Network")) + qd + String(WiFi.SSID()) + qc;
   httpRequestData += String F(("APName")) + qd + String(cfgData.APname) + qc;
   httpRequestData += String F(("MAC")) + qd + String(cfgData.MACAddress) + qc;
   httpRequestData += String F(("TransmitCycle")) + qd + String(cfgData.TransmitCycle) + qc;
@@ -519,7 +517,7 @@ String buildDict (){
 String buildDS1820Dict (){
   char buf[10];
   String url;
-  String httpRequestData = "";
+  String httpRequestData = String F(("Type")) + qd + String(F(FNC_TYPE)) + String(F("-")) + String(numberOfDevices) + qc;
   DBGF("buildDS1820Dict()");
   for(int i=0;i<numberOfDevices;i++){
     httpRequestData += String F(("Adress_")) + String(i) + qd + GetAddressToString( devAddr[i]) + qc;
