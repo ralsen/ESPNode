@@ -286,7 +286,7 @@
 #define MY_TZ "CET-1CEST,M3.5.0,M10.5.0/3"
 
 #define DEFAULT_PORT          "8080"
-#define DEFAULT_SERVER        "192.168.1.6"
+#define DEFAULT_SERVER        "192.168.2.87"
 // --------- some software stuff  ---------
 
 
