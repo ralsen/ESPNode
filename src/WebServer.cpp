@@ -550,10 +550,8 @@ String buildDS1820Page(){
 
 #elif (H_TOF == H_TRUE)
 String buildToFDict (){
-  String httpRequestData = "";
-
   DBGF("buildToFDict()");
-  httpRequestData += String (F("distance")) + qd + String(ToFRange) + q;
+  String httpRequestData = String F(("Type")) + qd + String(F(FNC_TYPE)) + qc + String (F("distance")) + qd + String(ToFRange) + q;
   return httpRequestData;
 }
 
