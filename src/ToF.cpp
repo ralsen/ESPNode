@@ -13,6 +13,8 @@
 #include <Arduino.h>
 #include "settings.h"
 #include "Config.h"
+#include  "log.h"
+
 
 #if (H_TOF == H_TRUE)
  #include "ToF.h"
@@ -22,6 +24,8 @@
  //Optional interrupt and shutdown pins.
  #define SHUTDOWN_PIN 2
  #define INTERRUPT_PIN 3
+
+extern class log_CL logit;
 
  SFEVL53L1X distanceSensor;
  //Uncomment the following line to use the optional shutdown and interrupt pins.
@@ -37,10 +41,12 @@ int SetupToF(){
   if (distanceSensor.begin() != 0) //Begin returns 0 on a good init
   {
     Serial.println("Sensor failed to initialisation. Please check wiring ...");
+    logit.entry("ToF-Sensor failed !!!");
     ToFPresent = TOF_FALSE;
   }
   else{
     Serial.println("ToF-Sensor detected!");
+    logit.entry("ToF-Sensor detected.");
     ToFPresent = TOF_TRUE;
   }
   return ToFPresent;

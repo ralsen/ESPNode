@@ -136,6 +136,8 @@ void setup() {
   Serial.println( cfgData.MACAddress);
   Serial.println( "" );
 
+  LittleFS.begin();
+
     //Setup DS18b20 temperature sensor
 #if (H_DS1820 == H_TRUE)
   DBGLN("intialiesiere die DS1820")
@@ -145,7 +147,6 @@ void setup() {
   SetupToF();
 #endif
 
-  LittleFS.begin();
   String str = "Directory: \n\r";
   Dir dir = LittleFS.openDir("/");
   while (dir.next()) {
@@ -198,7 +199,7 @@ void setup() {
 
   LEDControl(BLKMODEOFF, -1);
   delay(1000);
-  logit.entry("starting WebServer...<br>");
+  logit.entry("starting WebServer...");
   server.begin();
 
   if (MDNS.begin(FullName)) {  //Start mDNS
@@ -281,9 +282,10 @@ void DoNormStuff() {
         if (httpResponseCode == 301){
           sysData.CntGoodTrans++;
         }
-        /*else {
+        else {
           sysData.CntBadTrans++;
-        }*/
+          logit.entry("server send failed...");
+        }
 
         Serial.println(http.getString());
         Serial.print("HTTP Response code: ");

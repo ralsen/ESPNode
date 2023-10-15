@@ -243,7 +243,8 @@ void handleShowLog(){
   String str = "Content of log:<br><br>";
   
   str += logit.show();
-  str.replace("", "<br>");
+  str.replace("\n", "<br>");
+  //Serial.println(str);
   server.send(200, F(W_TEXT_HTML), buildMainPage(str));
 }
 
@@ -283,7 +284,7 @@ void handleNotFound(){
   DBGL(message)
   sysData.CntPageDelivered++;
   server.send(404, F(W_TEXT_HTML), message);
-}
+};
 
 void handlePort(){
   int x;
@@ -456,6 +457,7 @@ String buildMainPage(String content){
   WebPage.replace(F("{appmenu}"), F(""));
   WebPage.replace(F("{mainpage}"), InfoMenueHTML);
   WebPage.replace(F("{confpage}"), F(""));
+  WebPage.replace(F("{content}"), content);
   return WebPage;
 }
 

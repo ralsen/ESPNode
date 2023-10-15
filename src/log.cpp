@@ -35,7 +35,7 @@ String log_CL::show(){
     fstr += (char)(flog.read());
   }
   flog.close();
-  //DBGF(fstr)
+  //Serial.println(fstr);
   return fstr;
 }
 
@@ -52,8 +52,8 @@ void log_CL::entry(String entry){
   flog.close();
   flog = LittleFS.open(logfile, "w");
   tstr = TimeServ.getTimestr() + " --> " + entry;
-  fstr = tstr + "\r\n" + fstr;
-  DBGF(tstr);
+  fstr = tstr + "\n" + fstr;
+  //Serial.println(tstr);
   flog.print(fstr.substring(0, MAXLOGSIZE));
   flog.close();
 }
