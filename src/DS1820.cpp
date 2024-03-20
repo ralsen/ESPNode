@@ -20,7 +20,10 @@
 #include  "Config.h"
 #include  "OneWire.h"
 #include  "DS1820.h"
+#include "log.h"
 #include  <string.h>
+
+extern class log_CL logit;
 
 OneWire           oneWire(ONE_WIRE_BUS);
 DallasTemperature DS18B20(&oneWire);
@@ -55,6 +58,8 @@ void SetupDS18B20(){
   }
 
   numberOfDevices = DS18B20.getDeviceCount();
+  if(!numberOfDevices)
+    logit.entry("no DS1820 found");
 
   # if (H_DBG == H_TRUE)
     //numberOfDevices = 2;
