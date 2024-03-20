@@ -236,6 +236,7 @@ void handleShowLog(){
   str.replace("\n", "<br>");
   //Serial.println(str);
   server.send(200, F(W_TEXT_HTML), buildMainPage(str));
+  sysData.CntPageDelivered++;
 }
 
 void handleShowDir(){
@@ -256,6 +257,7 @@ void handleShowDir(){
     str += "<br>NO LOGFILE";
   }
   server.send(200, F(W_TEXT_HTML), buildMainPage(str));
+  sysData.CntPageDelivered++;
 }
 
 void handleNotFound(){
