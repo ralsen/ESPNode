@@ -89,7 +89,6 @@ void startWebServer(){
   DBGF("startWebServer()")
   server.on(("/"), [](){
     handleInfo();
-    sysData.CntPageDelivered++;
   });
 
 # if (H_SWITCH == H_TRUE)
@@ -150,8 +149,8 @@ void handleUpdate(){
  */
 void handleSetDefault(){
   DBGF(server.uri());
-  sysData.CntPageDelivered++;
   server.send(200, F(W_TEXT_HTML), buildConfPage( F("set every thing to defaults")));
+  sysData.CntPageDelivered++;
   SetToDefault();
 //  DEAD
   delay(10000);
@@ -160,8 +159,8 @@ void handleSetDefault(){
 
 void handleConfPage(){
   DBGF(server.uri());
-  sysData.CntPageDelivered++;
   server.send(200, F(W_TEXT_HTML), buildConfPage(F("")));
+  sysData.CntPageDelivered++;
 }
 
 void handleServer() {
@@ -190,10 +189,9 @@ void handleStatus(){
   message += F("<tr><td>Device ID</td><td>Temperature</td></tr>");
   message += buildDS1820Page();
   message += F("</table>");
-  sysData.CntPageDelivered++;
   server.send(200, F(W_TEXT_HTML), buildAppPage(message));
   sysData.CntPageDelivered++;
-
+  
 #elif (H_TOF == H_TRUE)
   message = F("<h1>Distance: </h1>");
 
@@ -215,7 +213,6 @@ void handleStatus(){
   WebPage += F("<meta http-equiv=\"refresh\" content=\"");
   WebPage += String( cyc );
   WebPage += F("\">");
-  sysData.CntPageDelivered++;
   server.send(200, F(W_TEXT_HTML), WebPage );
   sysData.CntPageDelivered++;
 # endif
@@ -275,8 +272,8 @@ void handleNotFound(){
     message += " " + server.argName(i) + F(": ") + server.arg(i) + F("\n");
   }
   DBGL(message)
-  sysData.CntPageDelivered++;
   server.send(404, F(W_TEXT_HTML), message);
+  sysData.CntPageDelivered++;
 };
 
 void handlePort(){
@@ -305,8 +302,8 @@ void handleLED(){
     output.replace(F("{offtext}"), F("checked=\"checked\""));
   }
   output += RadioLEDEndHTML;
-  sysData.CntPageDelivered++;
   server.send(200, F(W_TEXT_HTML), buildConfPage (output));
+  sysData.CntPageDelivered++;
   DBGF("LED ist jetzt: ");
   DBGF(cfgData.LED);
 //  DBGF(WebPage)
@@ -320,8 +317,8 @@ void handleLED(){
     DBGF(cfgData.LED);
     SaveConfig();
     output = F("Yippie");
-    sysData.CntPageDelivered++;
     server.send(200, F(W_TEXT_HTML), buildConfPage (F("")));
+    sysData.CntPageDelivered++;
   }
 }
 
@@ -395,8 +392,8 @@ void handlePagereload(){
 
 void handleReset(){
   DBGF(server.uri());
-  sysData.CntPageDelivered++;
   server.send(200, F(W_TEXT_HTML), buildConfPage (F("restart in a few seconds<br> please reload page")));
+  sysData.CntPageDelivered++;
   delay(1000);
   ESP.restart();
 //  DEAD
@@ -436,8 +433,8 @@ void ScanEnd(){
   DBGF("ScanEnd()")
   
   // Fehlerhandling wenn parameter falsch und handling wenn alles ok
-  sysData.CntPageDelivered++;
   server.send(200, F(W_TEXT_HTML), buildConfPage(F("")));
+  sysData.CntPageDelivered++;
 }
 
 void ScanStart(){
@@ -484,8 +481,8 @@ void ScanStart(){
     output += FPSTR(H_RADIO_WIFI_END);
     output += F("</h6>");
   }
-  sysData.CntPageDelivered++;
   server.send(200, F(W_TEXT_HTML), buildConfPage(output));
+  sysData.CntPageDelivered++;
 }
 
 /*  all webpage building routines
@@ -729,8 +726,8 @@ void buildInfoPage(){
   output += F("<br>Cycles:                 ") + String(sysData.cycles);
 #endif
   output += F("</h6>");
-  sysData.CntPageDelivered++;
   server.send(200, F(W_TEXT_HTML), buildMainPage(output));
+  sysData.CntPageDelivered++;
 }
 
 /*  ---------------------------------------------------------------------------------------------------------
@@ -752,15 +749,15 @@ int checkInput(String text, String URLText){
 
   if( server.args() == 0 ){
     DBGF("server.args=0")
-    sysData.CntPageDelivered++;
     server.send(200, F(W_TEXT_HTML), buildConfPage (output));
+    sysData.CntPageDelivered++;
     return 0;
   }
   else
     if( server.arg(server.args()-1).length() > 0){
       DBGF("message is:")
-      sysData.CntPageDelivered++;
       server.send(200, F(W_TEXT_HTML), buildConfPage(F("")));
+      sysData.CntPageDelivered++;
       x = server.arg(server.args()-1).substring(0, 30).length();
       return x < MAXCHAR ? x : MAXCHAR;  // cut everything whats longer than MAXCHAR
     }
@@ -769,8 +766,8 @@ int checkInput(String text, String URLText){
 
       message = F("<p><font color=\"red\">keine Angabe ist keine gute Idee !!!</font></p>");
       message += output;
-      sysData.CntPageDelivered++;
       server.send(200, F(W_TEXT_HTML), buildConfPage(message));
+      sysData.CntPageDelivered++;
       return 0;
     }
   return 0;
