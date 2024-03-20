@@ -111,21 +111,18 @@ void TISs_Relais(){
 # endif
 
 void TISs_MeasuringCycle(){
-/*  wifipes muss irgendwie anders geloest werden
-  if(sysData.WifiRes){
-    if( sysData.MeasuringCycle ){
-      sysData.MeasuringCycle--;
-      }
-      else{
-        sysData.MeasuringCycle = cfgData.MeasuringCycle;
-        #if( H_DS1820 == H_TRUE )
-        DS1820_Measuring();
-        #endif
-        #if( H_TOF == H_TRUE)
-        ToFDistance();
-        #endif
-      }
-  }*/
+  if( sysData.MeasuringCycle ){
+    sysData.MeasuringCycle--;
+  }
+  else{
+    sysData.MeasuringCycle = cfgData.MeasuringCycle;
+    #if( H_DS1820 == H_TRUE )
+    DS1820_Measuring();
+    #endif
+    #if( H_TOF == H_TRUE)
+    ToFDistance();
+    #endif
+  }
 }
 
 void LEDControl(long mode, long time){
@@ -177,7 +174,6 @@ String TimeDB::zeroPad(int number) {
     return String(number);
   }
 }
-
 
 String TimeDB::showTime(){
   String str;
