@@ -7,9 +7,11 @@
 
   hints:    -
 */
+#include <Arduino.h>
 
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
+
 
 #include  "Settings.h"
 
@@ -22,41 +24,47 @@ typedef struct {
   char  hostname[MAXCHAR+4];     // hostname
   char  APname[MAXCHAR+4];       // Access point name
   char  MACAddress[MAXCHAR+4];   // holds MAC
+  char  ChipID[MAXCHAR+4];
   char  LocalIP[MAXCHAR+4];
   char  fixip[MAXCHAR+4];       // if fixed IP is used store it here
   char  server[MAXCHAR+4];
-  char  service[MAXCHAR+4];
+  char  port[MAXCHAR+4];
   long  MeasuringCycle;
   long  TransmitCycle;
   long  PageReload;
-  long  APTimeout;
   long  hash;                        // hash, must be the very last value
 } cfgData_t;
 
 typedef struct {
-  int   mode;
   long  blinkmode;
   long  blinktime;
   int   status;
   int   wifi;
+  long  uptime;
   long  MeasuringCycle;
-  long  MeasuringReloadCycle;
   long  TransmitCycle;
   long  CntGoodTrans;
   long  CntBadTrans;
   long  CntPageDelivered;
   long  CntMeasCyc;
-  long  APTimeout;
   long  DspTimeout;
+#if (H_RELAY == H_TRUE)
+  long  ontime;
+  long  offtime;
+  long  cycles;
+#endif  
 } sysData_t;
 
   extern  cfgData_t cfgData;
   extern  sysData_t sysData;
 
   void eraseConfig(void);
-  void saveConfig(void);
+  void SaveConfig(void);
   void loadConfig(void);
-
+  void SetToDefault(void);
+  long CalcHashConfig(void);
+  int TestHashConfig(void);
+  
 #define SEND_AFTER_BOOT_SEC   5
 
 #endif //_CONFIG_H_
