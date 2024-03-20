@@ -1,9 +1,14 @@
-builds
 .pio
 .vscode
+.git
 lib
+builds
 IDE
+test
+*.zip
 firmware*
 *.lnk
-*.zip
-d:\Projects*
+*.map
+data
+
+

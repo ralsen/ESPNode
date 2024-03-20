@@ -7,6 +7,9 @@
 
   hints:    -
 */
+#include <Arduino.h>
+#include "settings.h"
+#include "Config.h"
 
 #if (H_TFT_18 == H_TRUE)
 # ifndef _TFT_H_

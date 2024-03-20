@@ -7,17 +7,21 @@
 
   hints:    ???
 */
-
-#include  "Settings.h"
+#include <Arduino.h>
+#include "settings.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266WiFiMulti.h>
 #include <stdio.h>
 #include "WiFi.h"
-#include  "tft.h"
+#include "tft.h"
+#include "timer.h"
+#include "WebServer.h"
 
 ESP8266WiFiMulti wifiMulti;     // Create an instance of the ESP8266WiFiMulti class, called 'wifiMulti'
+extern ESP8266WebServer server;
+
 // for AP-Mode see here
 // https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266WiFi/examples/WiFiAccessPoint/WiFiAccessPoint.ino
 
@@ -48,7 +52,7 @@ void WiFiStartAP(){
   #endif
   WiFi.softAP(cfgData.APname);
   delay(DELAY_WIFI_TRY);
-  server.begin();
+  startWebServer();
   #if(H_TFT_18 == H_TRUE)
   tft_print("SSID: ");
   tft_println(String(cfgData.APname));
@@ -58,10 +62,11 @@ void WiFiStartAP(){
 }
 
 int WiFiStartClient(){
+  DBGF ("WiFiStartClient()" )
+  Serial.println("WiFiStartClient()" );
   int err = 0;
   char wheel[] = {'-', '\\', '|', '/'};
 
-  DBGF ("WiFiStartClient()" )
   LEDControl(BLKMODEON, BLKWIFISTA);
   DBGLN( "Disconnect and WIFI_OFF" )
   WiFi.disconnect();
@@ -76,14 +81,14 @@ int WiFiStartClient(){
   FullName.replace(":", "_");
   WiFi.hostname(FullName);
 
-  WiFi.begin(cfgData.SSID, cfgData.password);
+  //WiFi.begin(cfgData.SSID, cfgData.password);
   wifiMulti.addAP(cfgData.SSID, cfgData.password);
   DBGLN( ("trying to connect to:  ") );
   DBGL( "SSID: " );
   DBGLN( cfgData.SSID );
   DBGL( "PASS: " );
   DBGLN( cfgData.password );
-  while ( wifiMulti.run() != WL_CONNECTED ) {
+  while ( wifiMulti.run() != WL_CONNECTED ) {//WiFi.status() != WL_CONNECTED ) { 
     delay(DELAY_WIFI_TRY);
     Serial.print(wheel[err%4]);
     Serial.print("\b");
@@ -103,9 +108,9 @@ int WiFiStartClient(){
   Serial.println(WiFi.localIP());
 
   Serial.print("Signal Strength (RSSI): ");
-  Serial.print(getWifiQuality());
-  Serial.println("%");
-
+  Serial.print(WiFi.RSSI());
+  Serial.println("dBm");
+  
   // CHN: Tasmota macht hier sowas mdns_begun = MDNS.begin(my_hostname) mdns.update wird dort nicht benutzt
   // vielleicht kommen die Netzwerkprobleme daher?
 
@@ -121,20 +126,8 @@ int WiFiStartClient(){
   else{
     DBGLN("mDNS responder failed");
   }
-
+  startWebServer();
   LEDControl(BLKMODEOFF, -1);
   return true;
-}
-
-// converts the dBm to a range between 0 and 100%
-int8_t getWifiQuality() {
-  int32_t dbm = WiFi.RSSI();
-  if (dbm <= -100) {
-    return 0;
-  } else if (dbm >= -50) {
-    return 100;
-  } else {
-    return 2 * (dbm + 100);
-  }
 }
 

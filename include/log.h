@@ -7,12 +7,13 @@
 
   hints:    -
 */
+#include <Arduino.h>
+#include  "settings.h"
 
 #ifndef _LOG_H_
 #define _LOG_H_
 
-#include  "Settings.h"
-#include  "timer.h"
+//#include  "timer.h"
 
 class log_CL{
   public:

@@ -1,4 +1,8 @@
 
+#include <Arduino.h>
+#include "settings.h"
+#include "Config.h"
+
 #if (H_TFT_18 == H_TRUE)
 
 #include "tft.h"
@@ -38,7 +42,7 @@ void tft_info(){
   tft_print("AP:");
   tft_println(cfgData.APname);
   tft_print("Service:");
-  tft_println(cfgData.service);
+  tft_println(cfgData.port);
   tft_print("Server:");
   tft_println(cfgData.server);
   tft_print("cfg: 0x");
@@ -58,6 +62,7 @@ void tft_init2Temps(){
 }
 
 void tft_display2Temps(int t1, int t2){
+  char buf[80];
   tft.setCursor(45,4);
   if (i%2){
     tft.setTextColor(TEXT_COLOR, BG_COLOR);
@@ -72,10 +77,9 @@ void tft_display2Temps(int t1, int t2){
   tft.setTextColor(VALUE_TEXT_COLOR, VALUE_BG_COLOR);
   tft.setTextSize(VALUE_TEXT_SIZE);
   sprintf(buf,"%i%cC", t1, 0xf7);
-  sprintf(buf,"%i%cC", i, 0xf7);
-  i++;
   tft.println(buf);
-
+  i++;
+  
   tft.setCursor(50,65);
   if (i%2){
     tft.setTextColor(TEXT_COLOR, BG_COLOR);
@@ -90,9 +94,7 @@ void tft_display2Temps(int t1, int t2){
   tft.setTextColor(VALUE_TEXT_COLOR, VALUE_BG_COLOR);
   tft.setTextSize(VALUE_TEXT_SIZE);
   sprintf(buf,"%i%cC", t2, 0xf7);
-  sprintf(buf,"%i%cC", abs(i-109), 0xf7);
   tft.println(buf);
-  if(i>99) i=10;
 }
 
 void tft_textWait(int s){

@@ -10,13 +10,15 @@
 
 
 
+#include <Arduino.h>
+#include "settings.h"
+#include "Config.h"
 
-#include  "settings.h"
-#include  <string>
-#include  "log.h"
-#include  <SPI.h>
+#include <string>
+#include "log.h"
+#include <SPI.h>
 #include <LittleFS.h>
-#include  "timer.h"
+#include "timer.h"
 
 log_CL::log_CL(String filename, int level){
   DBGF("log_CL::log_CL()")
@@ -33,20 +35,25 @@ String log_CL::show(){
     fstr += (char)(flog.read());
   }
   flog.close();
-  //DBGF(fstr)
+  //Serial.println(fstr);
   return fstr;
 }
+
+extern TimeDB TimeServ;
 
 void log_CL::entry(String entry){
   DBGF("log_CL::entry(String entry)")
   File flog = LittleFS.open(logfile, "r");
-  String fstr="";
+  String fstr = "";
+  String tstr = "";
   while(flog.available()){
     fstr += (char)(flog.read());
   }
   flog.close();
   flog = LittleFS.open(logfile, "w");
-  fstr = TimeDB.getTimestr() + " --> " + entry + "\r\n" + fstr;
+  tstr = TimeServ.getTimestr() + " --> " + entry;
+  fstr = tstr + "\n" + fstr;
+  //Serial.println(tstr);
   flog.print(fstr.substring(0, MAXLOGSIZE));
   flog.close();
 }

@@ -7,6 +7,7 @@
 
   hints:    -
 */
+#include <Arduino.h>
 
 #ifndef __SETTINGS_H
 #define __SETTINGS_H
@@ -33,7 +34,7 @@
 
 
  #if (H_DBG == H_TRUE)
-  #define RELEASE         "NOT REALESED"
+  #define RELEASE         "--- DEBUG ---"
 #else
   #define RELEASE
 #endif
@@ -56,6 +57,18 @@
 
 #elif defined(SONOFF_S20_SWITCH)
 # define DEV_TYPE       "SONOFF_S20"
+# define FNC_TYPE       "Switch"
+# define H_SWITCH        H_TRUE
+# define H_DS1820        H_FALSE
+# define H_PIR           H_FALSE
+# define H_BUTTON        H_TRUE
+# define H_LED           H_TRUE
+# define H_RELAY         H_TRUE
+# define H_TOF           H_FALSE
+# define H_TFT_18        H_FALSE
+
+#elif defined(SONOFF_S26_SWITCH)
+# define DEV_TYPE       "SONOFF_S26"
 # define FNC_TYPE       "Switch"
 # define H_SWITCH        H_TRUE
 # define H_DS1820        H_FALSE
@@ -90,8 +103,8 @@
 # define H_TOF           H_FALSE
 # define H_TFT_18        H_FALSE
 
-#elif defined(D1MINI_DS1820)
-# define DEV_TYPE       "D1Mini"
+#elif defined(NODEMCU_DS1820_TFT_18)
+# define DEV_TYPE       "NODEMCU"
 # define FNC_TYPE       "DS1820"
 # define H_SWITCH        H_FALSE
 # define H_DS1820        H_TRUE
@@ -102,8 +115,20 @@
 # define H_TOF           H_FALSE
 # define H_TFT_18        H_TRUE
 
+#elif defined(D1MINI_DS1820)
+# define DEV_TYPE       "D1MINI"
+# define FNC_TYPE       "DS1820"
+# define H_SWITCH        H_FALSE
+# define H_DS1820        H_TRUE
+# define H_PIR           H_FALSE
+# define H_BUTTON        H_TRUE
+# define H_LED           H_TRUE
+# define H_RELAY         H_FALSE
+# define H_TOF           H_FALSE
+# define H_TFT_18        H_FALSE
+
 #elif defined(D1MINI_DS1820_TFT_18)
-# define DEV_TYPE       "D1Mini"
+# define DEV_TYPE       "D1MINI"
 # define FNC_TYPE       "DS1820"
 # define H_SWITCH        H_FALSE
 # define H_DS1820        H_TRUE
@@ -115,7 +140,7 @@
 # define H_TFT_18        H_TRUE
 
 #elif defined(D1MINI_TOF)
-# define DEV_TYPE       "D1Mini"
+# define DEV_TYPE       "D1MINI"
 # define FNC_TYPE       "ToF"
 # define H_SWITCH        H_FALSE
 # define H_DS1820        H_FALSE
@@ -149,13 +174,13 @@
 # define  DIG_READ(pin)         digitalRead(pin)
 # define  DIG_MODE(pin, inout)  pinMode(pin, inout);
 
-# if defined(SONOFF_BASIC_SWITCH) || defined(SONOFF_S20_SWITCH)
+# if defined(SONOFF_BASIC_SWITCH) || defined(SONOFF_S20_SWITCH) || defined(SONOFF_S26_SWITCH)
 #   define H_LED_PIN      13
 #   define H_RELAY_PIN    12
 //# elif    (DEV_TYPE == "NODEMCU") || (DEV_TYPE == "D1MINI")
-# elif    defined(NODEMCU_SWITCH) || defined(NODEMCU_DS1820) || defined(D1MINI_DS1820) || defined(D1MINI_TOF) || defined(D1MINI_DS1820_TFT_18)
+# elif    defined(NODEMCU_SWITCH) || defined(NODEMCU_DS1820) || defined(D1MINI_DS1820) || defined(D1MINI_TOF) || defined(D1MINI_DS1820_TFT_18) || defined(NODEMCU_DS1820_TFT_18)
 #   define H_LED_PIN      2
-#   define H_RELAY_PIN    3
+#   define H_RELAY_PIN    D0
 # else
 #   error   "H_LED_PIN undefined"
 # endif
@@ -195,7 +220,7 @@
 
 #if (H_DBG == H_TRUE)
   #define DBG(x)            Serial.print(x);
-  #define DBGF(x)           {Serial.print( millis() ); Serial.print(" File: " ); Serial.print (__FILE__); Serial.print( " Line:");Serial.print (__LINE__); Serial.print( ": -> " ); Serial.print( x ); Serial.println( " <-" );}
+  #define DBGF(x)           {Serial.print("-> "); Serial.print (__FILE__); Serial.print( " Line ");Serial.print (__LINE__); Serial.print( ": " ); Serial.println( x );}
   #define DBGLN(x)          {Serial.print( " ---> " ); Serial.println( x );}
   #define DBGL(x)           {Serial.print( " ---> " ); Serial.print( x );}
   #define DBGNL(x)          Serial.println( x );
@@ -243,24 +268,25 @@
 #define CFGSTART              0         // startadress og cfg-block in EEPROM
 #define DEFAULT_LED           H_TRUE
 
-#define DEFAULT_SSID          "unknown"
-#define DEFAULT_PASSWORD      "unknown"
+#define DEFAULT_SSID          "janzneu"
+#define DEFAULT_PASSWORD      "D1AFFE1234!"
 
 #define DEFAULT_HOSTNAME      "No-Name"
 #define DEFAULT_APNAME        "ESPnet"
 #define DEFAULT_MEASCYCLE     150       // Measurement cycle in sec.
 #define DEFAULT_PAGERELOAD    10        // page reload cycle in sec.
-#define DEFAULT_APTIMEOUT     300       // stay for this in AP-Mode before
-                                        // retrying STA-Mode again
 
 #if (H_SWITCH == H_FALSE)
-  #define DEFAULT_TRANSCYCLE    300     // transmit cycle to server in sec.
+  #define DEFAULT_TRANSCYCLE    5     // transmit cycle to server in sec.
 #else
   #define DEFAULT_TRANSCYCLE    3600
 #endif
 
-#define DEFAULT_SERVICE       "/DummyServ.php/"
-#define DEFAULT_SERVER        "192.168.1.6"
+#define MY_NTP_SERVER "at.pool.ntp.org"
+#define MY_TZ "CET-1CEST,M3.5.0,M10.5.0/3"
+
+#define DEFAULT_PORT          "8080"
+#define DEFAULT_SERVER        "192.168.2.87"
 // --------- some software stuff  ---------
 
 
@@ -269,6 +295,25 @@
 
 /*
   history
+  --------------------- V4.0a
+  03.11.22  change to cpp-files instead ino. Networkpage removed (we use the WiFiManager), Platformio with new library management, lots of other minor things
+  --------------------- V3.0a
+  09.10.22  doing the Wifi-Stuff with the WifiManager from github
+  --------------------- V2.3j
+  08.09.22  removed some lines with TimeDB and log.entry because of problems and crashes
+  --------------------- V2.3h
+  10.08.22  new websites in seperate file (html.h)
+  --------------------- V2.3g
+  10.08.22  obviously we dont need the while loop with wifi.multirun
+  --------------------- V2.3f
+  10.08.22  H_RELAY is also working with new timer interrupt
+  --------------------- V2.3e
+  10.08.22  timer service routines are seperated for each service
+  --------------------- V2.3d
+  23.07.22  in some cases the blue-LED remains on when with TFT
+            Display on Info Page
+  --------------------- V2.3c
+  23.07.22  first version with TFT and DS1820
   --------------------- V2.3b
   23.07.22  TFT code cleanup
   --------------------- V2.3a

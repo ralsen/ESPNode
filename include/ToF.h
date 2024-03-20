@@ -7,6 +7,7 @@
 
   hints:    -
 */
+#include <Arduino.h>
 
 #if (H_TOF == H_TRUE)
 # ifndef _TOF_H_

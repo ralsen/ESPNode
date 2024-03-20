@@ -9,9 +9,10 @@ hallo
   hints:    ???
 */
 
+#include <Arduino.h>
 #include  "Settings.h"
-#include  "WebServer.H"
 #include  "Config.h"
+#include <ESP8266WiFi.h>
 
 #include <EEPROM.h>
 
@@ -57,7 +58,6 @@ void LoadConfig() {
   EEPROM.end();
   sysData.MeasuringCycle = SEND_AFTER_BOOT_SEC; //cfgData.MeasuringCycle;
   sysData.TransmitCycle = SEND_AFTER_BOOT_SEC+1;
-  sysData.APTimeout = DEFAULT_APTIMEOUT;
   sysData.blinkmode = BLKMODEOFF;
   sysData.DspTimeout = 100;
 }
@@ -72,15 +72,16 @@ void SetToDefault(){
   strcpy (cfgData.hostname, DEFAULT_HOSTNAME);
   strcpy (cfgData.APname, DEFAULT_APNAME);
   strcpy (cfgData.MACAddress, (WiFi.macAddress()).c_str());
+  //FOL strcpy (cfgData.hostname, String(ESP.getChipId()).c_str());
+  itoa (ESP.getChipId(), cfgData.ChipID, 16); 
   cfgData.LocalIP[0]=0;
   cfgData.fixip[0]=0;
   strcpy (cfgData.server, DEFAULT_SERVER);
-  strcpy (cfgData.service, DEFAULT_SERVICE);
+  strcpy (cfgData.port, DEFAULT_PORT);
   cfgData.MeasuringCycle = DEFAULT_MEASCYCLE;
   cfgData.TransmitCycle = DEFAULT_TRANSCYCLE;
   cfgData.PageReload  = DEFAULT_PAGERELOAD;
-  cfgData.APTimeout = DEFAULT_APTIMEOUT;
-  cfgData.hash = CalcHashConfig();
+  //cfgData.hash = CalcHashConfig();
   SaveConfig();
 }
 

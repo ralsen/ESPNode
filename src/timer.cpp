@@ -7,31 +7,40 @@
 
   hints:    ???
 */
-
+#include <Arduino.h>
 #include  "Settings.h"
-#include  "timer.h"
-#include  "DS1820.h"
-#include  "version.h"
 #include  "Config.h"
+
+#include  "timer.h"
+
+#if( H_DS1820 == H_TRUE )
+  #include  "DS1820.h"
+#endif
+
+#if( H_TOF == H_TRUE )
+  #include  "ToF.h"
+#endif
+
+#include  "version.h"
 #include  <Ticker.h>
 
+#include  <string.h>
+
 int key;            // holds the button codes for internal use
-static int  tiki;           // counts the ticks how long a key is pressed
+static int  oldKey;           // counts the ticks how long a key is pressed
 static long blkcnt;
 int LEDCrit;
 
 // count object for ISR
-Ticker CntTicks;
-Ticker CntmTicks;
-
-long uptime;
+Ticker TIs_Uptime;
+Ticker TIs_TransmitCycle;
+Ticker TIs_MeasuringCycle;
+Ticker TIms_DspTimeout;
+Ticker TIms_Key;
+Ticker TIms_LED;
 #if (H_RELAY == H_TRUE)
-long ontime;
-long offtime;
-long cycles;
+Ticker TIs_Relais;
 #endif
-
-long Intervall;
 
 /* ---------------------------------------------------------------
  *
@@ -45,32 +54,15 @@ void Init_Key()
 {
  // Setup the button with an internal pull-up :
   pinMode(H_BUTTON_PIN,INPUT_PULLUP);
-  sysData.mode = MODE_STA;       // normal mode at start
   key = KEY_NO;           // no key is pressed
   blkcnt = BLKMODEOFF;
-  tiki = KEY_WAIT;
+  oldKey = KEY_NO;
   LEDCrit = H_FALSE;
 }
 
 
-void milli_ISR()
+void TISms_LED()
 {
-  if(sysData.DspTimeout) sysData.DspTimeout--;
-
-  key = !DIG_READ(H_BUTTON_PIN);
-
-  if( key ){
-    if( tiki ) tiki--;
-  }
-  else {
-    if( tiki == 0 ){
-      if( (sysData.mode == MODE_AP) || (sysData.mode == MODE_STA) ){
-        sysData.mode = (sysData.mode == MODE_AP) ? MODE_CHG_TO_STA:MODE_CHG_TO_AP;
-      }
-    }
-    tiki = KEY_WAIT;
-  }
-
   if (blkcnt) blkcnt--;
 
   while (LEDCrit);
@@ -82,39 +74,48 @@ void milli_ISR()
 
     if( sysData.blinkmode != BLKMODEOFF ){
       blkcnt = sysData.blinktime;
-      if(!((sysData.mode == MODE_STA) && (cfgData.LED == H_FALSE)))
+      //if(!((sysData.WifiRes == MODE_STA) && (cfgData.LED == H_FALSE)))
         DIG_WRITE (H_LED_PIN, !DIG_READ(H_LED_PIN));
     }
   }
 }
 
+void TISms_Key(){
+  key = !DIG_READ(H_BUTTON_PIN);
+  if (key == oldKey)
+    key = KEY_NO;
+  else
+    oldKey = key;
+}
 
+void TISms_DspTimeout(){
+  if(sysData.DspTimeout) sysData.DspTimeout--;
+}
+
+void TISs_Uptime(){
+  sysData.uptime++;
+}
+
+void TISs_TransmitCycle(){
+  if( sysData.TransmitCycle ) sysData.TransmitCycle--;
+}
 
 //  ISR_count() counts the life tickers
-void sec_ISR()
-{
 # if (H_RELAY == H_TRUE)
+void TISs_Relais(){
   if( DIG_READ(H_RELAY_PIN) )
-    ontime++;
+    sysData.ontime++;
   else
-    offtime++;
+    sysData.offtime++;
+}
 # endif
 
-/*DBGL("LED: ")
-DBGF(cfgData.LED)
-DBGL("blink: ")
-DBGF(sysData.blinkmode)
-DBGL("Mode: ")
-DBGF(sysData.mode)
-*/
-  uptime++;
-  if( sysData.APTimeout ) sysData.APTimeout--;
-
-  if( sysData.TransmitCycle ) sysData.TransmitCycle--;
-
-  if(sysData.mode == MODE_STA){
-    if( sysData.MeasuringCycle )
+void TISs_MeasuringCycle(){
+/*  wifipes muss irgendwie anders geloest werden
+  if(sysData.WifiRes){
+    if( sysData.MeasuringCycle ){
       sysData.MeasuringCycle--;
+      }
       else{
         sysData.MeasuringCycle = cfgData.MeasuringCycle;
         #if( H_DS1820 == H_TRUE )
@@ -124,25 +125,25 @@ DBGF(sysData.mode)
         ToFDistance();
         #endif
       }
-  }
+  }*/
 }
 
-
 void LEDControl(long mode, long time){
-  DBGF( "LEDControl()" );
+  //DBGF( "LEDControl()" );
 
   LEDCrit = H_TRUE;
-  #if defined(SONOFF_BASIC_SWITCH)
+  
+  if(!strcmp(DEV_TYPE, "NODEMCU"))
+    DIG_WRITE (H_LED_PIN, HIGH);
+
+  if(!strcmp(DEV_TYPE, "SONOFF_BASIC"))
     DIG_WRITE (H_LED_PIN, !DIG_READ(H_RELAY_PIN));
-  #elif defined(SONOFF_S20_SWITCH)
+
+  if(!strcmp(DEV_TYPE, "SONOFF_S20"))
     DIG_WRITE (H_LED_PIN, HIGH);
-  #elif defined (NODEMCU_DS1820)
+
+  if(!strcmp(DEV_TYPE, "D1MINI"))
     DIG_WRITE (H_LED_PIN, HIGH);
-  #elif defined(D1MINI_ToF)
-    DIG_WRITE (H_LED_PIN, HIGH);
-  #elif defined(D1MINI_DS1820)
-    DIG_WRITE (H_LED_PIN, HIGH);
-  #endif
 
   sysData.blinktime = time;
   if(cfgData.LED)
@@ -154,21 +155,20 @@ void LEDControl(long mode, long time){
 }
 
 TimeDB::TimeDB(String server, String zone)
-{
-  Serial.print("getting time from: ");
-  Serial.print(server);
-  Serial.print(" / Timezone: ");
-  Serial.println(zone);
+{ //FOL
   configTime(MY_TZ, MY_NTP_SERVER);   // --> Here is the IMPORTANT ONE LINER needed in your sketch!
   time(&e_now);                       // read the current time
   localtime_r(&e_now, &tm_t);         // update the structure tm with the current time
+  
 }
 
+/*
 time_t TimeDB::getTime(){
 // get the time from whereever you want and pit it in here
   Serial.println("gettime in TimeDB");
   return 0;
 }
+*/
 
 String TimeDB::zeroPad(int number) {
   if (number < 10) {
@@ -178,25 +178,26 @@ String TimeDB::zeroPad(int number) {
   }
 }
 
+
 String TimeDB::showTime(){
   String str;
 
   time(&e_now);                       // read the current time
   localtime_r(&e_now, &tm_t);           // update the structure tm with the current time
   str = ("year:");
-  str += tm_t.tm_year + 1900;  // years since 1900
+  str += String(tm_t.tm_year + 1900);  // years since 1900
   str += "\tmonth:";
-  str += tm_t.tm_mon + 1;      // January = 0 (!)
+  str += String(tm_t.tm_mon + 1);      // January = 0 (!)
   str += "\tday:";
-  str += tm_t.tm_mday;         // day of month
+  str += String(tm_t.tm_mday);         // day of month
   str += "\thour:";
-  str += tm_t.tm_hour;         // hours since midnight  0-23
+  str += String(tm_t.tm_hour);         // hours since midnight  0-23
   str += "\tmin:";
-  str += tm_t.tm_min;          // minutes after the hour  0-59
+  str += String(tm_t.tm_min);          // minutes after the hour  0-59
   str += "\tsec:";
-  str += tm_t.tm_sec;          // seconds after the minute  0-61*
+  str += String(tm_t.tm_sec);          // seconds after the minute  0-61*
   str += "\twday";
-  str += tm_t.tm_wday;         // days since Sunday 0-6
+  str += String(tm_t.tm_wday);         // days since Sunday 0-6
   if (tm_t.tm_isdst == 1)             // Daylight Saving Time flag
     str += "\tDST";
   else
@@ -204,6 +205,7 @@ String TimeDB::showTime(){
   str += "\n\r";
   return str;
 }
+
 
 String TimeDB::getTimestr(){
   String str;
