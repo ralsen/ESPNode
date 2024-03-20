@@ -16,7 +16,7 @@ Arduino
 #include "Settings.h"
 #include "Config.h"
 
-void DoNormStuff(void);
+void transmitData(void);
 
 #include "timer.h"
 #include "WebServer.h"
@@ -189,8 +189,10 @@ void setup() {
   TIs_Uptime.attach(1, TISs_Uptime);
   TIs_TransmitCycle.attach(1, TISs_TransmitCycle);
   TIs_MeasuringCycle.attach(1, TISs_MeasuringCycle);
-  //TIs_post.attach(5, DoNormStuff);
   
+  sysData.MeasuringCycle = 0;
+  sysData.TransmitCycle = 3;
+
   #if(H_TFT_18 == H_TRUE)
   tft_info();
   #endif
@@ -227,8 +229,8 @@ void loop() {
   //DIG_WRITE (D0, !DIG_READ(D0));
   //logit.entry("...");
   //Serial.println(sysData.TransmitCycle);
-  if ((cfgData.TransmitCycle) && (!sysData.TransmitCycle)){
-      DoNormStuff();
+  if (!sysData.TransmitCycle){
+      transmitData();
   }
   
   #if (H_RELAY == true)
@@ -251,55 +253,40 @@ void loop() {
 
 // -----------------------------------------------------------------------------
 
-unsigned long lastTime = 0;
-// Timer set to 10 minutes (600000)
-//unsigned long timerDelay = 600000;
-// Set timer to 5 seconds (5000)
-unsigned long timerDelay = 1000;
-
-void DoNormStuff() {
+void transmitData() {
   // !!!hier muss noch zwischen Mess+Transmitzyklen unterschieden werden!!!
-  DBGF( "############################ DoNormStuff() #######################################" );
+  DBGF( "############################ transmitData() #######################################" );
   String header;
   String serverName = String F("http://") + String(cfgData.server) + String F(":") + String(cfgData.port); //"http://192.168.1.53:8080/";
   //serverName += String F("/");
 
   LEDControl (BLKMODEON, BLKALLERT);
 
-    if ((millis() - lastTime) > timerDelay) {
-    //Check WiFi connection status
-      Serial.println(WiFi.status());
-      Serial.println(WL_CONNECTED);
-
-
-      WiFiClient client;
-      HTTPClient http;
-      
-      http.begin(client, serverName);
-      http.addHeader("Content-Type", "application/json");
-      String httpRequestData =  buildDict();
-      // Send HTTP POST request
-      Serial.println(client);
-      Serial.println(serverName);
-      Serial.print("sending: ");
-      Serial.println(httpRequestData);
-      int httpResponseCode = http.POST(httpRequestData);
-      if (httpResponseCode == 301){
-        sysData.CntGoodTrans++;
-      }
-      else {
-        sysData.CntBadTrans++;
-        logit.entry("server send failed...");
-      }
-
-      Serial.println(http.getString());
-      Serial.print("HTTP Response code: ");
-      Serial.println(httpResponseCode);
-        
-      // Free resources
-      http.end();
-    lastTime = millis();
+  //Check WiFi connection status
+  WiFiClient client;
+  HTTPClient http;
+  
+  http.begin(client, serverName);
+  http.addHeader("Content-Type", "application/json");
+  String httpRequestData =  buildDict();
+  Serial.print("sending to: ");
+  Serial.println(serverName);
+  Serial.println(httpRequestData);
+  int httpResponseCode = http.POST(httpRequestData);
+  if (httpResponseCode == 301){
+    sysData.CntGoodTrans++;
   }
+  else {
+    sysData.CntBadTrans++;
+    logit.entry("server send failed...");
+  }
+
+  Serial.println(http.getString());
+  Serial.print("HTTP Response code: ");
+  Serial.println(httpResponseCode);
+    
+  // Free resources
+  http.end();
   //Serial.print(TimeDB.showTime());
   // Auswertung was der Server gemeldet hat und entsprechend handeln
   DBGL("\r\n------------------------------------------------------------------------------------\r\n");
