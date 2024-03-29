@@ -10,5 +10,5 @@ firmware*
 *.lnk
 *.map
 data
-
+.DS*
 
