@@ -17,6 +17,7 @@
 #include <ESP8266WebServer.h>
 #include <LittleFS.h>
 #include <string.h>
+#include "WiFi.h"
 //##include <iostream>
 //#include <WiFi.h>
 
@@ -132,18 +133,70 @@ void startWebServer(){
   server.on(F("/" "scan"), handleScan);
   server.on(F("/favicon.ico"), handleFavicon);
   server.onNotFound( handleNotFound );
-  server.on(F("/updatex"), handleUpdate);
+    server.on(F("/update"), HTTP_POST, handleUpdate_part1, handleUpdate_part2);
   //#httpUpdater.setup(&server);
   server.begin();
   DBGF("startWebServer() done.")
 }
 
+void handleUpdate_part1() {
+    DBGF("handleUpdate_part1()");
+    server.sendHeader(F("Connection"), "close");
+    sysData.CntPageDelivered++;
+    server.send(200, F(W_TEXT_PLAIN), (Update.hasError()) ? F("FAIL") : F("OK"));
+    ESP.restart();
+}
+
+void handleUpdate_part2() {
+    //DBGF("handleUpdate_part2()");
+    char buf[80];
+    HTTPUpload& upload = server.upload();
+    yield();
+    if (upload.status == UPLOAD_FILE_START) {
+      DBGLN("UPLOAD_FILE_START");
+      Serial.setDebugOutput(true);
+      //WiFiUDP::stopAll();
+      Serial.printf(("Update: %s\n"), upload.filename.c_str());
+      uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
+      DBGL("maxSketchSpace: ");
+      sprintf(buf, "Flash size: 0x%x; needed: 0x%x Byte; row needed 0x%x", ESP.getFlashChipSize(), maxSketchSpace, ESP.getFreeSketchSpace());
+      DBGLN(buf);
+      sprintf(buf, "\r\n act. Sketchsize: 0x%x", ESP.getSketchSize());
+      DBGLN(buf);
+      sprintf(buf, "\r\n act. Chipsize: 0x%x", ESP.getFlashChipSize());
+      DBGLN(buf);
+      if (!Update.begin(maxSketchSpace+0x1000)) { //start with max available size
+        DBGLN("could not begin");
+        Update.printError(Serial);
+      }
+    } else if (upload.status == UPLOAD_FILE_WRITE) {
+      DBG(".");
+      if (Update.write(upload.buf, upload.currentSize) != upload.currentSize) {
+        DBGLN("Update.write");
+        Update.printError(Serial);
+      }
+    } else if (upload.status == UPLOAD_FILE_END) {
+      DBGLN("\r\nUPLOAD_FILE_END");
+      if (Update.end(true)) { //true to set the size to the current progress
+        DBGLN ("Update OK");
+        Serial.printf("Update Success: %u, 0x%x\nRebooting...\n", upload.totalSize, upload.totalSize);
+      } else {
+        DBGLN ("Update failed");
+        Update.printError(Serial);
+      }
+      Serial.setDebugOutput(false);
+    }
+    yield();
+}
+
 void handleUpdate(){
     DBGF("handleUpdate");
     Serial.println("jetzt mach ich ein Update!!!");
+    
 //    httpUpdater.setup(&server);
 //    httpServer.begin();
     Serial.println("habe fertig!!!");
+    server.send(404, F(W_TEXT_HTML), "habe fertich");
 }
 /*  all webserver handlers
  */

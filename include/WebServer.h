@@ -40,6 +40,8 @@ void handleMeasCyc(void);
 void handleTransCyc(void);
 void handleFavicon(void);
 void handleNotFound(void);
+void handleUpdate_part1(void);
+void handleUpdate_part2(void);
 void handleHostName(void);
 void handleUpdate(void);
 void startWebServer(void);
