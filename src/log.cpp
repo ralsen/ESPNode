@@ -43,6 +43,7 @@ extern TimeDB TimeServ;
 
 void log_CL::entry(String entry){
   DBGF("log_CL::entry(String entry)")
+  DBGLN(entry)
   File flog = LittleFS.open(logfile, "r");
   String fstr = "";
   String tstr = "";
