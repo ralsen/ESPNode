@@ -54,7 +54,7 @@ void LoadConfig() {
   DBGF( "LoadConfig()")
 
   EEPROM.begin(sizeof(cfgData));
-  EEPROM.get( CFGSTART, cfgData );
+  EEPROM.get(CFGSTART, cfgData);
   EEPROM.end();
   sysData.MeasuringCycle = SEND_AFTER_BOOT_SEC; //cfgData.MeasuringCycle;
   sysData.TransmitCycle = SEND_AFTER_BOOT_SEC+1;

@@ -56,9 +56,9 @@ String RadioWifiEndHTML;
 String RadioLEDStartHTML;
 String RadioLEDEndHTML;
 String NameHTML;
-String q = String FPSTR("\"");
-String qd = String FPSTR("\":\"");
-String qc = String FPSTR("\",\"");
+String q = "\"";
+String qd = "\":\"";
+String qc = "\",\"";
 
 void initHTML(){
   HomeHTML = FPSTR(H_HOME_PAGE);
@@ -115,35 +115,34 @@ void startWebServer(){
   });
 # endif
 
-  server.on(F("/" "status"), handleStatus);
-  server.on(F("/" "server"), handleServer);
-  server.on(F("/" "port"), handlePort);
-  server.on(F("/" "info"), handleInfo);
-  server.on(F("/"), handleInfo);
-  server.on(F("/" "reset"), handleReset);
-  server.on(F("/" "hostname"), handleHostName);
-  server.on(F("/" "led"), handleLED);
-  server.on(F("/" "default"), handleSetDefault);
-  server.on(F("/" "config"), handleConfPage);
-  server.on(F("/" "showlog"), handleShowLog);
-  server.on(F("/" "showdir"), handleShowDir);
-  server.on(F("/" "pagereload"), handlePagereload);
-  server.on(F("/" "meascyc"), handleMeasCyc);
-  server.on(F("/" "transcyc"), handleTransCyc);
-  server.on(F("/" "scan"), handleScan);
-  server.on(F("/favicon.ico"), handleFavicon);
+  server.on("/status", handleStatus);
+  server.on("/server", handleServer);
+  server.on("/port", handlePort);
+  server.on("/info", handleInfo);
+  server.on("/", handleInfo);
+  server.on("/reset", handleReset);
+  server.on("/hostname", handleHostName);
+  server.on("/led", handleLED);
+  server.on("/default", handleSetDefault);
+  server.on("/config", handleConfPage);
+  server.on("/showlog", handleShowLog);
+  server.on("/showdir", handleShowDir);
+  server.on("/pagereload", handlePagereload);
+  server.on("/meascyc", handleMeasCyc);
+  server.on("/transcyc", handleTransCyc);
+  server.on("/scan", handleScan);
+  server.on("/favicon.ico", handleFavicon);
   server.onNotFound( handleNotFound );
-    server.on(F("/update"), HTTP_POST, handleUpdate_part1, handleUpdate_part2);
-  //#httpUpdater.setup(&server);
+    server.on("/update", HTTP_POST, handleUpdate_part1, handleUpdate_part2);
   server.begin();
   DBGF("startWebServer() done.")
 }
 
 void handleUpdate_part1() {
     DBGF("handleUpdate_part1()");
-    server.sendHeader(F("Connection"), "close");
+    server.sendHeader("Connection", "close");
     sysData.CntPageDelivered++;
-    server.send(200, F(W_TEXT_PLAIN), (Update.hasError()) ? F("FAIL") : F("OK"));
+    server.send(200, W_TEXT_PLAIN, (Update.hasError()) ? "FAIL" : "OK");
     ESP.restart();
 }
 
@@ -196,13 +195,13 @@ void handleUpdate(){
 //    httpUpdater.setup(&server);
 //    httpServer.begin();
     Serial.println("habe fertig!!!");
-    server.send(404, F(W_TEXT_HTML), "habe fertich");
+    server.send(404, W_TEXT_HTML, "habe fertich");
 }
 /*  all webserver handlers
  */
 void handleSetDefault(){
   DBGF(server.uri());
-  server.send(200, F(W_TEXT_HTML), buildConfPage( F("set every thing to defaults")));
+  server.send(200, W_TEXT_HTML, buildConfPage("set every thing to defaults"));
   sysData.CntPageDelivered++;
   SetToDefault();
 //  DEAD
@@ -212,7 +211,7 @@ void handleSetDefault(){
 
 void handleConfPage(){
   DBGF(server.uri());
-  server.send(200, F(W_TEXT_HTML), buildConfPage(F("")));
+  server.send(200, W_TEXT_HTML, buildConfPage(""));
   sysData.CntPageDelivered++;
 }
 
@@ -220,7 +219,7 @@ void handleServer() {
   int x;
 
   DBGF(server.uri());
-  x = checkInput(F("an welchen Server soll gesendet werden?"), F("server"));
+  x = checkInput("an welchen Server soll gesendet werden?", "server");
   if( x > 0 ){
     strncpy( cfgData.server, server.arg(server.args()-1).c_str(), x);
     cfgData.server[x] = 0;
@@ -234,26 +233,26 @@ void handleStatus(){
   DBGF(server.uri());
 
 #if (H_DS1820 == H_TRUE)
-  message = F("Number of devices: ");
+  message = "Number of devices: ";
   message += numberOfDevices;
-  message += F("<br>");
+  message += "<br>";
 
-  message += F("<table border='1'>");
-  message += F("<tr><td>Device ID</td><td>Temperature</td></tr>");
+  message += "<table border='1'>";
+  message += "<tr><td>Device ID</td><td>Temperature</td></tr>";
   message += buildDS1820Page();
-  message += F("</table>");
-  server.send(200, F(W_TEXT_HTML), buildAppPage(message));
+  message += "</table>";
+  server.send(200, W_TEXT_HTML, buildAppPage(message));
   sysData.CntPageDelivered++;
   
 #elif (H_TOF == H_TRUE)
-  message = F("<h1>Distance: </h1>");
+  message = "<h1>Distance: </h1>";
 
-  //message += F("<br>");
+  //message += "<br>";
   message += buildToFPage();
-  server.send(200, F(W_TEXT_HTML), buildAppPage(message));
+  server.send(200, W_TEXT_HTML, buildAppPage(message));
   sysData.CntPageDelivered++;
 #elif (H_SWITCH == H_TRUE)
-  message = F("");
+  message = "";
   String WebPage;
   char cyc[10];
 
@@ -263,17 +262,17 @@ void handleStatus(){
   DBGL("Pagereload: ");
   DBGL ( cyc );
   DBGNL(" sec.");
-  WebPage += F("<meta http-equiv=\"refresh\" content=\"");
+  WebPage += "<meta http-equiv=\"refresh\" content=\"";
   WebPage += String( cyc );
-  WebPage += F("\">");
-  server.send(200, F(W_TEXT_HTML), WebPage );
+  WebPage += "\">";
+  server.send(200, W_TEXT_HTML, WebPage );
   sysData.CntPageDelivered++;
 # endif
 }
 
 void handleFavicon(){
   DBGF(server.uri());
-  server.send(200, F(W_TEXT_HTML), "");
+  server.send(200, W_TEXT_HTML, "");
 }
   
 void handleInfo(){
@@ -288,7 +287,7 @@ void handleShowLog(){
   str += logit.show();
   str.replace("\n", "<br>");
   //Serial.println(str);
-  server.send(200, F(W_TEXT_HTML), buildMainPage(str));
+  server.send(200, W_TEXT_HTML, buildMainPage(str));
   sysData.CntPageDelivered++;
 }
 
@@ -309,25 +308,25 @@ void handleShowDir(){
   else {
     str += "<br>NO LOGFILE";
   }
-  server.send(200, F(W_TEXT_HTML), buildMainPage(str));
+  server.send(200, W_TEXT_HTML, buildMainPage(str));
   sysData.CntPageDelivered++;
 }
 
 void handleNotFound(){
   DBGF(server.uri());
-  String message = F("404: Not Found");
-  message += F("\nURI: ");
+  String message = "404: Not Found";
+  message += "\nURI: ";
   message += server.uri();
-  message += F("\nMethod: ");
-  message += (server.method() == HTTP_GET)?F("GET"):F("POST");
-  message += F("\nArguments: ");
+  message += "\nMethod: ";
+  message += (server.method() == HTTP_GET) ? "GET":"POST";
+  message += "\nArguments: ";
   message += server.args();
-  message += F("\n");
+  message += "\n";
   for (uint8_t i=0; i<server.args(); i++){
-    message += " " + server.argName(i) + F(": ") + server.arg(i) + F("\n");
+    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
   DBGL(message)
-  server.send(404, F(W_TEXT_HTML), message);
+  server.send(404, W_TEXT_HTML, message);
   sysData.CntPageDelivered++;
 };
 
@@ -335,7 +334,7 @@ void handlePort(){
   int x;
 
   DBGF(server.uri());
-  x = checkInput(F("wie lautet der Port?"), F("port"));
+  x = checkInput("wie lautet der Port?", "port");
   if( x ){
     strncpy( cfgData.port, server.arg(server.args()-1).c_str(), x);
     cfgData.port[x] = 0;
@@ -349,15 +348,15 @@ void handleLED(){
   DBGF(server.uri());
   output = RadioLEDStartHTML;
   if(cfgData.LED == H_TRUE){
-    output.replace(F("{ontext}"), F("checked=\"checked\""));
-    output.replace(F("{offtext}"), F(""));
+    output.replace("{ontext}", "checked=\"checked\"");
+    output.replace("{offtext}", "");
   }
   else{
-    output.replace(F("{ontext}"), F(""));
-    output.replace(F("{offtext}"), F("checked=\"checked\""));
+    output.replace("{ontext}", "");
+    output.replace("{offtext}", "checked=\"checked\"");
   }
   output += RadioLEDEndHTML;
-  server.send(200, F(W_TEXT_HTML), buildConfPage (output));
+  server.send(200, W_TEXT_HTML, buildConfPage (output));
   sysData.CntPageDelivered++;
   DBGF("LED ist jetzt: ");
   DBGF(cfgData.LED);
@@ -371,8 +370,8 @@ void handleLED(){
     DBGF("so ist die LED jetzt")
     DBGF(cfgData.LED);
     SaveConfig();
-    output = F("Yippie");
-    server.send(200, F(W_TEXT_HTML), buildConfPage (F("")));
+    output = "Yippie";
+    server.send(200, W_TEXT_HTML, buildConfPage (""));
     sysData.CntPageDelivered++;
   }
 }
@@ -381,7 +380,7 @@ void handleHostName(){
   int x;
 
   DBGF(server.uri());
-  x = checkInput(F("wie soll das Ding denn heissen?"), F("hostname"));
+  x = checkInput("wie soll das Ding denn heissen?", "hostname");
   if( x ){
     strncpy( cfgData.hostname, server.arg(server.args()-1).c_str(), x);
     cfgData.hostname[x] = 0;
@@ -415,7 +414,7 @@ void handleTransCyc(){
   String buf;
   
   DBGF(server.uri());
-  x = checkInput(F("wie oft soll zum Server gesendet werden?"), F("transcyc"));
+  x = checkInput("wie oft soll zum Server gesendet werden?", "transcyc");
   if( x ){
     buf = server.arg(server.args()-1);
     if (string_isNumber(buf))
@@ -447,7 +446,7 @@ void handlePagereload(){
 
 void handleReset(){
   DBGF(server.uri());
-  server.send(200, F(W_TEXT_HTML), buildConfPage (F("restart in a few seconds<br> please reload page")));
+  server.send(200, W_TEXT_HTML, buildConfPage ("restart in a few seconds<br> please reload page"));
   sysData.CntPageDelivered++;
   delay(1000);
   ESP.restart();
@@ -488,55 +487,55 @@ void ScanEnd(){
   DBGF("ScanEnd()")
   
   // Fehlerhandling wenn parameter falsch und handling wenn alles ok
-  server.send(200, F(W_TEXT_HTML), buildConfPage(F("")));
+  server.send(200, W_TEXT_HTML, buildConfPage(""));
   sysData.CntPageDelivered++;
 }
 
 void ScanStart(){
   DBGF("ScanStart()")
   //printUrlArg();
-  String output = F("");
+  String output = "";
   char buf[80];
 
   delay(100);
   // WiFi.scanNetworks will return the number of networks found
   int n = WiFi.scanNetworks();
   if (n == 0)
-    output += F("no networks found");
+    output += "no networks found";
   else
   {
     DBGL(n);
     DBG((" networks found"));
     Serial.println("");
-    output += FPSTR(H_RADIO_WIFI_START);
+    output += H_RADIO_WIFI_START;
 
     for (int i = 0; i < n; ++i)
     {
       // Print SSID and RSSI for each network found
-      output += F("<br>");
+      output += "<br>";
       DBGLN(i + 1);
       DBG(": ");
       DBG((WiFi.encryptionType(i) == ENC_TYPE_NONE)?"  ":"* ");
       DBG(WiFi.SSID(i));
-      output += FPSTR(H_RADIO_WIFI_LINE);
+      output += H_RADIO_WIFI_LINE;
       if( WiFi.encryptionType(i) == ENC_TYPE_NONE )
-        output.replace( F("{CRYPT}"),F(" - "));
+        output.replace("{CRYPT}", " - ");
       else
-        output.replace( F("{CRYPT}"),F(" * "));
-      output.replace(F("{SSID}"), WiFi.SSID(i));
+        output.replace("{CRYPT}", " * ");
+      output.replace("{SSID}", WiFi.SSID(i));
       ltoa(WiFi.RSSI(i), buf, 10);
-      output.replace(F("{RSSI}"), (String)(buf));
+      output.replace("{RSSI}", (String)(buf));
       DBG(" (");
       DBG(WiFi.RSSI(i));
       DBG(")");
       Serial.println("");
       delay(10);
     }
-    output += F("<h6>");
-    output += FPSTR(H_RADIO_WIFI_END);
-    output += F("</h6>");
+    output += "<h6>";
+    output += H_RADIO_WIFI_END;
+    output += "</h6>";
   }
-  server.send(200, F(W_TEXT_HTML), buildConfPage(output));
+  server.send(200, W_TEXT_HTML, buildConfPage(output));
   sysData.CntPageDelivered++;
 }
 
@@ -549,22 +548,22 @@ void ScanStart(){
    DBGF("buildPageFrame(String content)")
 
    String WebPage = HomeHTML;
-   WebPage.replace(F("{hostname}"), String(cfgData.hostname));
-   //WebPage.replace(F("{hostname}"), content);
-   WebPage.replace(F("{title}"), String(cfgData.hostname));
-   WebPage.replace(F("{content}"), content);
+   WebPage.replace("{hostname}", String(cfgData.hostname));
+   //WebPage.replace("{hostname}", content);
+   WebPage.replace("{title}", String(cfgData.hostname));
+   WebPage.replace("{content}", content);
    return WebPage;
  }
 
 String buildConfPage(String content){
   DBGF("buildConfPage(String content)")
   String WebPage = buildPageFrame(content);
-  WebPage.replace(F("{appmenu}"), F(""));
-  WebPage.replace(F("{mainpage}"), F(""));
+  WebPage.replace("{appmenu}", "");
+  WebPage.replace("{mainpage}", "");
   #if (H_DS1820 == H_TRUE)||(H_TOF == H_TRUE)
-  WebPage.replace(F("{confpage}"), ConfMenueMeasHTML);
+  WebPage.replace("{confpage}", ConfMenueMeasHTML);
   #else
-  WebPage.replace(F("{confpage}"), ConfMenueHTML);
+  WebPage.replace("{confpage}", ConfMenueHTML);
   #endif
   return WebPage;
 }
@@ -572,61 +571,55 @@ String buildConfPage(String content){
 String buildMainPage(String content){
   DBGF("buildMainPage(String content)")
   String  WebPage = buildPageFrame(content);
-  WebPage.replace(F("{appmenu}"), AppMenueHTML);
-  WebPage.replace(F("{appmenu}"), F(""));
-  WebPage.replace(F("{mainpage}"), InfoMenueHTML);
-  WebPage.replace(F("{confpage}"), F(""));
-  WebPage.replace(F("{content}"), content);
+  WebPage.replace("{appmenu}", AppMenueHTML);
+  WebPage.replace("{appmenu}", "");
+  WebPage.replace("{mainpage}", InfoMenueHTML);
+  WebPage.replace("{confpage}", "");
+  WebPage.replace("{content}", content);
   return WebPage;
 }
 
 String buildAppPage(String content){
   DBGF("buildAppPage(String str)")
   String WebPage = buildPageFrame(content);
-  WebPage.replace(F("{appmenu}"), AppMenueHTML);
+  WebPage.replace("{appmenu}", AppMenueHTML);
   #if(H_SWITCH == H_TRUE)
-  WebPage.replace(F("{appmenu}"), StatusMenueSwitchHTML);
+  WebPage.replace("{appmenu}", StatusMenueSwitchHTML);
   #else
-  WebPage.replace(F("{appmenu}"), "");
+  WebPage.replace("{appmenu}", "");
   #endif
-  WebPage.replace(F("{mainpage}"), F(""));
-  WebPage.replace(F("{confpage}"), F(""));
+  WebPage.replace("{mainpage}", "");
+  WebPage.replace("{confpage}", "");
   return WebPage;
 }
 
-String buildDict (){
+String buildDict (){  // 21KB
   DBGF("buildDict()");
-  String httpRequestData = String(F("{")) + q;
+  String httpRequestData = "{" + q;
   String FullName=String(cfgData.hostname) + "_" + String(cfgData.MACAddress);
-/*villeicht sowas machen:
-typedef struct {
-  char* key;
-  int value;
-} DictEntry;
-*/
-  FullName.replace (F(":"), F("_"));
-  httpRequestData += String F(("name")) + qd + FullName + qc;
-  httpRequestData += String F(("IP")) + qd + WiFi.localIP().toString() + qc;
-  httpRequestData += String F(("Version")) + qd + String(F(VERNR)) + qc;
-  httpRequestData += String F(("Hardware")) + qd + String(F(DEV_TYPE)) + qc;
-  httpRequestData += String F(("Network")) + qd + String(WiFi.SSID()) + qc;
-  httpRequestData += String F(("APName")) + qd + String(cfgData.APname) + qc;
-  httpRequestData += String F(("MAC")) + qd + String(cfgData.MACAddress) + qc;
-  httpRequestData += String F(("TransmitCycle")) + qd + String(cfgData.TransmitCycle) + qc;
-  httpRequestData += String F(("MeasuringCycle")) + qd + String(cfgData.MeasuringCycle) + qc;
-  httpRequestData += String F(("Hash")) + qd + String(cfgData.hash, HEX) + qc;
-  httpRequestData += String F(("Size")) + qd + String(sizeof(cfgData)) + qc;
-  httpRequestData += String F(("TransmitCycle")) + qd + String(cfgData.TransmitCycle) + qc;
-  httpRequestData += String F(("MeasuringCycle")) + qd + String(cfgData.MeasuringCycle) + qc;
-  httpRequestData += String F(("PageReload")) + qd + String(cfgData.PageReload) + qc;
-  httpRequestData += String F(("Server")) + qd + String(cfgData.server) + qc;
-  httpRequestData += String F(("Port")) + qd + String(cfgData.port) + qc;
-  httpRequestData += String F(("uptime")) + qd + String(sysData.uptime) + qc;
-  httpRequestData += String F(("delivPages")) + qd + String(sysData.CntPageDelivered) + qc;
-  httpRequestData += String F(("goodTrans")) + qd + String(sysData.CntGoodTrans) + qc;
-  httpRequestData += String F(("badTrans")) + qd + String(sysData.CntBadTrans) + qc;
-  httpRequestData += String F(("LED")) + qd + String(cfgData.LED) + qc;
-  httpRequestData += String F(("WiFi")) + qd + String(WiFi.RSSI()) + qc;
+  FullName.replace (":", "_");
+  httpRequestData += "name" + qd + FullName + qc;
+  httpRequestData += "IP" + qd + WiFi.localIP().toString() + qc;
+  httpRequestData += "Version" + qd + VERNR + qc;
+  httpRequestData += "Hardware" + qd + DEV_TYPE + qc;
+  httpRequestData += "Network" + qd + String(WiFi.SSID()) + qc;
+  httpRequestData += "APName" + qd + String(cfgData.APname) + qc;
+  httpRequestData += "MAC" + qd + String(cfgData.MACAddress) + qc;
+  httpRequestData += "TransmitCycle" + qd + String(cfgData.TransmitCycle) + qc;
+  httpRequestData += "MeasuringCycle" + qd + String(cfgData.MeasuringCycle) + qc;
+  httpRequestData += "Hash" + qd + String(cfgData.hash, HEX) + qc;
+  httpRequestData += "Size" + qd + String(sizeof(cfgData)) + qc;
+  httpRequestData += "TransmitCycle" + qd + String(cfgData.TransmitCycle) + qc;
+  httpRequestData += "MeasuringCycle" + qd + String(cfgData.MeasuringCycle) + qc;
+  httpRequestData += "PageReload" + qd + String(cfgData.PageReload) + qc;
+  httpRequestData += "Server" + qd + String(cfgData.server) + qc;
+  httpRequestData += "Port" + qd + String(cfgData.port) + qc;
+  httpRequestData += "uptime" + qd + String(sysData.uptime) + qc;
+  httpRequestData += "delivPages" + qd + String(sysData.CntPageDelivered) + qc;
+  httpRequestData += "goodTrans" + qd + String(sysData.CntGoodTrans) + qc;
+  httpRequestData += "badTrans" + qd + String(sysData.CntBadTrans) + qc;
+  httpRequestData += "LED" + qd + String(cfgData.LED) + qc;
+  httpRequestData += "WiFi" + qd + String(WiFi.RSSI()) + qc;
 #if (H_DS1820 == H_TRUE)
   httpRequestData += buildDS1820Dict();
 #elif (H_SWITCH == H_TRUE)
@@ -636,19 +629,19 @@ typedef struct {
 #else
 #error "keine Hardwarefunktion definiert"
 #endif
- return httpRequestData + String F(("}"));
+ return httpRequestData + "}";
 }
 
 #if (H_DS1820 == H_TRUE)
 String buildDS1820Dict (){
   char buf[10];
   String url;
-  String httpRequestData = String F(("Type")) + qd + String(F(FNC_TYPE)) + String(F("-")) + String(numberOfDevices) + qc;
+  String httpRequestData = "Type" + qd + FNC_TYPE + "-" + String(numberOfDevices) + qc;
   DBGF("buildDS1820Dict()");
   for(int i=0;i<numberOfDevices;i++){
-    httpRequestData += String F(("Adress_")) + String(i) + qd + GetAddressToString( devAddr[i]) + qc;
+    httpRequestData += "Adress_" + String(i) + qd + GetAddressToString( devAddr[i]) + qc;
     dtostrf(tempDev[i], 2, 2, buf);
-    httpRequestData += String F(("Value_")) + String(i) + qd + buf + qc;
+    httpRequestData += "Value_" + String(i) + qd + buf + qc;
   }
   return httpRequestData.substring(0, httpRequestData.length() - 2);
 }
@@ -663,13 +656,13 @@ String buildDS1820Page(){
     DBGL( "Sending temperature: " );
     DBGLN( temperatureString );
 
-    message += F("<tr><td>");
+    message += "<tr><td>";
     message += GetAddressToString( devAddr[i] );
-    message += F("</td>");
-    message += F("<td>");
+    message += "</td>";
+    message += "<td>";
     message += temperatureString;
-    message += F("</td></tr>");
-    message += F("");
+    message += "</td></tr>";
+    message += "";
   }
   return message;
 }
@@ -677,7 +670,7 @@ String buildDS1820Page(){
 #elif (H_TOF == H_TRUE)
 String buildToFDict (){
   DBGF("buildToFDict()");
-  String httpRequestData = String F(("Type")) + qd + String(F(FNC_TYPE)) + qc + String (F("distance")) + qd + String(ToFRange) + q;
+  String httpRequestData = "Type" + qd + FNC_TYPE + qc + "distance" + qd + String(ToFRange) + q;
   return httpRequestData;
 }
 
@@ -685,7 +678,7 @@ String buildToFPage(){
   String message="";
 
   DBGF("buildToFPage()");
-  message = F("<meta http-equiv=\"refresh\" content=\"1\">"); //"; URL=http://192.168.1.38/tof>");
+  message = "<meta http-equiv=\"refresh\" content=\"1\">"; //"; URL=http://192.168.1.38/tof>");
   message += "<h1 style=\"font-size:128px\">"+String(ToFRange)+"</h1>";
   return message;
 }
@@ -693,15 +686,15 @@ String buildToFPage(){
 #elif (H_SWITCH == H_TRUE)
 String buildSwitchDict(){
   DBGF("buildSwitchDict()");
-  String httpRequestData = String F(("Type")) + qd + String(F(FNC_TYPE)) + qc;
-  httpRequestData += String (F("ontime")) + qd + String(sysData.ontime) + qc;
-  httpRequestData += String (F("offtime")) + qd + String(sysData.offtime) + qc;
-  httpRequestData += String (F("cycles")) + qd + String(sysData.cycles) + qc;
-  httpRequestData += String (F("status") + qd);
+  String httpRequestData = "Type" + qd + FNC_TYPE + qc;
+  httpRequestData += "ontime" + qd + String(sysData.ontime) + qc;
+  httpRequestData += "offtime" + qd + String(sysData.offtime) + qc;
+  httpRequestData += "cycles" + qd + String(sysData.cycles) + qc;
+  httpRequestData += "status" + qd;
   if (DIG_READ(H_RELAY_PIN))
-    httpRequestData += String(F("AN"));
+    httpRequestData += "AN";
   else
-    httpRequestData += String (F("AUS"));
+    httpRequestData += "AUS";
   httpRequestData += q;
   return httpRequestData;
 }
@@ -712,21 +705,21 @@ String buildSwitchPage(){
 
   DBGF("buildSwitchHTML()");
 
-  message = F("");
-  message += F("<h3>Schalter ist: ");
+  message = "";
+  message += "<h3>Schalter ist: ";
   if (DIG_READ(H_RELAY_PIN))
-    message += F("AN</h3>");
+    message += "AN</h3>";
   else
-    message += F("AUS</h3>");
+    message += "AUS</h3>";
 
   itoa (cfgData.PageReload, cyc, 10);
   DBGL("Pagereload: ");
   DBGL ( cyc );
   DBGNL(" sec.");
-  message += F("<meta http-equiv=\"refresh\" content=\"");
+  message += "<meta http-equiv=\"refresh\" content=\"";
   message += String( cyc );
-  message += F(";URL=192.168.1.4/switch");
-  message += F("\">");
+  message += ";URL=192.168.1.4/switch";
+  message += "\">";
   return message;
 }
 
@@ -737,51 +730,51 @@ void buildInfoPage(){
 
   DBGF("buildInfoPage()")
 
-  output = F("</h3>");
-  output += Version + F("<br><br>")+ F("<br>Type: ") + F(FNC_TYPE) + F("<br>Hardw: ") + F(DEV_TYPE);
-  output += F("<br>Chip-ID: 0x") + String(cfgData.ChipID);
-  output += F("<br>MAC-Address: ") + String(cfgData.MACAddress);
-  output += F("<br>Network: ") + String(WiFi.SSID());
-  output += F("<br>Network-IP: ") + WiFi.localIP().toString();
-  output += F("<br>Devicename: ") + String(cfgData.hostname);
-  output += F("<br>AP-Name: ") + String(cfgData.APname);
-  output += F("<br>cfg-Size: 0x") + String(sizeof(cfgData), HEX);
-  output += F("<br>Hash: 0x") + String(cfgData.hash, HEX);
-  output += F("<br>");
+  output = "</h3>";
+  output += Version + "<br><br>"+ "<br>Type: " + FNC_TYPE + "<br>Hardw: " + DEV_TYPE;
+  output += "<br>Chip-ID: 0x" + String(cfgData.ChipID);
+  output += "<br>MAC-Address: " + String(cfgData.MACAddress);
+  output += "<br>Network: " + String(WiFi.SSID());
+  output += "<br>Network-IP: " + WiFi.localIP().toString();
+  output += "<br>Devicename: " + String(cfgData.hostname);
+  output += "<br>AP-Name: " + String(cfgData.APname);
+  output += "<br>cfg-Size: 0x" + String(sizeof(cfgData), HEX);
+  output += "<br>Hash: 0x" + String(cfgData.hash, HEX);
+  output += "<br>";
 
-  output += F("<br>Display: ");
-  output += (H_TFT_18 == H_TRUE) ? F("True") : F("False");
-  output += F("<br>");
+  output += "<br>Display: ";
+  output += (H_TFT_18 == H_TRUE) ? "True" : "False";
+  output += "<br>";
 
-  output += F("<br>uptime: ");
-  output += String(sysData.uptime/86400) + F(" days - ") + String((sysData.uptime/3600)%24) + F(" hours - ") + String((sysData.uptime/60)%60) + F(" minutes - ") + String(sysData.uptime%60) + F(" seconds");
+  output += "<br>uptime: ";
+  output += String(sysData.uptime/86400) + " days - " + String((sysData.uptime/3600)%24) + " hours - " + String((sysData.uptime/60)%60) + " minutes - " + String(sysData.uptime%60) + " seconds";
 #if (H_DS1820 == H_TRUE) || (H_TOF == H_TRUE)
-  output += F("<br>Measuring cycle: ") + String(cfgData.MeasuringCycle) + F(" s (remainig: ") + String(sysData.MeasuringCycle) + F(" s)");
+  output += "<br>Measuring cycle: " + String(cfgData.MeasuringCycle) + " s (remainig: " + String(sysData.MeasuringCycle) + " s)";
 #endif
-  output += F("<br>Transmit cycle: ") + String(cfgData.TransmitCycle) + F(" s (remaining: ") + String(sysData.TransmitCycle) + F(" s)");
-  output += F("<br>PageReload cycle: ") + String(cfgData.PageReload) + F(" s");
-  output += F("<br>Server: ")+ String(cfgData.server);
-  output += F("<br>Port: ")+ String(cfgData.port);
-  output += F("<br>LED: ");
-  cfgData.LED == H_TRUE ? output += F("on ") : output += F("off ");
-  output += F("<br>Signal strength: ");
+  output += "<br>Transmit cycle: " + String(cfgData.TransmitCycle) + " s (remaining: " + String(sysData.TransmitCycle) + " s)";
+  output += "<br>PageReload cycle: " + String(cfgData.PageReload) + " s";
+  output += "<br>Server: " + String(cfgData.server);
+  output += "<br>Port: " + String(cfgData.port);
+  output += "<br>LED: ";
+  cfgData.LED == H_TRUE ? output += "on " : output += "off ";
+  output += "<br>Signal strength: ";
   output += String(WiFi.RSSI());
-  output += F("<br><br>good Transmissions: ") + String(sysData.CntGoodTrans);
-  output += F("<br>bad Transmissions: ") + String(sysData.CntBadTrans);
-  output += F("<br>Pages delivered: ") + String(sysData.CntPageDelivered);
+  output += "<br><br>good Transmissions: " + String(sysData.CntGoodTrans);
+  output += "<br>bad Transmissions: " + String(sysData.CntBadTrans);
+  output += "<br>Pages delivered: " + String(sysData.CntPageDelivered);
 #if (H_DS1820 == H_TRUE) || (H_TOF == H_TRUE)
-  output += F("<br>Measurements: ") + String(sysData.CntMeasCyc);
+  output += "<br>Measurements: " + String(sysData.CntMeasCyc);
 #endif
 
 #if (H_RELAY == H_TRUE)
-  output += F("<br>ontime: ");
-  output += String(sysData.ontime/86400) + F(" days - ") + String((sysData.ontime/3600)%24) + F(" hours - ") + String((sysData.ontime/60)%60) + F(" minutes - ") + String(sysData.ontime%60) + F(" seconds");
-  output += F("<br>offtime: ");
-  output += String(sysData.offtime/86400) + F(" days - ") + String((sysData.offtime/3600)%24) + F(" hours - ") + String((sysData.offtime/60)%60) + F(" minutes - ") + String(sysData.offtime%60) + F(" seconds");
-  output += F("<br>Cycles:                 ") + String(sysData.cycles);
+  output += "<br>ontime: ";
+  output += String(sysData.ontime/86400) + " days - " + String((sysData.ontime/3600)%24) + " hours - " + String((sysData.ontime/60)%60) + " minutes - " + String(sysData.ontime%60) + " seconds";
+  output += "<br>offtime: ";
+  output += String(sysData.offtime/86400) + " days - " + String((sysData.offtime/3600)%24) + " hours - " + String((sysData.offtime/60)%60) + " minutes - " + String(sysData.offtime%60) + " seconds";
+  output += "<br>Cycles:                 " + String(sysData.cycles);
 #endif
-  output += F("</h6>");
-  server.send(200, F(W_TEXT_HTML), buildMainPage(output));
+  output += "</h6>";
+  server.send(200, W_TEXT_HTML, buildMainPage(output));
   sysData.CntPageDelivered++;
 }
 
@@ -798,20 +791,20 @@ int checkInput(String text, String URLText){
 
   DBGF("checkInput()");
   output = NameHTML;
-  output.replace(F("{nametext}"), text);
-  output.replace(F("{urltext}"), URLText);
+  output.replace("{nametext}", text);
+  output.replace("{urltext}", URLText);
   DBGF(server.args())
 
   if( server.args() == 0 ){
     DBGF("server.args=0")
-    server.send(200, F(W_TEXT_HTML), buildConfPage (output));
+    server.send(200, W_TEXT_HTML, buildConfPage (output));
     sysData.CntPageDelivered++;
     return 0;
   }
   else
     if( server.arg(server.args()-1).length() > 0){
       DBGF("message is:")
-      server.send(200, F(W_TEXT_HTML), buildConfPage(F("")));
+      server.send(200, W_TEXT_HTML, buildConfPage(""));
       sysData.CntPageDelivered++;
       x = server.arg(server.args()-1).substring(0, 30).length();
       return x < MAXCHAR ? x : MAXCHAR;  // cut everything whats longer than MAXCHAR
@@ -819,9 +812,9 @@ int checkInput(String text, String URLText){
     else {
       DBGF("server.args=leer")
 
-      message = F("<p><font color=\"red\">keine Angabe ist keine gute Idee !!!</font></p>");
+      message = "<p><font color=\"red\">keine Angabe ist keine gute Idee !!!</font></p>";
       message += output;
-      server.send(200, F(W_TEXT_HTML), buildConfPage(message));
+      server.send(200, W_TEXT_HTML, buildConfPage(message));
       sysData.CntPageDelivered++;
       return 0;
     }

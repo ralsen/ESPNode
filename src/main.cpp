@@ -125,7 +125,7 @@ void setup() {
     sysData.status = STATUS_OK;
   }
   String FullName=String(cfgData.hostname) + "_" + String(cfgData.MACAddress);
-  FullName.replace (F(":"), F("_"));
+  FullName.replace (":", "_");
   Serial.println( "" );
   Serial.print( "Hello from device: " );
   Serial.println( cfgData.hostname );
@@ -257,8 +257,8 @@ void transmitData() {
   // !!!hier muss noch zwischen Mess+Transmitzyklen unterschieden werden!!!
   DBGF( "############################ transmitData() #######################################" );
   String header;
-  String serverName = String F("http://") + String(cfgData.server) + String F(":") + String(cfgData.port); //"http://192.168.1.53:8080/";
-  //serverName += String F("/");
+  String serverName = "http://" + String(cfgData.server) + ":" + String(cfgData.port); //"http://192.168.1.53:8080/";
+  //serverName += "/";
 
   LEDControl (BLKMODEON, BLKALLERT);
 
