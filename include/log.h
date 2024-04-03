@@ -10,11 +10,11 @@
 #include <Arduino.h>
 #include  "settings.h"
 
-#ifndef _LOG_H_
-#define _LOG_H_
+#ifndef _LOG_S_
+#define _LOG_S_
 
 //#include  "timer.h"
-
+#if(S_FS == S_TRUE)
 class log_CL{
   public:
     log_CL (String filename, int level);
@@ -26,4 +26,5 @@ class log_CL{
     int level;
 };
     
-#endif //_CONFIG_H_
+#endif //_CONFIG_S_
+#endif // (S_FS == S_TRUE)

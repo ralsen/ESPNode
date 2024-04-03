@@ -25,7 +25,6 @@ void transmitData(void);
 
 #include <ArduinoOTA.h>
 #include "LittleFS.h"
-//FOL das waere cool ---> #include <ESPFtpServer.h>
 #include <SPI.h>
 #include "log.h"
 #include <Ticker.h>
@@ -34,15 +33,12 @@ void transmitData(void);
 
 #include  "WebServer.h"
 #include <ESP8266mDNS.h>
-//##include <ESP8266WiFi.h>
-//##include <DNSServer.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WebServer.h>
-//##include <WiFiClient.h>
 //#include <WiFiManager.h>         // https://github.com/tzapu/WiFiManager
 
 
-#if(H_TFT_18 == H_TRUE)
+#if(S_TFT_18 == S_TRUE)
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 #include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
@@ -50,11 +46,11 @@ void transmitData(void);
 #endif
 
 
-#if (H_TOF == H_TRUE)
+#if (S_TOF == S_TRUE)
 #include  "ToF.h"
 #endif
 
-#if (H_DS1820 == H_TRUE)
+#if (S_DS1820 == S_TRUE)
 #include  "DS1820.h"
 #include  <DallasTemperature.h>
 #endif
@@ -69,26 +65,27 @@ String Version = "\r\n-----> V" VERNR " vom " __DATE__ " " __TIME__ " " RELEASE 
 
 extern ESP8266WebServer server;
 
+#if(S_FS == S_TRUE)
 log_CL logit(LOGFILE, 11);
 TimeDB TimeServ(MY_NTP_SERVER, MY_TZ);
-//WiFiManager wm;
+#endif
 
 //------------------------------------------
-void setup() {
+void setup() { //KB38
   //Setup Serial port speed
   Serial.begin(115200);
   DBGF("setup()")
   //Serial.setDebugOutput(true);
-  DIG_MODE(H_LED_PIN, OUTPUT)
+  DIG_MODE(S_LED_PIN, OUTPUT)
   //DIG_MODE(D0, OUTPUT);
-  DIG_MODE(H_RELAY_PIN, OUTPUT)
+  DIG_MODE(S_RELAY_PIN, OUTPUT)
   sysData.uptime = 0;
-#if (H_RELAY == H_TRUE)
+#if (S_RELAY == S_TRUE)
   sysData.ontime = sysData.offtime = sysData.cycles = 0;
 #endif
 
-  Serial.println( MyName );
-  Serial.println( Version );
+  Serial.println(MyName);
+  Serial.println(Version);
 
   //FOL here Init_key and below TISms_key???
   Init_Key();
@@ -97,26 +94,26 @@ void setup() {
   TIms_LED.attach_ms(10, TISms_LED);
   Serial.println("LED Key 10ms Timer services started!");
 
-  #if(H_TFT_18 == H_TRUE)
+  #if(S_TFT_18 == S_TRUE)
   tft_hello();
   #endif
 
   if (!TestHashConfig()) {
     LEDControl(BLKMODEON, BLKALLERT);
-  #if(H_TFT_18 == H_TRUE)
+  #if(S_TFT_18 == S_TRUE)
     tft_println("Hash FAILED !!!");
   #endif
-    Serial.println( " Hash FAILED !!!" );
+    Serial.println(" Hash FAILED !!!");
     Serial.print ("load default configuration, size is: ");
     Serial.println(sizeof(cfgData));
     SetToDefault();
-    sysData.status = STATUS_HASH_ERR;
+    sysData.status = STATUS_HASS_ERR;
     ESP.eraseConfig();
     ESP.restart();
   }
   else {
     Serial.printf(("Hash: 0x%lx"), cfgData.hash);
-  #if(H_TFT_18 == H_TRUE)
+  #if(S_TFT_18 == S_TRUE)
     tft_println("Hash: ok");
   #endif
     Serial.println(" is ok");
@@ -126,28 +123,31 @@ void setup() {
   }
   String FullName=String(cfgData.hostname) + "_" + String(cfgData.MACAddress);
   FullName.replace (":", "_");
-  Serial.println( "" );
-  Serial.print( "Hello from device: " );
-  Serial.println( cfgData.hostname );
-  Serial.print( "Hardware:          ");
+  Serial.println("");
+  Serial.print("Hello from device: ");
+  Serial.println(cfgData.hostname);
+  Serial.print("Hardware:          ");
   Serial.println(DEV_TYPE);
   Serial.print("Function:          ");
   Serial.println(FNC_TYPE);
-  Serial.print( "MAC-Adress:        " );
-  Serial.println( cfgData.MACAddress);
-  Serial.println( "" );
+  Serial.print("MAC-Adress:        ");
+  Serial.println(cfgData.MACAddress);
+  Serial.println("");
 
+  #if(S_FS == S_TRUE)
   LittleFS.begin();
+  #endif
 
     //Setup DS18b20 temperature sensor
-#if (H_DS1820 == H_TRUE)
+#if (S_DS1820 == S_TRUE)
   DBGLN("intialisiere die DS1820")
   SetupDS18B20();
 #endif
-#if (H_TOF == H_TRUE)
+#if (S_TOF == S_TRUE)
   SetupToF();
 #endif
 
+#if(S_FS == H_TRUE)
   String str = "Directory: \n\r";
   Dir dir = LittleFS.openDir("/");
   while (dir.next()) {
@@ -164,24 +164,12 @@ void setup() {
   else {
     Serial.println("NO LOGFILE");
   }
+#endif
 
   Serial.println("\r\neverything is initialized, let's go ahead and connect now ->\r\n");
 
-  //wm.resetSettings();
   Serial.println("---> " + WiFi.macAddress());
-  // wie feststellen ob connect besteht (wifi.ssid???), oder brauche ich das hier ueberhaupt
-  /*if(!sysData.WifiRes) {
-        Serial.print("Failed to connect!!! -> Result: ");
-        ESP.restart();
-  } 
-  else {
-        //if you get here you have connected to the WiFi    
-        Serial.print("connected to: ");
-        Serial.print(WiFi.SSID());
-        Serial.print(" with result: ");
-        Serial.println(sysData.WifiRes);
-  } */
-
+  
   TIms_DspTimeout.attach_ms(10, TISms_DspTimeout);
   TIms_Key.attach_ms(10, TISms_Key);
   Serial.println("all 10ms Timer services started!");
@@ -193,10 +181,10 @@ void setup() {
   sysData.MeasuringCycle = 0;
   sysData.TransmitCycle = 3;
 
-  #if(H_TFT_18 == H_TRUE)
+  #if(S_TFT_18 == S_TRUE)
   tft_info();
   #endif
-  #if (H_RELAY == H_TRUE)
+  #if (S_RELAY == S_TRUE)
   TIs_Relais.attach(1, TISs_Relais);
   #endif
   Serial.println("1s timer services started!");
@@ -208,24 +196,25 @@ void setup() {
     Serial.print("---> MDNS started with name: ");
     Serial.println(FullName);
   } 
-  else Serial.println("schiete");
+  else Serial.println("schiete kein MDNS");
 
-  WiFiStartClient();
-  //WiFiStartAP();
+  WiFiStartClient();//KB24
   MDNS.addService("http", "tcp", 80);
+#if(S_FS == S_TRUE)  
   logit.entry("System initialized ...");
+#endif
 }
 
 
 // -----------------------------------------------------------------------------
 
 void loop() {
-  #if(H_TFT_18 == H_TRUE)
+  #if(S_TFT_18 == S_TRUE)
   int x, y;
   #endif
   // beides wird inTasmota nicht gemacht, aber mdns.advertise, mdns.addserver u.ae.
-  MDNS.update();
-  server.handleClient();
+  MDNS.update(); //KB13
+  server.handleClient(); //KB14
   //DIG_WRITE (D0, !DIG_READ(D0));
   //logit.entry("...");
   //Serial.println(sysData.TransmitCycle);
@@ -233,10 +222,10 @@ void loop() {
       transmitData();
   }
   
-  #if (H_RELAY == true)
-    if ( key ) {
-      DBGLN( "KEY" );
-      DIG_WRITE( H_RELAY_PIN, !DIG_READ(H_RELAY_PIN));
+  #if (S_RELAY == true)
+    if (key) {
+      DBGLN("KEY");
+      DIG_WRITE(S_RELAY_PIN, !DIG_READ(S_RELAY_PIN));
       DBGL("Relay switched\r\n");
       sysData.cycles++;
       sysData.TransmitCycle = 0; // send status immediately
@@ -245,7 +234,7 @@ void loop() {
 
   if(!sysData.DspTimeout){
     sysData.DspTimeout = 100;
-    #if(H_TFT_18 == H_TRUE)
+    #if(S_TFT_18 == S_TRUE)
     tft_display2Temps((int)(tempDev[1]), (int)(tempDev[0]));
     #endif
   }
@@ -253,9 +242,9 @@ void loop() {
 
 // -----------------------------------------------------------------------------
 
-void transmitData() {
+void transmitData() { //KB12
   // !!!hier muss noch zwischen Mess+Transmitzyklen unterschieden werden!!!
-  DBGF( "############################ transmitData() #######################################" );
+  DBGF("transmitData()");
   String header;
   String serverName = "http://" + String(cfgData.server) + ":" + String(cfgData.port); //"http://192.168.1.53:8080/";
   //serverName += "/";
@@ -278,7 +267,9 @@ void transmitData() {
   }
   else {
     sysData.CntBadTrans++;
+    #if(S_FS == S_TRUE)
     logit.entry("server send failed...");
+    #endif
   }
 
   Serial.println(http.getString());
@@ -294,4 +285,3 @@ void transmitData() {
   LEDControl(BLKMODEOFF, -1);
 
 }
-

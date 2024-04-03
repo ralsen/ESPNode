@@ -8,14 +8,14 @@
   hints:    -
 */
 
-#ifndef _WIFI_H_
-#define _WIFI_H_
+#ifndef _WIFI_S_
+#define _WIFI_S_
 
 #define SCAN_PERIOD     5000      // for what???
 #define MAX_WIFI_TRY    20        // max count of tries
-#define DELAY_WIFI_TRY  500       // ms between two tries
+#define DELAY_WIFI_TRY  100       // ms between two tries
 
 int  WiFiStartClient(void);
 void WiFiStartAP(void);
 
-#endif // _WIFI_H_
+#endif // _WIFI_S_

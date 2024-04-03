@@ -10,8 +10,8 @@
 */
 #include <Arduino.h>
 
-#ifndef _TIMER_H_
-#define _TIMER_H_
+#ifndef _TIMER_S_
+#define _TIMER_S_
 
 #include <time.h>
 #include  <Ticker.h>
@@ -44,7 +44,7 @@ extern  Ticker TIs_MeasuringCycle;
 extern  Ticker TIms_DspTimeout;
 extern  Ticker TIms_Key;
 extern  Ticker TIms_LED;
-#if (H_RELAY == H_TRUE)
+#if (S_RELAY == S_TRUE)
 extern  Ticker TIs_Relais;
 #endif
 
@@ -65,4 +65,4 @@ class TimeDB{
     time_t e_now;                         // this is the epoch
     tm tm_t;                              // the structure tm holds time information in a more convient way
 }; 
-#endif // _TIMER_H_
+#endif // _TIMER_S_

@@ -16,7 +16,7 @@
 #include  "log.h"
 
 
-#if (H_TOF == H_TRUE)
+#if (S_TOF == S_TRUE)
  #include "ToF.h"
  #include "SparkFun_VL53L1X.h" //Click here to get the library: http://librarymanager/All#SparkFun_VL53L1X
  //#include <Wire.h>
@@ -41,12 +41,16 @@ int SetupToF(){
   if (distanceSensor.begin() != 0) //Begin returns 0 on a good init
   {
     Serial.println("Sensor failed to initialisation. Please check wiring ...");
+    #if(S_FS == S_TRUE)
     logit.entry("ToF-Sensor failed !!!");
+    #endif
     ToFPresent = TOF_FALSE;
   }
   else{
     Serial.println("ToF-Sensor detected!");
+    #if(S_FS == S_TRUE)
     logit.entry("ToF-Sensor detected.");
+    #endif
     ToFPresent = TOF_TRUE;
   }
   return ToFPresent;
@@ -72,4 +76,4 @@ void ToFDistance(void){
   ToFRange = distance;
 }
 
-#endif //(H_TOF == H_TRUE)
+#endif //(S_TOF == S_TRUE)

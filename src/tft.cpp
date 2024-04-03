@@ -3,7 +3,7 @@
 #include "settings.h"
 #include "Config.h"
 
-#if (H_TFT_18 == H_TRUE)
+#if (S_TFT_18 == S_TRUE)
 
 #include "tft.h"
 
@@ -23,9 +23,9 @@ void tft_hello(){
   tft_println("*********************");
   tft_print("Version: V");
   tft_println(VERNR);
-  tft_print( __DATE__);
+  tft_print(__DATE__);
   tft_print(" ");
-  tft_println( __TIME__);
+  tft_println(__TIME__);
 }
 
 void tft_info(){
@@ -330,4 +330,4 @@ void mediabuttons() {
   // play color
   tft.fillTriangle(42, 20, 42, 60, 90, 40, ST77XX_GREEN);
 }
-#endif //(H_TFT == H_TRUE)
+#endif //(S_TFT == S_TRUE)

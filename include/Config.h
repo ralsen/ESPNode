@@ -9,8 +9,8 @@
 */
 #include <Arduino.h>
 
-#ifndef _CONFIG_H_
-#define _CONFIG_H_
+#ifndef _CONFIG_S_
+#define _CONFIG_S_
 
 
 #include  "Settings.h"
@@ -48,7 +48,7 @@ typedef struct {
   long  CntPageDelivered;
   long  CntMeasCyc;
   long  DspTimeout;
-#if (H_RELAY == H_TRUE)
+#if (S_RELAY == S_TRUE)
   long  ontime;
   long  offtime;
   long  cycles;
@@ -67,4 +67,4 @@ typedef struct {
   
 #define SEND_AFTER_BOOT_SEC   5
 
-#endif //_CONFIG_H_
+#endif //_CONFIG_S_

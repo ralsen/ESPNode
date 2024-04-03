@@ -10,8 +10,8 @@ hallo
 */
 
 #include <Arduino.h>
-#include  "Settings.h"
-#include  "Config.h"
+#include "Settings.h"
+#include "Config.h"
 #include <ESP8266WiFi.h>
 
 #include <EEPROM.h>
@@ -21,7 +21,7 @@ sysData_t sysData;
 
 void EraseConfig() {
   // Reset EEPROM bytes to '0' for the length of the data structure
-  DBGF( "EraseConfig()");
+  DBGF("EraseConfig()");
   EEPROM.begin(sizeof(cfgData));
   for (int i = CFGSTART; i < (int)sizeof(cfgData); i++) {
     EEPROM.write(i, 0);
@@ -34,11 +34,11 @@ void EraseConfig() {
 void SaveConfig() {
   // Save configuration from RAM into EEPROM
   cfgData.hash = CalcHashConfig();
-  DBGF( "SaveConfig()");
+  DBGF("SaveConfig()");
   DBGLN("EEPROM.begin()");
   EEPROM.begin(sizeof(cfgData));
   DBGLN("EEPROM.put()");
-  EEPROM.put( CFGSTART, cfgData );
+  EEPROM.put(CFGSTART, cfgData);
   delay(200);
   DBGLN("EEPROM.commit()");
   EEPROM.commit(); // Only needed for ESP8266 to get data written
@@ -51,7 +51,7 @@ void SaveConfig() {
 void LoadConfig() {
   // Loads configuration from EEPROM into RAM
 
-  DBGF( "LoadConfig()")
+  DBGF("LoadConfig()")
 
   EEPROM.begin(sizeof(cfgData));
   EEPROM.get(CFGSTART, cfgData);
@@ -63,7 +63,7 @@ void LoadConfig() {
 }
 
 void SetToDefault(){
-  DBGF( "SetToDefault()" );
+  DBGF("SetToDefault()");
   // CHN:
   EraseConfig();
   cfgData.LED = DEFAULT_LED;
@@ -91,7 +91,7 @@ long CalcHashConfig(){
   long hash = 0;
   uint8_t *ptr=(uint8_t*)&cfgData;
 
-  DBGF( "CalcHashConfig()")
+  DBGF("CalcHashConfig()")
 
   for (i=CFGSTART; i<((int)sizeof(cfgData)-(int)sizeof(cfgData.hash)); i++){
     hash += *ptr++ * i + 1;
@@ -100,7 +100,7 @@ long CalcHashConfig(){
 }
 
 int TestHashConfig(){
-  DBGF( "TestHashConfig()")
+  DBGF("TestHashConfig()")
   LoadConfig();
   return ((CalcHashConfig()-cfgData.hash) ? 0:1);
 }

@@ -11,9 +11,9 @@
 #include "settings.h"
 #include "Config.h"
 
-#if (H_TFT_18 == H_TRUE)
-# ifndef _TFT_H_
-# define _TFT_H_
+#if (S_TFT_18 == S_TRUE)
+# ifndef _TFT_S_
+# define _TFT_S_
 
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
@@ -50,5 +50,5 @@ void tft_print(String str);
 
 extern Adafruit_ST7735 tft;
 
-# endif // _TFT_H_
-#endif //(H_TFT == H_TRUE)
+# endif // _TFT_S_
+#endif //(S_TFT == S_TRUE)

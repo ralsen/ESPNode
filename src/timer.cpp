@@ -13,11 +13,11 @@
 
 #include  "timer.h"
 
-#if( H_DS1820 == H_TRUE )
+#if(S_DS1820 == S_TRUE)
   #include  "DS1820.h"
 #endif
 
-#if( H_TOF == H_TRUE )
+#if(S_TOF == S_TRUE)
   #include  "ToF.h"
 #endif
 
@@ -38,7 +38,7 @@ Ticker TIs_MeasuringCycle;
 Ticker TIms_DspTimeout;
 Ticker TIms_Key;
 Ticker TIms_LED;
-#if (H_RELAY == H_TRUE)
+#if (S_RELAY == S_TRUE)
 Ticker TIs_Relais;
 #endif
 
@@ -53,11 +53,11 @@ Ticker TIs_Relais;
 void Init_Key()
 {
  // Setup the button with an internal pull-up :
-  pinMode(H_BUTTON_PIN,INPUT_PULLUP);
+  pinMode(S_BUTTON_PIN,INPUT_PULLUP);
   key = KEY_NO;           // no key is pressed
   blkcnt = BLKMODEOFF;
   oldKey = KEY_NO;
-  LEDCrit = H_FALSE;
+  LEDCrit = S_FALSE;
 }
 
 
@@ -72,16 +72,16 @@ void TISms_LED()
       sysData.blinktime == BLKFLASHOFF ? sysData.blinktime = BLKFLASHON : sysData.blinktime = BLKFLASHOFF;
     }
 
-    if( sysData.blinkmode != BLKMODEOFF ){
+    if(sysData.blinkmode != BLKMODEOFF){
       blkcnt = sysData.blinktime;
-      //if(!((sysData.WifiRes == MODE_STA) && (cfgData.LED == H_FALSE)))
-        DIG_WRITE (H_LED_PIN, !DIG_READ(H_LED_PIN));
+      //if(!((sysData.WifiRes == MODE_STA) && (cfgData.LED == S_FALSE)))
+        DIG_WRITE (S_LED_PIN, !DIG_READ(S_LED_PIN));
     }
   }
 }
 
 void TISms_Key(){
-  key = !DIG_READ(H_BUTTON_PIN);
+  key = !DIG_READ(S_BUTTON_PIN);
   if (key == oldKey)
     key = KEY_NO;
   else
@@ -97,13 +97,13 @@ void TISs_Uptime(){
 }
 
 void TISs_TransmitCycle(){
-  if( sysData.TransmitCycle ) sysData.TransmitCycle--;
+  if(sysData.TransmitCycle) sysData.TransmitCycle--;
 }
 
 //  ISR_count() counts the life tickers
-# if (H_RELAY == H_TRUE)
+# if (S_RELAY == S_TRUE)
 void TISs_Relais(){
-  if( DIG_READ(H_RELAY_PIN) )
+  if(DIG_READ(S_RELAY_PIN))
     sysData.ontime++;
   else
     sysData.offtime++;
@@ -111,43 +111,43 @@ void TISs_Relais(){
 # endif
 
 void TISs_MeasuringCycle(){
-  if( sysData.MeasuringCycle ){
+  if(sysData.MeasuringCycle){
     sysData.MeasuringCycle--;
   }
   else{
     sysData.MeasuringCycle = cfgData.MeasuringCycle;
-    #if( H_DS1820 == H_TRUE )
+    #if(S_DS1820 == S_TRUE)
     DS1820_Measuring();
     #endif
-    #if( H_TOF == H_TRUE)
+    #if(S_TOF == S_TRUE)
     ToFDistance();
     #endif
   }
 }
 
 void LEDControl(long mode, long time){
-  //DBGF( "LEDControl()" );
+  //DBGF("LEDControl()");
 
-  LEDCrit = H_TRUE;
+  LEDCrit = S_TRUE;
   
   if(!strcmp(DEV_TYPE, "NODEMCU"))
-    DIG_WRITE (H_LED_PIN, HIGH);
+    DIG_WRITE (S_LED_PIN, HIGH);
 
   if(!strcmp(DEV_TYPE, "SONOFF_BASIC"))
-    DIG_WRITE (H_LED_PIN, !DIG_READ(H_RELAY_PIN));
+    DIG_WRITE (S_LED_PIN, !DIG_READ(S_RELAY_PIN));
 
   if(!strcmp(DEV_TYPE, "SONOFF_S20"))
-    DIG_WRITE (H_LED_PIN, HIGH);
+    DIG_WRITE (S_LED_PIN, HIGH);
 
   if(!strcmp(DEV_TYPE, "D1MINI"))
-    DIG_WRITE (H_LED_PIN, HIGH);
+    DIG_WRITE (S_LED_PIN, HIGH);
 
   sysData.blinktime = time;
   if(cfgData.LED)
     sysData.blinkmode = mode;
   else sysData.blinkmode = BLKMODEOFF;
 
-  LEDCrit = H_FALSE;
+  LEDCrit = S_FALSE;
 
 }
 

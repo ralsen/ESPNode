@@ -9,7 +9,6 @@
 */
 
 
-
 #include <Arduino.h>
 #include "settings.h"
 #include "Config.h"
@@ -20,6 +19,7 @@
 #include <LittleFS.h>
 #include "timer.h"
 
+#if(S_FS == S_TRUE)
 log_CL::log_CL(String filename, int level){
   DBGF("log_CL::log_CL()")
   logfile = filename;
@@ -58,3 +58,4 @@ void log_CL::entry(String entry){
   flog.print(fstr.substring(0, MAXLOGSIZE));
   flog.close();
 }
+#endif

@@ -12,28 +12,10 @@
 #ifndef __SETTINGS_H
 #define __SETTINGS_H
 
-#define H_FALSE 0
-#define H_TRUE  1
+#define S_FALSE 0
+#define S_TRUE  1
 
-// #define H_DBG   H_TRUE -> in platformio
-
-/* ----------------------------------------------------------------------
-;        Versionsnummer and System
-; -------------------------------------------------------------------- */
-
-// -> in platformio
-// #define VERNR   "2.0c"
-// #define NODEMCU_DS1820
-// #define D1MINI_DS1820
-// #define D1MINI_TOF
-// #define NODEMCU_SWITCH
-// #define SONOFF_S20_SWITCH
-// #define SONOFF_BASIC_SWITCH
-// #define NODEMCU_PIR        // noch nicht existent
-// <- in platformio 
-
-
- #if (H_DBG == H_TRUE)
+ #if (S_DBG == S_TRUE)
   #define RELEASE         "--- DEBUG ---"
 #else
   #define RELEASE
@@ -43,125 +25,136 @@
 ;        Versionsnummern, Devicetypes
 ; -------------------------------------------------------------------- */
 
-#if defined(SONOFF_BASIC_SWITCH)
+#if defined(SONOFF_BASIC)
 # define DEV_TYPE       "SONOFF_BASIC"
 # define FNC_TYPE       "Switch"
-# define H_SWITCH        H_TRUE
-# define H_DS1820        H_FALSE
-# define H_PIR           H_FALSE
-# define H_BUTTON        H_TRUE
-# define H_LED           H_TRUE
-# define H_RELAY         H_TRUE
-# define H_TOF           H_FALSE
-# define H_TFT_18        H_FALSE
+# define S_SWITCH        S_TRUE
+# define S_DS1820        S_FALSE
+# define S_PIR           S_FALSE
+# define S_BUTTON        S_TRUE
+# define S_LED           S_TRUE
+# define S_RELAY         S_TRUE
+# define S_TOF           S_FALSE
+# define S_TFT_18        S_FALSE
+# define S_FS            S_FALSE
 
-#elif defined(SONOFF_S20_SWITCH)
+#elif defined(SONOFF_S20)
 # define DEV_TYPE       "SONOFF_S20"
 # define FNC_TYPE       "Switch"
-# define H_SWITCH        H_TRUE
-# define H_DS1820        H_FALSE
-# define H_PIR           H_FALSE
-# define H_BUTTON        H_TRUE
-# define H_LED           H_TRUE
-# define H_RELAY         H_TRUE
-# define H_TOF           H_FALSE
-# define H_TFT_18        H_FALSE
+# define S_SWITCH        S_TRUE
+# define S_DS1820        S_FALSE
+# define S_PIR           S_FALSE
+# define S_BUTTON        S_TRUE
+# define S_LED           S_TRUE
+# define S_RELAY         S_TRUE
+# define S_TOF           S_FALSE
+# define S_TFT_18        S_FALSE
+# define S_FS            S_FALSE
 
-#elif defined(SONOFF_S26_SWITCH)
+#elif defined(SONOFF_S26)
 # define DEV_TYPE       "SONOFF_S26"
 # define FNC_TYPE       "Switch"
-# define H_SWITCH        H_TRUE
-# define H_DS1820        H_FALSE
-# define H_PIR           H_FALSE
-# define H_BUTTON        H_TRUE
-# define H_LED           H_TRUE
-# define H_RELAY         H_TRUE
-# define H_TOF           H_FALSE
-# define H_TFT_18        H_FALSE
+# define S_SWITCH        S_TRUE
+# define S_DS1820        S_FALSE
+# define S_PIR           S_FALSE
+# define S_BUTTON        S_TRUE
+# define S_LED           S_TRUE
+# define S_RELAY         S_TRUE
+# define S_TOF           S_FALSE
+# define S_TFT_18        S_FALSE
+# define S_FS            S_FALSE
 
 #elif defined(NODEMCU_SWITCH)
 # define DEV_TYPE       "NODEMCU"
 # define FNC_TYPE       "Switch"
-# define H_SWITCH        H_TRUE
-# define H_DS1820        H_FALSE
-# define H_PIR           H_FALSE
-# define H_BUTTON        H_TRUE
-# define H_LED           H_TRUE
-# define H_RELAY         H_TRUE
-# define H_TOF           H_FALSE
-# define H_TFT_18        H_FALSE
+# define S_SWITCH        S_TRUE
+# define S_DS1820        S_FALSE
+# define S_PIR           S_FALSE
+# define S_BUTTON        S_TRUE
+# define S_LED           S_TRUE
+# define S_RELAY         S_TRUE
+# define S_TOF           S_FALSE
+# define S_TFT_18        S_FALSE
+# define S_FS            S_FALSE
 
 #elif defined(NODEMCU_DS1820)
 # define DEV_TYPE       "NODEMCU"
 # define FNC_TYPE       "DS1820"
-# define H_SWITCH        H_FALSE
-# define H_DS1820        H_TRUE
-# define H_PIR           H_FALSE
-# define H_BUTTON        H_TRUE
-# define H_LED           H_TRUE
-# define H_RELAY         H_FALSE
-# define H_TOF           H_FALSE
-# define H_TFT_18        H_FALSE
+# define S_SWITCH        S_FALSE
+# define S_DS1820        S_TRUE
+# define S_PIR           S_FALSE
+# define S_BUTTON        S_TRUE
+# define S_LED           S_TRUE
+# define S_RELAY         S_FALSE
+# define S_TOF           S_FALSE
+# define S_TFT_18        S_FALSE
+# define S_FS            S_TRUE
 
 #elif defined(NODEMCU_DS1820_TFT_18)
 # define DEV_TYPE       "NODEMCU"
 # define FNC_TYPE       "DS1820"
-# define H_SWITCH        H_FALSE
-# define H_DS1820        H_TRUE
-# define H_PIR           H_FALSE
-# define H_BUTTON        H_TRUE
-# define H_LED           H_TRUE
-# define H_RELAY         H_FALSE
-# define H_TOF           H_FALSE
-# define H_TFT_18        H_TRUE
+# define S_SWITCH        S_FALSE
+# define S_DS1820        S_TRUE
+# define S_PIR           S_FALSE
+# define S_BUTTON        S_TRUE
+# define S_LED           S_TRUE
+# define S_RELAY         S_FALSE
+# define S_TOF           S_FALSE
+# define S_TFT_18        S_TRUE
+# define S_FS            S_TRUE
 
 #elif defined(D1MINI_DS1820)
 # define DEV_TYPE       "D1MINI"
 # define FNC_TYPE       "DS1820"
-# define H_SWITCH        H_FALSE
-# define H_DS1820        H_TRUE
-# define H_PIR           H_FALSE
-# define H_BUTTON        H_TRUE
-# define H_LED           H_TRUE
-# define H_RELAY         H_FALSE
-# define H_TOF           H_FALSE
-# define H_TFT_18        H_FALSE
+# define S_SWITCH        S_FALSE
+# define S_DS1820        S_TRUE
+# define S_PIR           S_FALSE
+# define S_BUTTON        S_TRUE
+# define S_LED           S_TRUE
+# define S_RELAY         S_FALSE
+# define S_TOF           S_FALSE
+# define S_TFT_18        S_FALSE
+# define S_FS            S_TRUE
+# define S_FS            S_TRUE
 
 #elif defined(D1MINI_DS1820_TFT_18)
 # define DEV_TYPE       "D1MINI"
 # define FNC_TYPE       "DS1820"
-# define H_SWITCH        H_FALSE
-# define H_DS1820        H_TRUE
-# define H_PIR           H_FALSE
-# define H_BUTTON        H_TRUE
-# define H_LED           H_TRUE
-# define H_RELAY         H_FALSE
-# define H_TOF           H_FALSE
-# define H_TFT_18        H_TRUE
+# define S_SWITCH        S_FALSE
+# define S_DS1820        S_TRUE
+# define S_PIR           S_FALSE
+# define S_BUTTON        S_TRUE
+# define S_LED           S_TRUE
+# define S_RELAY         S_FALSE
+# define S_TOF           S_FALSE
+# define S_TFT_18        S_TRUE
+# define S_FS            S_TRUE
 
 #elif defined(D1MINI_TOF)
 # define DEV_TYPE       "D1MINI"
 # define FNC_TYPE       "ToF"
-# define H_SWITCH        H_FALSE
-# define H_DS1820        H_FALSE
-# define H_PIR           H_FALSE
-# define H_BUTTON        H_TRUE
-# define H_LED           H_TRUE
-# define H_RELAY         H_FALSE
-# define H_TOF           H_TRUE
-# define H_TFT_18        H_FALSE
+# define S_SWITCH        S_FALSE
+# define S_DS1820        S_FALSE
+# define S_PIR           S_FALSE
+# define S_BUTTON        S_TRUE
+# define S_LED           S_TRUE
+# define S_RELAY         S_FALSE
+# define S_TOF           S_TRUE
+# define S_TFT_18        S_FALSE
+# define S_FS            S_TRUE
 
 #elif defined(NODEMCU_PIR)
 # define DEV_TYPE       "NODEMCU"
 # define FNC_TYPE       "PIR"
-# define H_SWITCH        H_FALSE
-# define H_DS1820        H_FALSE
-# define H_PIR           H_TRUE
-# define H_BUTTON        H_TRUE
-# define H_LED           H_TRUE
-# define H_RELAY         H_FALSE
-# define H_TOF           H_FALSE
-# define H_TFT_18        H_FALSE
+# define S_SWITCH        S_FALSE
+# define S_DS1820        S_FALSE
+# define S_PIR           S_TRUE
+# define S_BUTTON        S_TRUE
+# define S_LED           S_TRUE
+# define S_RELAY         S_FALSE
+# define S_TOF           S_FALSE
+# define S_TFT_18        S_FALSE
+# define S_FS            S_TRUE
 
 #else
 #error "Hey! welche Version???"
@@ -169,24 +162,24 @@
 
 // --------- some hardware stuff  ---------
 
-#if (H_LED == H_TRUE) || (H_RELAY == TRUE)
+#if (S_LED == S_TRUE) || (S_RELAY == TRUE)
 # define  DIG_WRITE(pin, val)   digitalWrite(pin, val)
 # define  DIG_READ(pin)         digitalRead(pin)
 # define  DIG_MODE(pin, inout)  pinMode(pin, inout);
 
-# if defined(SONOFF_BASIC_SWITCH) || defined(SONOFF_S20_SWITCH) || defined(SONOFF_S26_SWITCH)
-#   define H_LED_PIN      13
-#   define H_RELAY_PIN    12
+# if defined(SONOFF_BASIC) || defined(SONOFF_S20) || defined(SONOFF_S26)
+#   define S_LED_PIN      13
+#   define S_RELAY_PIN    12
 //# elif    (DEV_TYPE == "NODEMCU") || (DEV_TYPE == "D1MINI")
 # elif    defined(NODEMCU_SWITCH) || defined(NODEMCU_DS1820) || defined(D1MINI_DS1820) || defined(D1MINI_TOF) || defined(D1MINI_DS1820_TFT_18) || defined(NODEMCU_DS1820_TFT_18)
-#   define H_LED_PIN      2
-#   define H_RELAY_PIN    D0
+#   define S_LED_PIN      2
+#   define S_RELAY_PIN    D0
 # else
-#   error   "H_LED_PIN undefined"
+#   error   "S_LED_PIN undefined"
 # endif
-#else     // if (H_LED == FALSE)
-# define  H_LED_PIN
-# define  H_RELAY_PIN
+#else     // if (S_LED == FALSE)
+# define  S_LED_PIN
+# define  S_RELAY_PIN
 # define  DIG_WRITE(pin, val)
 # define  DIG_READ(pin)
 # define  DIG_MODE(pin, inout)
@@ -194,14 +187,14 @@
 
 
 
-#if (H_DS1820 == H_TRUE)
-# define H_DS1820_PIN     D3
-# define H_DS180_MAX_DEV  10
+#if (S_DS1820 == S_TRUE)
+# define S_DS1820_PIN     D3
+# define S_DS180_MAX_DEV  10
 #endif
 
 
-#if (H_BUTTON == H_TRUE)
-# define H_BUTTON_PIN     0
+#if (S_BUTTON == S_TRUE)
+# define S_BUTTON_PIN     0
 #endif
 // --------- some hardware stuff  ---------
 
@@ -218,12 +211,12 @@
 #define FALSE           0
 #define TRUE            1
 
-#if (H_DBG == H_TRUE)
+#if (S_DBG == S_TRUE)
   #define DBG(x)            Serial.print(x);
-  #define DBGF(x)           {Serial.print("-> "); Serial.print (__FILE__); Serial.print( " Line ");Serial.print (__LINE__); Serial.print( ": " ); Serial.println( x );}
-  #define DBGLN(x)          {Serial.print( " ---> " ); Serial.println( x );}
-  #define DBGL(x)           {Serial.print( " ---> " ); Serial.print( x );}
-  #define DBGNL(x)          Serial.println( x );
+  #define DBGF(x)           {Serial.print("-> "); Serial.print (__FILE__); Serial.print(" Line ");Serial.print (__LINE__); Serial.print(": "); Serial.println(x);}
+  #define DBGLN(x)          {Serial.print(" ---> "); Serial.println(x);}
+  #define DBGL(x)           {Serial.print(" ---> "); Serial.print(x);}
+  #define DBGNL(x)          Serial.println(x);
 #else
   #define DBG(x)
   #define DBGF(x)
@@ -262,22 +255,22 @@
 #define STATUS_ALLERT   1
 #define STATUS_OK       2
 #define STATUS_CONF_ERR 4
-#define STATUS_HASH_ERR 8
+#define STATUS_HASS_ERR 8
 #define STATUS_LED      16
 
 #define CFGSTART              0         // startadress og cfg-block in EEPROM
-#define DEFAULT_LED           H_TRUE
+#define DEFAULT_LED           S_TRUE
 
-#define DEFAULT_SSID          "janzneu"
-#define DEFAULT_PASSWORD      "D1AFFE1234!"
+#define DEFAULT_SSID          "TK800"
+#define DEFAULT_PASSWORD      "Lanecharge"
 
 #define DEFAULT_HOSTNAME      "No-Name"
 #define DEFAULT_APNAME        "ESPnet"
 #define DEFAULT_MEASCYCLE     150       // Measurement cycle in sec.
 #define DEFAULT_PAGERELOAD    10        // page reload cycle in sec.
 
-#if (H_SWITCH == H_FALSE)
-  #define DEFAULT_TRANSCYCLE    5     // transmit cycle to server in sec.
+#if (S_SWITCH == S_FALSE)
+  #define DEFAULT_TRANSCYCLE    300     // transmit cycle to server in sec.
 #else
   #define DEFAULT_TRANSCYCLE    3600
 #endif
@@ -306,7 +299,7 @@
   --------------------- V2.3g
   10.08.22  obviously we dont need the while loop with wifi.multirun
   --------------------- V2.3f
-  10.08.22  H_RELAY is also working with new timer interrupt
+  10.08.22  S_RELAY is also working with new timer interrupt
   --------------------- V2.3e
   10.08.22  timer service routines are seperated for each service
   --------------------- V2.3d
@@ -406,7 +399,7 @@
 
   Errors:
             - warum werden 5 bewsiteausliefrungen gezaehlt wenn Seite vom iPhone aufgerufen wird
-            - Warum regiert WLAN schlecht bis garnicht wenn DBG == H_FASLE
+            - Warum regiert WLAN schlecht bis garnicht wenn DBG == S_FASLE
             - OTA funktioniert aof nicht  (vor allem SB und S20). Scheinbar hilft es machnmal das
               Board im bootloader zu straten und gleich wieder aus und einzuschalten
             - warum kommt 404: not found URI: /favicon.ico
@@ -417,5 +410,5 @@
     machen. Beim NodeMcu würde ich aber gerne alle Hardwarekombinationen machen koennen.
     Schon allien zu Testzwecken. Aber das Konzept ist aus erst rund wenn das geht. Und
     das war ja Sinn des Konzepts.
-    Nochmal im alten HWDOS nachsehen. Ist im Quellcode nun Bezug auf Geraet oder auf H_-Schalter?
+    Nochmal im alten HWDOS nachsehen. Ist im Quellcode nun Bezug auf Geraet oder auf S_-Schalter?
     */

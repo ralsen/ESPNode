@@ -26,8 +26,8 @@ extern ESP8266WebServer server;
 // https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266WiFi/examples/WiFiAccessPoint/WiFiAccessPoint.ino
 
 void WiFiStartAP(){
-  DBGF( "WiFiStartAP()" )
-  #if(H_TFT_18 == H_TRUE)
+  DBGF("WiFiStartAP()")
+  #if(S_TFT_18 == S_TRUE)
   tft_initR(INITR_BLACKTAB);
   tft_fillScreen(ST77XX_RED);
   tft.setTextColor(ST77XX_WHITE, ST77XX_RED);
@@ -35,25 +35,25 @@ void WiFiStartAP(){
   tft_setCursor(0, 0);
   #endif
   LEDControl(BLKMODEON, BLKWIFIAP);
-  DBGLN( "Disconnect and WIFI_OFF" )
+  DBGLN("Disconnect and WIFI_OFF")
   WiFi.disconnect();
   delay(2*DELAY_WIFI_TRY);
   WiFi.mode(WIFI_OFF);
   delay(2*DELAY_WIFI_TRY);
 
-  DBGLN( "Start WIFI in AP-Mode" )
-  #if(H_TFT_18 == H_TRUE)
+  DBGLN("Start WIFI in AP-Mode")
+  #if(S_TFT_18 == S_TRUE)
   tft_println("Start WIFI in AP-Mode");
   #endif
   WiFi.mode(WIFI_AP);
   DBGLN("WiFi.mode is done");
-  #if(H_TFT_18 == H_TRUE)
+  #if(S_TFT_18 == S_TRUE)
   tft_println("wifi.mode is done.");
   #endif
   WiFi.softAP(cfgData.APname);
   delay(DELAY_WIFI_TRY);
   startWebServer();
-  #if(H_TFT_18 == H_TRUE)
+  #if(S_TFT_18 == S_TRUE)
   tft_print("SSID: ");
   tft_println(String(cfgData.APname));
   #endif
@@ -62,19 +62,19 @@ void WiFiStartAP(){
 }
 
 int WiFiStartClient(){
-  DBGF ("WiFiStartClient()" )
-  Serial.println("WiFiStartClient()" );
+  DBGF ("WiFiStartClient()")
+  Serial.println("WiFiStartClient()");
   int err = 0;
   char wheel[] = {'-', '\\', '|', '/'};
 
   LEDControl(BLKMODEON, BLKWIFISTA);
-  DBGLN( "Disconnect and WIFI_OFF" )
+  DBGLN("Disconnect and WIFI_OFF")
   WiFi.disconnect();
   delay(2*DELAY_WIFI_TRY);
   WiFi.mode(WIFI_OFF);      // scheint wichtig zu sein wenn Modeis geswitched werden, Umschaltung funktioniert sonst nicht
   delay(2*DELAY_WIFI_TRY);
 
-  DBGLN( "Start WIFI as client" )
+  DBGLN("Start WIFI as client")
   WiFi.mode(WIFI_STA);
   delay(DELAY_WIFI_TRY);
   String FullName=(String)cfgData.hostname + "_" + (String)cfgData.MACAddress;
@@ -83,19 +83,20 @@ int WiFiStartClient(){
 
   //WiFi.begin(cfgData.SSID, cfgData.password);
   wifiMulti.addAP(cfgData.SSID, cfgData.password);
-  DBGLN( ("trying to connect to:  ") );
-  DBGL( "SSID: " );
-  DBGLN( cfgData.SSID );
-  DBGL( "PASS: " );
-  DBGLN( cfgData.password );
-  while ( wifiMulti.run() != WL_CONNECTED ) {//WiFi.status() != WL_CONNECTED ) { 
+  DBGLN(("trying to connect to:  "));
+  DBGL("SSID: ");
+  DBGLN(cfgData.SSID);
+  DBGL("PASS: ");
+  DBGLN(cfgData.password);
+  while (wifiMulti.run() != WL_CONNECTED) {//WiFi.status() != WL_CONNECTED) { 
     delay(DELAY_WIFI_TRY);
     Serial.print(wheel[err%4]);
     Serial.print("\b");
     err++;
-    if( err > MAX_WIFI_TRY ){
+    Serial.println(err);
+    if(err > MAX_WIFI_TRY){
       LEDControl(BLKMODEON, BLKALLERT);
-      Serial.println( "" );
+      Serial.println("");
       WiFi.mode(WIFI_OFF);
       return false;
     }

@@ -11,8 +11,8 @@
 #include "settings.h"
 #include "Config.h"
 
-#ifndef _WEBSERVER_H_
-#define _WEBSERVER_H_
+#ifndef _WEBSERVER_S_
+#define _WEBSERVER_S_
 
 
 // -----------------------------------------
@@ -25,7 +25,6 @@
 void initHTML(void);
 void WebServerStart(void);
 void handleStatus(void);
-void handleInfo(void);
 void handleServer(void);
 void handlePort(void);
 void handleReset(void);
@@ -53,22 +52,19 @@ void ScanEnd(void);
 void buildInfoPage(void);
 String buildConfPage(String);
 String buildNetworkPage(String);
-String readHTML (String);
 String buildAppPage(String);
 String buildMainPage(String);
 String buildDict (void);
-String buildDS1820Page(void);
-String buildDS1820Dict (void);
-String buildSwitchPage(void);
-String buildSwitchDict(void);
+String buildTypeDict(void);
+String buildTypePage(void);
 
 int checkInput(String, String);
 bool string_isNumber(String);
 
-#if (H_TOF == H_TRUE)
+#if (S_TOF == S_TRUE)
 String buildToFPage(void);
 String buildToFDict (void);
 #endif
 
-#endif // _WEBSERVER_H_
+#endif // _WEBSERVER_S_
 
