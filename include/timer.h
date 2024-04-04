@@ -44,7 +44,7 @@ extern  Ticker TIs_MeasuringCycle;
 extern  Ticker TIms_DspTimeout;
 extern  Ticker TIms_Key;
 extern  Ticker TIms_LED;
-#if (S_RELAY == S_TRUE)
+#if (S_RELAY == true)
 extern  Ticker TIs_Relais;
 #endif
 

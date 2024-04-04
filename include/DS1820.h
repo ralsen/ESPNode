@@ -14,7 +14,7 @@
 #include <Arduino.h>
 #include "settings.h"
 
-#if (S_DS1820 == S_TRUE)
+#if (S_DS1820 == true)
 # ifndef _DS1820_S_
 # define _DS1820_S_
 
@@ -34,4 +34,4 @@
   void          TempLoop(long now);
 
 #  endif // _DS1820_S_
-#endif //(S_DS1820 == S_TRUE)
+#endif //(S_DS1820 == true)

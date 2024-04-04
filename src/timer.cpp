@@ -13,11 +13,11 @@
 
 #include  "timer.h"
 
-#if(S_DS1820 == S_TRUE)
+#if(S_DS1820 == true)
   #include  "DS1820.h"
 #endif
 
-#if(S_TOF == S_TRUE)
+#if(S_TOF == true)
   #include  "ToF.h"
 #endif
 
@@ -38,7 +38,7 @@ Ticker TIs_MeasuringCycle;
 Ticker TIms_DspTimeout;
 Ticker TIms_Key;
 Ticker TIms_LED;
-#if (S_RELAY == S_TRUE)
+#if (S_RELAY == true)
 Ticker TIs_Relais;
 #endif
 
@@ -57,7 +57,7 @@ void Init_Key()
   key = KEY_NO;           // no key is pressed
   blkcnt = BLKMODEOFF;
   oldKey = KEY_NO;
-  LEDCrit = S_FALSE;
+  LEDCrit = false;
 }
 
 
@@ -74,7 +74,7 @@ void TISms_LED()
 
     if(sysData.blinkmode != BLKMODEOFF){
       blkcnt = sysData.blinktime;
-      //if(!((sysData.WifiRes == MODE_STA) && (cfgData.LED == S_FALSE)))
+      //if(!((sysData.WifiRes == MODE_STA) && (cfgData.LED == false)))
         DIG_WRITE (S_LED_PIN, !DIG_READ(S_LED_PIN));
     }
   }
@@ -101,7 +101,7 @@ void TISs_TransmitCycle(){
 }
 
 //  ISR_count() counts the life tickers
-# if (S_RELAY == S_TRUE)
+# if (S_RELAY == true)
 void TISs_Relais(){
   if(DIG_READ(S_RELAY_PIN))
     sysData.ontime++;
@@ -116,10 +116,10 @@ void TISs_MeasuringCycle(){
   }
   else{
     sysData.MeasuringCycle = cfgData.MeasuringCycle;
-    #if(S_DS1820 == S_TRUE)
+    #if(S_DS1820 == true)
     DS1820_Measuring();
     #endif
-    #if(S_TOF == S_TRUE)
+    #if(S_TOF == true)
     ToFDistance();
     #endif
   }
@@ -128,7 +128,7 @@ void TISs_MeasuringCycle(){
 void LEDControl(long mode, long time){
   //DBGF("LEDControl()");
 
-  LEDCrit = S_TRUE;
+  LEDCrit = true;
   
   if(!strcmp(DEV_TYPE, "NODEMCU"))
     DIG_WRITE (S_LED_PIN, HIGH);
@@ -147,7 +147,7 @@ void LEDControl(long mode, long time){
     sysData.blinkmode = mode;
   else sysData.blinkmode = BLKMODEOFF;
 
-  LEDCrit = S_FALSE;
+  LEDCrit = false;
 
 }
 
@@ -158,14 +158,6 @@ TimeDB::TimeDB(String server, String zone)
   localtime_r(&e_now, &tm_t);         // update the structure tm with the current time
   
 }
-
-/*
-time_t TimeDB::getTime(){
-// get the time from whereever you want and pit it in here
-  Serial.println("gettime in TimeDB");
-  return 0;
-}
-*/
 
 String TimeDB::zeroPad(int number) {
   if (number < 10) {

@@ -12,10 +12,7 @@
 #ifndef __SETTINGS_H
 #define __SETTINGS_H
 
-#define S_FALSE 0
-#define S_TRUE  1
-
- #if (S_DBG == S_TRUE)
+ #if (S_DBG == true)
   #define RELEASE         "--- DEBUG ---"
 #else
   #define RELEASE
@@ -28,133 +25,133 @@
 #if defined(SONOFF_BASIC)
 # define DEV_TYPE       "SONOFF_BASIC"
 # define FNC_TYPE       "Switch"
-# define S_SWITCH        S_TRUE
-# define S_DS1820        S_FALSE
-# define S_PIR           S_FALSE
-# define S_BUTTON        S_TRUE
-# define S_LED           S_TRUE
-# define S_RELAY         S_TRUE
-# define S_TOF           S_FALSE
-# define S_TFT_18        S_FALSE
-# define S_FS            S_FALSE
+# define S_SWITCH        true
+# define S_DS1820        false
+# define S_PIR           false
+# define S_BUTTON        true
+# define S_LED           true
+# define S_RELAY         true
+# define S_TOF           false
+# define S_TFT_18        false
+# define S_FS            false
 
 #elif defined(SONOFF_S20)
 # define DEV_TYPE       "SONOFF_S20"
 # define FNC_TYPE       "Switch"
-# define S_SWITCH        S_TRUE
-# define S_DS1820        S_FALSE
-# define S_PIR           S_FALSE
-# define S_BUTTON        S_TRUE
-# define S_LED           S_TRUE
-# define S_RELAY         S_TRUE
-# define S_TOF           S_FALSE
-# define S_TFT_18        S_FALSE
-# define S_FS            S_FALSE
+# define S_SWITCH        true
+# define S_DS1820        false
+# define S_PIR           false
+# define S_BUTTON        true
+# define S_LED           true
+# define S_RELAY         true
+# define S_TOF           false
+# define S_TFT_18        false
+# define S_FS            false
 
 #elif defined(SONOFF_S26)
 # define DEV_TYPE       "SONOFF_S26"
 # define FNC_TYPE       "Switch"
-# define S_SWITCH        S_TRUE
-# define S_DS1820        S_FALSE
-# define S_PIR           S_FALSE
-# define S_BUTTON        S_TRUE
-# define S_LED           S_TRUE
-# define S_RELAY         S_TRUE
-# define S_TOF           S_FALSE
-# define S_TFT_18        S_FALSE
-# define S_FS            S_FALSE
+# define S_SWITCH        true
+# define S_DS1820        false
+# define S_PIR           false
+# define S_BUTTON        true
+# define S_LED           true
+# define S_RELAY         true
+# define S_TOF           false
+# define S_TFT_18        false
+# define S_FS            false
 
 #elif defined(NODEMCU_SWITCH)
 # define DEV_TYPE       "NODEMCU"
 # define FNC_TYPE       "Switch"
-# define S_SWITCH        S_TRUE
-# define S_DS1820        S_FALSE
-# define S_PIR           S_FALSE
-# define S_BUTTON        S_TRUE
-# define S_LED           S_TRUE
-# define S_RELAY         S_TRUE
-# define S_TOF           S_FALSE
-# define S_TFT_18        S_FALSE
-# define S_FS            S_FALSE
+# define S_SWITCH        true
+# define S_DS1820        false
+# define S_PIR           false
+# define S_BUTTON        true
+# define S_LED           true
+# define S_RELAY         true
+# define S_TOF           false
+# define S_TFT_18        false
+# define S_FS            false
 
 #elif defined(NODEMCU_DS1820)
 # define DEV_TYPE       "NODEMCU"
 # define FNC_TYPE       "DS1820"
-# define S_SWITCH        S_FALSE
-# define S_DS1820        S_TRUE
-# define S_PIR           S_FALSE
-# define S_BUTTON        S_TRUE
-# define S_LED           S_TRUE
-# define S_RELAY         S_FALSE
-# define S_TOF           S_FALSE
-# define S_TFT_18        S_FALSE
-# define S_FS            S_TRUE
+# define S_SWITCH        false
+# define S_DS1820        true
+# define S_PIR           false
+# define S_BUTTON        true
+# define S_LED           true
+# define S_RELAY         false
+# define S_TOF           false
+# define S_TFT_18        false
+# define S_FS            true
 
 #elif defined(NODEMCU_DS1820_TFT_18)
 # define DEV_TYPE       "NODEMCU"
 # define FNC_TYPE       "DS1820"
-# define S_SWITCH        S_FALSE
-# define S_DS1820        S_TRUE
-# define S_PIR           S_FALSE
-# define S_BUTTON        S_TRUE
-# define S_LED           S_TRUE
-# define S_RELAY         S_FALSE
-# define S_TOF           S_FALSE
-# define S_TFT_18        S_TRUE
-# define S_FS            S_TRUE
+# define S_SWITCH        false
+# define S_DS1820        true
+# define S_PIR           false
+# define S_BUTTON        true
+# define S_LED           true
+# define S_RELAY         false
+# define S_TOF           false
+# define S_TFT_18        true
+# define S_FS            true
 
 #elif defined(D1MINI_DS1820)
 # define DEV_TYPE       "D1MINI"
 # define FNC_TYPE       "DS1820"
-# define S_SWITCH        S_FALSE
-# define S_DS1820        S_TRUE
-# define S_PIR           S_FALSE
-# define S_BUTTON        S_TRUE
-# define S_LED           S_TRUE
-# define S_RELAY         S_FALSE
-# define S_TOF           S_FALSE
-# define S_TFT_18        S_FALSE
-# define S_FS            S_TRUE
-# define S_FS            S_TRUE
+# define S_SWITCH        false
+# define S_DS1820        true
+# define S_PIR           false
+# define S_BUTTON        true
+# define S_LED           true
+# define S_RELAY         false
+# define S_TOF           false
+# define S_TFT_18        false
+# define S_FS            true
+# define S_FS            true
 
 #elif defined(D1MINI_DS1820_TFT_18)
 # define DEV_TYPE       "D1MINI"
 # define FNC_TYPE       "DS1820"
-# define S_SWITCH        S_FALSE
-# define S_DS1820        S_TRUE
-# define S_PIR           S_FALSE
-# define S_BUTTON        S_TRUE
-# define S_LED           S_TRUE
-# define S_RELAY         S_FALSE
-# define S_TOF           S_FALSE
-# define S_TFT_18        S_TRUE
-# define S_FS            S_TRUE
+# define S_SWITCH        false
+# define S_DS1820        true
+# define S_PIR           false
+# define S_BUTTON        true
+# define S_LED           true
+# define S_RELAY         false
+# define S_TOF           false
+# define S_TFT_18        true
+# define S_FS            true
 
 #elif defined(D1MINI_TOF)
 # define DEV_TYPE       "D1MINI"
 # define FNC_TYPE       "ToF"
-# define S_SWITCH        S_FALSE
-# define S_DS1820        S_FALSE
-# define S_PIR           S_FALSE
-# define S_BUTTON        S_TRUE
-# define S_LED           S_TRUE
-# define S_RELAY         S_FALSE
-# define S_TOF           S_TRUE
-# define S_TFT_18        S_FALSE
-# define S_FS            S_TRUE
+# define S_SWITCH        false
+# define S_DS1820        false
+# define S_PIR           false
+# define S_BUTTON        true
+# define S_LED           true
+# define S_RELAY         false
+# define S_TOF           true
+# define S_TFT_18        false
+# define S_FS            true
 
 #elif defined(NODEMCU_PIR)
 # define DEV_TYPE       "NODEMCU"
 # define FNC_TYPE       "PIR"
-# define S_SWITCH        S_FALSE
-# define S_DS1820        S_FALSE
-# define S_PIR           S_TRUE
-# define S_BUTTON        S_TRUE
-# define S_LED           S_TRUE
-# define S_RELAY         S_FALSE
-# define S_TOF           S_FALSE
-# define S_TFT_18        S_FALSE
-# define S_FS            S_TRUE
+# define S_SWITCH        false
+# define S_DS1820        false
+# define S_PIR           true
+# define S_BUTTON        true
+# define S_LED           true
+# define S_RELAY         false
+# define S_TOF           false
+# define S_TFT_18        false
+# define S_FS            true
 
 #else
 #error "Hey! welche Version???"
@@ -162,7 +159,7 @@
 
 // --------- some hardware stuff  ---------
 
-#if (S_LED == S_TRUE) || (S_RELAY == TRUE)
+#if (S_LED == true) || (S_RELAY == TRUE)
 # define  DIG_WRITE(pin, val)   digitalWrite(pin, val)
 # define  DIG_READ(pin)         digitalRead(pin)
 # define  DIG_MODE(pin, inout)  pinMode(pin, inout);
@@ -187,13 +184,13 @@
 
 
 
-#if (S_DS1820 == S_TRUE)
+#if (S_DS1820 == true)
 # define S_DS1820_PIN     D3
 # define S_DS180_MAX_DEV  10
 #endif
 
 
-#if (S_BUTTON == S_TRUE)
+#if (S_BUTTON == true)
 # define S_BUTTON_PIN     0
 #endif
 // --------- some hardware stuff  ---------
@@ -211,9 +208,9 @@
 #define FALSE           0
 #define TRUE            1
 
-#if (S_DBG == S_TRUE)
+#if (S_DBG == true)
   #define DBG(x)            Serial.print(x);
-  #define DBGF(x)           {Serial.print("-> "); Serial.print (__FILE__); Serial.print(" Line ");Serial.print (__LINE__); Serial.print(": "); Serial.println(x);}
+  #define DBGF(x)           {Serial.print("F()-> "); Serial.print (__FILE__); Serial.print(" Line ");Serial.print (__LINE__); Serial.print(": "); Serial.println(x);}
   #define DBGLN(x)          {Serial.print(" ---> "); Serial.println(x);}
   #define DBGL(x)           {Serial.print(" ---> "); Serial.print(x);}
   #define DBGNL(x)          Serial.println(x);
@@ -259,17 +256,19 @@
 #define STATUS_LED      16
 
 #define CFGSTART              0         // startadress og cfg-block in EEPROM
-#define DEFAULT_LED           S_TRUE
+#define DEFAULT_LED           true
 
-#define DEFAULT_SSID          "TK800"
-#define DEFAULT_PASSWORD      "Lanecharge"
+#define DEFAULT_SSID          "janzneux"
+#define DEFAULT_PASSWORD      "D1AFFE1234!"
+//#define DEFAULT_SSID          "TK800"
+//#define DEFAULT_PASSWORD      "Lanecharge"
 
 #define DEFAULT_HOSTNAME      "No-Name"
 #define DEFAULT_APNAME        "ESPnet"
 #define DEFAULT_MEASCYCLE     150       // Measurement cycle in sec.
 #define DEFAULT_PAGERELOAD    10        // page reload cycle in sec.
 
-#if (S_SWITCH == S_FALSE)
+#if (S_SWITCH == false)
   #define DEFAULT_TRANSCYCLE    300     // transmit cycle to server in sec.
 #else
   #define DEFAULT_TRANSCYCLE    3600

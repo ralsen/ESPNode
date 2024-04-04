@@ -19,7 +19,7 @@
 #include <LittleFS.h>
 #include "timer.h"
 
-#if(S_FS == S_TRUE)
+#if(S_FS == true)
 log_CL::log_CL(String filename, int level){
   DBGF("log_CL::log_CL()")
   logfile = filename;

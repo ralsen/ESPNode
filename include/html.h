@@ -78,14 +78,14 @@ const char STATUSMENU[] PROGMEM = {
 
 const char INFOMENU[] PROGMEM = {
   "<a href=\"config\">Config</a><br>"
-#if(S_FS == S_TRUE)
+#if(S_FS == true)
   "<a href=\"showlog\">show log</a>"
   "<a href=\"showdir\">show Dir</a>"
 #endif
   };
 
 const char CONFMENU[] PROGMEM = {
-  #if (S_SWITCH == S_FALSE)
+  #if (S_SWITCH == false)
   "<a href=\"meascyc\">MeasCyc</a>"
   #endif
   "<a href=\"transcyc\">TransCyc</a>"

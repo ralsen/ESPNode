@@ -14,7 +14,7 @@
 #define _LOG_S_
 
 //#include  "timer.h"
-#if(S_FS == S_TRUE)
+#if(S_FS == true)
 class log_CL{
   public:
     log_CL (String filename, int level);
@@ -27,4 +27,4 @@ class log_CL{
 };
     
 #endif //_CONFIG_S_
-#endif // (S_FS == S_TRUE)
+#endif // (S_FS == true)

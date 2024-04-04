@@ -61,7 +61,7 @@ String buildTypePage(void);
 int checkInput(String, String);
 bool string_isNumber(String);
 
-#if (S_TOF == S_TRUE)
+#if (S_TOF == true)
 String buildToFPage(void);
 String buildToFDict (void);
 #endif

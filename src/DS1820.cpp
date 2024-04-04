@@ -15,7 +15,7 @@
 #include <Arduino.h>
 #include "settings.h"
 
-#if (S_DS1820 == S_TRUE)
+#if (S_DS1820 == true)
 
 #include  "Config.h"
 #include  "OneWire.h"
@@ -58,12 +58,12 @@ void SetupDS18B20(){
   }
 
   numberOfDevices = DS18B20.getDeviceCount();
-#if(S_FS == S_TRUE)
+#if(S_FS == true)
   if(!numberOfDevices)
     logit.entry("no DS1820 found");
 #endif
 
-  # if (S_DBG == S_TRUE)
+  # if (S_DBG == true)
     numberOfDevices = 2;
   # endif
 
@@ -112,4 +112,4 @@ void DS1820_Measuring(void){
     sysData.CntMeasCyc++;
 }
 
-#endif //(S_DS1820 == S_TRUE)
+#endif //(S_DS1820 == true)

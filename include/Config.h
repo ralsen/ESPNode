@@ -48,7 +48,7 @@ typedef struct {
   long  CntPageDelivered;
   long  CntMeasCyc;
   long  DspTimeout;
-#if (S_RELAY == S_TRUE)
+#if (S_RELAY == true)
   long  ontime;
   long  offtime;
   long  cycles;

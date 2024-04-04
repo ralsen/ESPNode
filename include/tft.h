@@ -11,7 +11,7 @@
 #include "settings.h"
 #include "Config.h"
 
-#if (S_TFT_18 == S_TRUE)
+#if (S_TFT_18 == true)
 # ifndef _TFT_S_
 # define _TFT_S_
 
@@ -51,4 +51,4 @@ void tft_print(String str);
 extern Adafruit_ST7735 tft;
 
 # endif // _TFT_S_
-#endif //(S_TFT == S_TRUE)
+#endif //(S_TFT == true)

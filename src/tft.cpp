@@ -3,7 +3,7 @@
 #include "settings.h"
 #include "Config.h"
 
-#if (S_TFT_18 == S_TRUE)
+#if (S_TFT_18 == true)
 
 #include "tft.h"
 
@@ -330,4 +330,4 @@ void mediabuttons() {
   // play color
   tft.fillTriangle(42, 20, 42, 60, 90, 40, ST77XX_GREEN);
 }
-#endif //(S_TFT == S_TRUE)
+#endif //(S_TFT == true)

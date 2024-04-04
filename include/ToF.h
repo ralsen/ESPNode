@@ -9,7 +9,7 @@
 */
 #include <Arduino.h>
 
-#if (S_TOF == S_TRUE)
+#if (S_TOF == true)
 # ifndef _TOF_S_
 # define _TOF_S_
 
@@ -26,4 +26,4 @@
   void  ToFDistance(void);
 
 # endif // _TOF_S_
-#endif //(S_TOF == S_TRUE)
+#endif //(S_TOF == true)
