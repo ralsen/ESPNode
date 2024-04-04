@@ -27,7 +27,7 @@ extern ESP8266WebServer server;
 
 void WiFiStartAP(){
   DBGF("WiFiStartAP()")
-  #if(S_TFT_18 == S_TRUE)
+  #if(S_TFT_18 == true)
   tft_initR(INITR_BLACKTAB);
   tft_fillScreen(ST77XX_RED);
   tft.setTextColor(ST77XX_WHITE, ST77XX_RED);
@@ -42,18 +42,17 @@ void WiFiStartAP(){
   delay(2*DELAY_WIFI_TRY);
 
   DBGLN("Start WIFI in AP-Mode")
-  #if(S_TFT_18 == S_TRUE)
+  #if(S_TFT_18 == true)
   tft_println("Start WIFI in AP-Mode");
   #endif
   WiFi.mode(WIFI_AP);
   DBGLN("WiFi.mode is done");
-  #if(S_TFT_18 == S_TRUE)
+  #if(S_TFT_18 == true)
   tft_println("wifi.mode is done.");
   #endif
   WiFi.softAP(cfgData.APname);
   delay(DELAY_WIFI_TRY);
-  startWebServer();
-  #if(S_TFT_18 == S_TRUE)
+  #if(S_TFT_18 == true)
   tft_print("SSID: ");
   tft_println(String(cfgData.APname));
   #endif
@@ -63,7 +62,6 @@ void WiFiStartAP(){
 
 int WiFiStartClient(){
   DBGF ("WiFiStartClient()")
-  Serial.println("WiFiStartClient()");
   int err = 0;
   char wheel[] = {'-', '\\', '|', '/'};
 
@@ -85,9 +83,9 @@ int WiFiStartClient(){
   wifiMulti.addAP(cfgData.SSID, cfgData.password);
   DBGLN(("trying to connect to:  "));
   DBGL("SSID: ");
-  DBGLN(cfgData.SSID);
+  DBGNL(cfgData.SSID);
   DBGL("PASS: ");
-  DBGLN(cfgData.password);
+  DBGNL(cfgData.password);
   while (wifiMulti.run() != WL_CONNECTED) {//WiFi.status() != WL_CONNECTED) { 
     delay(DELAY_WIFI_TRY);
     Serial.print(wheel[err%4]);
@@ -102,23 +100,21 @@ int WiFiStartClient(){
     }
   }
 
-  Serial.println("");
   Serial.print("connected with: ");
   Serial.println(WiFi.SSID());
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  Serial.print("Signal Strength (RSSI): ");
-  Serial.print(WiFi.RSSI());
-  Serial.println("dBm");
+  DBGL("Signal Strength (RSSI): ");
+  DBG(WiFi.RSSI());
+  DBGNL(" dBm");
   
   // CHN: Tasmota macht hier sowas mdns_begun = MDNS.begin(my_hostname) mdns.update wird dort nicht benutzt
   // vielleicht kommen die Netzwerkprobleme daher?
 
 
-  DBGL("mDNS-Name is")
-  DBGLN(FullName)
-  DBGLN("\r\n")
+  DBGL("mDNS-Name is: ")
+  DBGNL(FullName)
 
   if (MDNS.begin(FullName)){
     DBGLN("mDNS responder started");
@@ -127,7 +123,6 @@ int WiFiStartClient(){
   else{
     DBGLN("mDNS responder failed");
   }
-  startWebServer();
   LEDControl(BLKMODEOFF, -1);
   return true;
 }

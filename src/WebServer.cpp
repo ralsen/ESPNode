@@ -71,7 +71,7 @@ void startWebServer(){ //FOL verbraucht auch so einiges
   DBGF("startWebServer()")
   initHTML();
 
-# if (S_SWITCH == S_TRUE)
+# if (S_SWITCH == true)
   server.on(("/" "on"), [](){
     DBGF("HandleOn()");
     DIG_WRITE(S_LED_PIN, LOW);
@@ -109,27 +109,19 @@ void startWebServer(){ //FOL verbraucht auch so einiges
   server.on("/showdir", handleShowDir);
   #endif
   server.on("/pagereload", handlePagereload);
-  #if (S_SWITCH == S_FALSE)
+  #if (S_SWITCH == false)
   server.on("/meascyc", handleMeasCyc);
   #endif
   server.on("/transcyc", handleTransCyc);
   server.on("/scan", handleScan);
   server.on("/favicon.ico", handleFavicon);
   server.onNotFound(handleNotFound);
-  server.on("/update", HTTP_POST, handleUpdate_part1, handleUpdate_part2);
+  server.on("/update", HTTP_POST, handleUpdate_part2, handleUpdate_part1);
   server.begin();
   DBGF("startWebServer() done.")
 }
 
 void handleUpdate_part1() {
-    DBGF("handleUpdate_part1()");
-    server.sendHeader("Connection", "close");
-    sysData.CntPageDelivered++;
-    server.send(200, W_TEXT_PLAIN, (Update.hasError()) ? "FAIL" : "OK");
-    ESP.restart();
-}
-
-void handleUpdate_part2() {
     //DBGF("handleUpdate_part2()");
     char buf[80];
     HTTPUpload& upload = server.upload();
@@ -171,8 +163,15 @@ void handleUpdate_part2() {
     yield();
 }
 
-/*  all webserver handlers
- */
+void handleUpdate_part2() {
+    DBGF("handleUpdate_part1()");
+    server.sendHeader("Connection", "close");
+    sysData.CntPageDelivered++;
+    server.send(200, W_TEXT_PLAIN, (Update.hasError()) ? "FAIL" : "OK");
+    ESP.restart();
+}
+
+/*  all webserver handlers */
 void handleSetDefault(){
   DBGF(server.uri());
   server.send(200, W_TEXT_HTML, buildConfPage("set every thing to defaults"));
@@ -206,7 +205,7 @@ void handleStatus(){
   
   DBGF(server.uri());
   tp = buildTypePage();
-#if (S_DS1820 == S_TRUE)
+#if (S_DS1820 == true)
   message = "Number of devices: ";
   message += numberOfDevices;
   message += "<br>";
@@ -215,12 +214,12 @@ void handleStatus(){
   message += "<tr><td>Device ID</td><td>Temperature</td></tr>";
   message += tp;
   message += "</table>";
-#elif (S_TOF == S_TRUE)
+#elif (S_TOF == true)
   message = "<h1>Distance: </h1>";
 
   //message += "<br>";
   message += tp;
-#elif (S_SWITCH == S_TRUE)
+#elif (S_SWITCH == true)
   message = "";
   String WebPage;
   char cyc[10];
@@ -245,14 +244,13 @@ void handleFavicon(){
   server.send(200, W_TEXT_HTML, "");
 }
   
-#if(S_FS == S_TRUE)
+#if(S_FS == true)
 void handleShowLog(){
   DBGF(server.uri());
   String str = "Content of log:<br><br>";
   
   str += logit.show();
   str.replace("\n", "<br>");
-  //Serial.println(str);
   server.send(200, W_TEXT_HTML, buildMainPage(str));
   sysData.CntPageDelivered++;
 }
@@ -314,7 +312,7 @@ void handleLED(){ //FOL unklar warum das so kompliziert aussieht
 
   DBGF(server.uri());
   output = RadioLEDStartHTML;
-  if(cfgData.LED == S_TRUE){
+  if(cfgData.LED == true){
     output.replace("{ontext}", "checked=\"checked\"");
     output.replace("{offtext}", "");
   }
@@ -333,7 +331,7 @@ void handleLED(){ //FOL unklar warum das so kompliziert aussieht
   //x = server.arg(server.args()-1);
   DBGF(server.arg(server.args()-1));
   if(server.args() == 1){
-    server.arg(server.args()-1) == "On" ? cfgData.LED = S_TRUE : cfgData.LED = S_FALSE;
+    server.arg(server.args()-1) == "On" ? cfgData.LED = true : cfgData.LED = false;
     DBGF("so ist die LED jetzt")
     DBGF(cfgData.LED);
     SaveConfig();
@@ -372,7 +370,7 @@ void handleMeasCyc(){
       SaveConfig();
       sysData.MeasuringCycle = cfgData.MeasuringCycle;
     }
-    else Serial.println("is not a number");
+    else DBGLN("is not a number");
   }
 }
 
@@ -438,9 +436,12 @@ void handleScan(){ //FOL 2KB
       x = strlen(server.arg(server.args()-1).c_str());
       strncpy(cfgData.password, server.arg(server.args()-1).c_str(), x);
       cfgData.password[x] = 0;
+      DBG("neues WLAN: ");
+      DBGLN(cfgData.SSID);
+      DBG("neues Pass: ");
+      DBGLN(cfgData.password);
       SaveConfig();
-      //handleSTAMode();
-      //WebServerStart();
+      handleReset();
     }
     else {
       ScanStart();
@@ -470,7 +471,7 @@ void ScanStart(){ //FOL 2KB
   {
     DBGL(n);
     DBG((" networks found"));
-    Serial.println("");
+    DBGLN("");
     output += RadioWifiStartHTML;
 
     for (int i = 0; i < n; ++i)
@@ -492,7 +493,7 @@ void ScanStart(){ //FOL 2KB
       DBG(" (");
       DBG(WiFi.RSSI(i));
       DBG(")");
-      Serial.println("");
+      DBGLN("");
       delay(10);
     }
     output += "<h6>";
@@ -543,7 +544,7 @@ String buildAppPage(String content){
   DBGF("buildAppPage(String str)")
   String WebPage = buildPageFrame(content);
   WebPage.replace("{appmenu}", AppMenueHTML);
-  #if(S_SWITCH == S_TRUE)
+  #if(S_SWITCH == true)
   WebPage.replace("{appmenu}", StatusMenueSwitchHTML);
   #else
   WebPage.replace("{appmenu}", "");
@@ -575,12 +576,12 @@ String buildDict (){  //FOL 15KB
   for (size_t i = 0; i < sizeof(keys) / sizeof(keys[0]); ++i) {
       httpRequestData += keys[i] + qd + values[i] + qc;
   }
-  return httpRequestData;
+  return httpRequestData.substring(0, httpRequestData.length() - 3) + "}";
 }
 
 String buildTypeDict(){
   DBGF("buildTypeDict()");
-#if (S_DS1820 == S_TRUE)
+#if (S_DS1820 == true)
   char buf[10];
   String minus = "-";
   String httpRequestData = FNC_TYPE + minus + String(numberOfDevices) + qc;
@@ -590,10 +591,10 @@ String buildTypeDict(){
     httpRequestData += "Value_" + String(i) + qd + buf + qc;
   }
   httpRequestData = httpRequestData.substring(0, httpRequestData.length() - 2);
-#elif (S_TOF == S_TRUE)
+#elif (S_TOF == true)
   String httpRequestData = "Type" + qd + FNC_TYPE + qc + "distance" + qd + String(ToFRange) + q;
-#elif (S_SWITCH == S_TRUE)
-  String httpRequestData = "Type" + qd + FNC_TYPE + qc;
+#elif (S_SWITCH == true)
+  String httpRequestData = FNC_TYPE + qc;
   httpRequestData += "ontime" + qd + String(sysData.ontime) + qc;
   httpRequestData += "offtime" + qd + String(sysData.offtime) + qc;
   httpRequestData += "cycles" + qd + String(sysData.cycles) + qc;
@@ -611,7 +612,7 @@ String buildTypeDict(){
 String buildTypePage(){
   DBGF("buildTypePage()");
   String message="";
-#if (S_DS1820 == S_TRUE)
+#if (S_DS1820 == true)
   char temperatureString[10];
 
   DBGF("buildDS1820Page()");
@@ -628,10 +629,10 @@ String buildTypePage(){
     message += "</td></tr>";
     message += "";
   }
-#elif (S_TOF == S_TRUE)
+#elif (S_TOF == true)
   message = "<meta http-equiv=\"refresh\" content=\"1\">"; //"; URL=http://192.168.1.38/tof>");
   message += "<h1 style=\"font-size:128px\">"+String(ToFRange)+"</h1>";
-#elif (S_SWITCH == S_TRUE)
+#elif (S_SWITCH == true)
   char cyc[10];
   message += "<h3>Schalter ist: ";
   if (DIG_READ(S_RELAY_PIN))
@@ -641,7 +642,7 @@ String buildTypePage(){
 
   itoa (cfgData.PageReload, cyc, 10);
   DBGL("Pagereload: ");
-  DBGL (cy);
+  DBGL (cyc);
   DBGNL(" sec.");
   message += "<meta http-equiv=\"refresh\" content=\"";
   message += String(cyc);
@@ -658,7 +659,7 @@ void buildInfoPage(){ //FOL 14KB
                         "<br>MAC-Address: ", "<br>Network: ", "<br>Network-IP: ", "<br>Devicename: ", 
                         "<br>AP-Name: ", "<br>cfg-Size: 0x", "<br>Hash: 0x", "<br><br>Display: ",
                         "<br><br>uptime: ",
-#if (S_DS1820 == S_TRUE) || (S_TOF == S_TRUE)
+#if (S_DS1820 == true) || (S_TOF == true)
                         "<br>Measuring cycle: ",
 #endif
                         "<br>Transmit cycle: ",
@@ -670,10 +671,10 @@ void buildInfoPage(){ //FOL 14KB
                         "<br><br>good Transmissions: ",
                         "<br>bad Transmissions: ",
                         "<br>Pages delivered: ",
-#if (S_DS1820 == S_TRUE) || (S_TOF == S_TRUE)
+#if (S_DS1820 == true) || (S_TOF == true)
                         "<br>Measurements: "
 #endif
-#if (S_RELAY == S_TRUE)
+#if (S_RELAY == true)
                         "<br>ontime: ",
                         "<br>offtime: ",
                         "<br>Cycles:                 "
@@ -681,24 +682,24 @@ void buildInfoPage(){ //FOL 14KB
                       };
   String values[] =   { Version + "<br><br>", FNC_TYPE, DEV_TYPE, String(cfgData.ChipID),
                         String(cfgData.MACAddress), String(WiFi.SSID()), WiFi.localIP().toString(), String(cfgData.hostname),
-                        String(cfgData.APname), String(sizeof(cfgData), HEX), String(cfgData.hash, HEX), (S_TFT_18 == S_TRUE) ? "True" : "False",
+                        String(cfgData.APname), String(sizeof(cfgData), HEX), String(cfgData.hash, HEX), (S_TFT_18 == true) ? "True" : "False",
                         String(sysData.uptime/86400) + " days - " + String((sysData.uptime/3600)%24) + " hours - " + String((sysData.uptime/60)%60) + " minutes - " + String(sysData.uptime%60) + " seconds",
-#if (S_DS1820 == S_TRUE) || (S_TOF == S_TRUE)
+#if (S_DS1820 == true) || (S_TOF == true)
                         String(cfgData.MeasuringCycle) + " s (remainig: " + String(sysData.MeasuringCycle) + " s)",
 #endif
                         String(cfgData.TransmitCycle) + " s (remaining: " + String(sysData.TransmitCycle) + " s)",
                         String(cfgData.PageReload) + " s",
                         String(cfgData.server),
                         String(cfgData.port),
-                        cfgData.LED == S_TRUE ? "on " : "off ",
+                        cfgData.LED == true ? "on " : "off ",
                         String(WiFi.RSSI()),
                         String(sysData.CntGoodTrans),
                         String(sysData.CntBadTrans),
                         String(sysData.CntPageDelivered),
-#if (S_DS1820 == S_TRUE) || (S_TOF == S_TRUE)
+#if (S_DS1820 == true) || (S_TOF == true)
                         String(sysData.CntMeasCyc)
 #endif
-#if (S_RELAY == S_TRUE)
+#if (S_RELAY == true)
                         String(sysData.ontime/86400) + " days - " + String((sysData.ontime/3600)%24) + " hours - " + String((sysData.ontime/60)%60) + " minutes - " + String(sysData.ontime%60) + " seconds",
                         String(sysData.offtime/86400) + " days - " + String((sysData.offtime/3600)%24) + " hours - " + String((sysData.offtime/60)%60) + " minutes - " + String(sysData.offtime%60) + " seconds",
                         String(sysData.cycles)
@@ -770,5 +771,5 @@ bool string_isNumber(String str) {
     }
     ptr++;
   }
-  return S_TRUE;
+  return true;
 }
