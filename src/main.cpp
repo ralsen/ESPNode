@@ -38,7 +38,7 @@ void transmitData(void);
 //#include <WiFiManager.h>         // https://github.com/tzapu/WiFiManager
 
 
-#if(S_TFT_18 == S_TRUE)
+#if(S_TFT_18 == true)
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 #include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
@@ -46,11 +46,11 @@ void transmitData(void);
 #endif
 
 
-#if (S_TOF == S_TRUE)
+#if (S_TOF == true)
 #include  "ToF.h"
 #endif
 
-#if (S_DS1820 == S_TRUE)
+#if (S_DS1820 == true)
 #include  "DS1820.h"
 #include  <DallasTemperature.h>
 #endif
@@ -65,7 +65,7 @@ String Version = "\r\n-----> V" VERNR " vom " __DATE__ " " __TIME__ " " RELEASE 
 
 extern ESP8266WebServer server;
 
-#if(S_FS == S_TRUE)
+#if(S_FS == true)
 log_CL logit(LOGFILE, 11);
 TimeDB TimeServ(MY_NTP_SERVER, MY_TZ);
 #endif
@@ -80,7 +80,7 @@ void setup() { //KB38
   //DIG_MODE(D0, OUTPUT);
   DIG_MODE(S_RELAY_PIN, OUTPUT)
   sysData.uptime = 0;
-#if (S_RELAY == S_TRUE)
+#if (S_RELAY == true)
   sysData.ontime = sysData.offtime = sysData.cycles = 0;
 #endif
 
@@ -89,65 +89,50 @@ void setup() { //KB38
 
   //FOL here Init_key and below TISms_key???
   Init_Key();
-  Serial.println("Key service started!");
+  DBGLN("Key service started!");
   
   TIms_LED.attach_ms(10, TISms_LED);
-  Serial.println("LED Key 10ms Timer services started!");
+  DBGLN("LED Key 10ms Timer services started!");
 
-  #if(S_TFT_18 == S_TRUE)
+  #if(S_TFT_18 == true)
   tft_hello();
   #endif
 
   if (!TestHashConfig()) {
     LEDControl(BLKMODEON, BLKALLERT);
-  #if(S_TFT_18 == S_TRUE)
+  #if(S_TFT_18 == true)
     tft_println("Hash FAILED !!!");
   #endif
-    Serial.println(" Hash FAILED !!!");
-    Serial.print ("load default configuration, size is: ");
-    Serial.println(sizeof(cfgData));
+    Serial.println(" Hash FAILED !!!\r\n loading default configuration");
     SetToDefault();
-    sysData.status = STATUS_HASS_ERR;
     ESP.eraseConfig();
     ESP.restart();
   }
-  else {
-    Serial.printf(("Hash: 0x%lx"), cfgData.hash);
-  #if(S_TFT_18 == S_TRUE)
-    tft_println("Hash: ok");
-  #endif
-    Serial.println(" is ok");
-    LEDControl(BLKMODEON, BLKWIFISTA);
-    //WiFiStartClient();
-    sysData.status = STATUS_OK;
-  }
+
   String FullName=String(cfgData.hostname) + "_" + String(cfgData.MACAddress);
   FullName.replace (":", "_");
   Serial.println("");
   Serial.print("Hello from device: ");
-  Serial.println(cfgData.hostname);
+  Serial.println(FullName);
   Serial.print("Hardware:          ");
   Serial.println(DEV_TYPE);
   Serial.print("Function:          ");
   Serial.println(FNC_TYPE);
-  Serial.print("MAC-Adress:        ");
-  Serial.println(cfgData.MACAddress);
-  Serial.println("");
 
-  #if(S_FS == S_TRUE)
+  #if(S_FS == true)
   LittleFS.begin();
   #endif
 
     //Setup DS18b20 temperature sensor
-#if (S_DS1820 == S_TRUE)
+#if (S_DS1820 == true)
   DBGLN("intialisiere die DS1820")
   SetupDS18B20();
 #endif
-#if (S_TOF == S_TRUE)
+#if (S_TOF == true)
   SetupToF();
 #endif
 
-#if(S_FS == H_TRUE)
+#if(S_FS == true)
   String str = "Directory: \n\r";
   Dir dir = LittleFS.openDir("/");
   while (dir.next()) {
@@ -157,22 +142,19 @@ void setup() { //KB38
     str += dir.fileSize();
     str += "\r\n";
   }
-  Serial.print(str);
+  DBG(str);
   if (LittleFS.exists(LOGFILE)) {
-    Serial.println("LOGFILE exists");
+    DBGLN("LOGFILE exists");
   }
   else {
-    Serial.println("NO LOGFILE");
+    DBGLN("NO LOGFILE");
   }
 #endif
 
-  Serial.println("\r\neverything is initialized, let's go ahead and connect now ->\r\n");
-
-  Serial.println("---> " + WiFi.macAddress());
+  DBGLN("---> " + WiFi.macAddress());
   
   TIms_DspTimeout.attach_ms(10, TISms_DspTimeout);
   TIms_Key.attach_ms(10, TISms_Key);
-  Serial.println("all 10ms Timer services started!");
 
   TIs_Uptime.attach(1, TISs_Uptime);
   TIs_TransmitCycle.attach(1, TISs_TransmitCycle);
@@ -181,26 +163,31 @@ void setup() { //KB38
   sysData.MeasuringCycle = 0;
   sysData.TransmitCycle = 3;
 
-  #if(S_TFT_18 == S_TRUE)
+  #if(S_TFT_18 == true)
   tft_info();
   #endif
-  #if (S_RELAY == S_TRUE)
+  #if (S_RELAY == true)
   TIs_Relais.attach(1, TISs_Relais);
   #endif
-  Serial.println("1s timer services started!");
 
   LEDControl(BLKMODEOFF, -1);
   delay(1000);
   
+  Serial.println("connecting ...");
+  if (!WiFiStartClient())
+    WiFiStartAP();//KB24
+  MDNS.addService("http", "tcp", 80);
+
   if (MDNS.begin(FullName)) {  //Start mDNS
-    Serial.print("---> MDNS started with name: ");
+    Serial.print("MDNS started with name: ");
     Serial.println(FullName);
   } 
   else Serial.println("schiete kein MDNS");
 
-  WiFiStartClient();//KB24
-  MDNS.addService("http", "tcp", 80);
-#if(S_FS == S_TRUE)  
+  startWebServer();
+
+  Serial.println("\r\neverything is initialized, let's go ahead now  ...\r\n");  
+#if(S_FS == true)  
   logit.entry("System initialized ...");
 #endif
 }
@@ -209,16 +196,13 @@ void setup() { //KB38
 // -----------------------------------------------------------------------------
 
 void loop() {
-  #if(S_TFT_18 == S_TRUE)
+  #if(S_TFT_18 == true)
   int x, y;
   #endif
   // beides wird inTasmota nicht gemacht, aber mdns.advertise, mdns.addserver u.ae.
   MDNS.update(); //KB13
   server.handleClient(); //KB14
-  //DIG_WRITE (D0, !DIG_READ(D0));
-  //logit.entry("...");
-  //Serial.println(sysData.TransmitCycle);
-  if (!sysData.TransmitCycle){
+  if ((!sysData.TransmitCycle) && (WiFi.getMode() != WIFI_AP)){
       transmitData();
   }
   
@@ -234,7 +218,7 @@ void loop() {
 
   if(!sysData.DspTimeout){
     sysData.DspTimeout = 100;
-    #if(S_TFT_18 == S_TRUE)
+    #if(S_TFT_18 == true)
     tft_display2Temps((int)(tempDev[1]), (int)(tempDev[0]));
     #endif
   }
@@ -258,21 +242,21 @@ void transmitData() { //KB12
   http.begin(client, serverName);
   http.addHeader("Content-Type", "application/json");
   String httpRequestData =  buildDict();
-  Serial.print("sending to: ");
-  Serial.println(serverName);
-  Serial.println(httpRequestData);
+  DBGL("sending to: ");
+  DBGNL(serverName);
+  DBGLN(httpRequestData);
   int httpResponseCode = http.POST(httpRequestData);
   if (httpResponseCode == 301){
     sysData.CntGoodTrans++;
   }
   else {
     sysData.CntBadTrans++;
-    #if(S_FS == S_TRUE)
+    #if(S_FS == true)
     logit.entry("server send failed...");
     #endif
   }
 
-  Serial.println(http.getString());
+  DBGLN(http.getString());
   Serial.print("HTTP Response code: ");
   Serial.println(httpResponseCode);
     
