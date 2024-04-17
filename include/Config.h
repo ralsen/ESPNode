@@ -26,7 +26,6 @@ typedef struct {
   char  MACAddress[MAXCHAR+4];   // holds MAC
   char  ChipID[MAXCHAR+4];
   char  LocalIP[MAXCHAR+4];
-  char  fixip[MAXCHAR+4];       // if fixed IP is used store it here
   char  server[MAXCHAR+4];
   char  port[MAXCHAR+4];
   long  MeasuringCycle;
