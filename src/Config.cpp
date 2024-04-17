@@ -36,6 +36,8 @@ void SaveConfig() {
   cfgData.hash = CalcHashConfig();
   DBGF("SaveConfig()");
   DBGLN("EEPROM.begin()");
+  DBGL("cfg-Size: ");
+  DBGLN(sizeof(cfgData));
   EEPROM.begin(sizeof(cfgData));
   DBGLN("EEPROM.put()");
   EEPROM.put(CFGSTART, cfgData);
@@ -44,7 +46,7 @@ void SaveConfig() {
   EEPROM.commit(); // Only needed for ESP8266 to get data written
   DBGLN("EEPROM.end()");
   EEPROM.end();                         // Free RAM copy of structure
-  delay(500);     // wird nach EEPROM.end scheinbar gebraucht sonst kommt der WTD
+  delay(1000);     // wird nach EEPROM.end scheinbar gebraucht sonst kommt der WTD
   DBGLN(cfgData.hash);
 }
 
@@ -75,7 +77,6 @@ void SetToDefault(){
   //FOL strcpy (cfgData.hostname, String(ESP.getChipId()).c_str());
   itoa (ESP.getChipId(), cfgData.ChipID, 16); 
   cfgData.LocalIP[0]=0;
-  cfgData.fixip[0]=0;
   strcpy (cfgData.server, DEFAULT_SERVER);
   strcpy (cfgData.port, DEFAULT_PORT);
   cfgData.MeasuringCycle = DEFAULT_MEASCYCLE;
