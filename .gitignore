@@ -11,4 +11,5 @@ firmware*
 *.map
 data
 .DS*
+*.code-workspace
 
