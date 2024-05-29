@@ -258,7 +258,7 @@
 #define CFGSTART              0         // startadress og cfg-block in EEPROM
 #define DEFAULT_LED           true
 
-#define DEFAULT_SSID          "janzneux"
+#define DEFAULT_SSID          "janzneu"
 #define DEFAULT_PASSWORD      "D1AFFE1234!"
 //#define DEFAULT_SSID          "TK800"
 //#define DEFAULT_PASSWORD      "Lanecharge"
