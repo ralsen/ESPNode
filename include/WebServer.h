@@ -57,6 +57,7 @@ String buildMainPage(String);
 String buildDict (void);
 String buildTypeDict(void);
 String buildTypePage(void);
+String buildFullName(void);
 
 int checkInput(String, String);
 bool string_isNumber(String);

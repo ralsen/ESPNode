@@ -13,8 +13,10 @@ hallo
 #include "Settings.h"
 #include "Config.h"
 #include <ESP8266WiFi.h>
-
+#include "log.h"
 #include <EEPROM.h>
+
+extern class log_CL logit;
 
 cfgData_t cfgData;
 sysData_t sysData;

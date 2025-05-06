@@ -52,7 +52,7 @@ void log_CL::entry(String entry){
   }
   flog.close();
   flog = LittleFS.open(logfile, "w");
-  tstr = TimeServ.getTimestr() + " --> " + entry;
+  tstr = TimeServ.getTimestr() + " :: " + entry;
   fstr = tstr + "\n" + fstr;
   //Serial.println(tstr);
   flog.print(fstr.substring(0, MAXLOGSIZE));

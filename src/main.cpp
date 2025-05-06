@@ -66,8 +66,8 @@ String Version = "\r\n-----> V" VERNR " vom " __DATE__ " " __TIME__ " " RELEASE 
 extern ESP8266WebServer server;
 
 #if(S_FS == true)
-log_CL logit(LOGFILE, 11);
 TimeDB TimeServ(MY_NTP_SERVER, MY_TZ);
+log_CL logit(LOGFILE, 11);
 #endif
 
 //------------------------------------------
@@ -98,19 +98,23 @@ void setup() { //KB38
   tft_hello();
   #endif
 
+  #if(S_FS == true)
+  LittleFS.begin();
+  #endif
+
   if (!TestHashConfig()) {
     LEDControl(BLKMODEON, BLKALLERT);
   #if(S_TFT_18 == true)
     tft_println("Hash FAILED !!!");
   #endif
+    logit.entry("Hash FAILED !!!");
     Serial.println(" Hash FAILED !!!\r\n loading default configuration");
     SetToDefault();
     ESP.eraseConfig();
     ESP.restart();
   }
 
-  String FullName=String(cfgData.hostname) + "_" + String(cfgData.MACAddress);
-  FullName.replace (":", "_");
+  String FullName=buildFullName();
   Serial.println("");
   Serial.print("Hello from device: ");
   Serial.println(FullName);
@@ -118,10 +122,16 @@ void setup() { //KB38
   Serial.println(DEV_TYPE);
   Serial.print("Function:          ");
   Serial.println(FNC_TYPE);
-
-  #if(S_FS == true)
-  LittleFS.begin();
-  #endif
+  logit.entry("--- Hello from device: " + FullName + " ---");
+  logit.entry("Hardware: " + String(DEV_TYPE));
+  logit.entry("Function: " + String(FNC_TYPE));
+  logit.entry("Version: " + String(VERNR));
+  logit.entry("Build: " + String(__DATE__) + " " + String(__TIME__));
+  logit.entry("Chip-ID: " + String(cfgData.ChipID));
+  logit.entry("MAC-Address: " + String(cfgData.MACAddress));
+  logit.entry("cfg-Size: " + String(sizeof(cfgData), HEX));
+  logit.entry("Hash: " + String(cfgData.hash, HEX));
+  logit.entry("LED: " + String(cfgData.LED));
 
     //Setup DS18b20 temperature sensor
 #if (S_DS1820 == true)
@@ -187,7 +197,8 @@ void setup() { //KB38
   startWebServer();
 
   Serial.println("\r\neverything is initialized, let's go ahead now  ...\r\n");  
-#if(S_FS == true)  
+  Serial.println(TimeServ.getTimestr());
+  #if(S_FS == true)  
   logit.entry("System initialized ...");
 #endif
 }

@@ -554,11 +554,17 @@ String buildAppPage(String content){
   return WebPage;
 }
 
+String buildFullName(){
+  DBGF("buildFullName()")
+  String FullName = String(cfgData.hostname) + "-" + String(cfgData.MACAddress);
+  FullName.replace (":", "");
+  return FullName;
+} 
+
 String buildDict (){  //FOL 15KB
   DBGF("buildDict()");
   String httpRequestData = "{" + q;
-  String FullName = String(cfgData.hostname) + "_" + String(cfgData.MACAddress);
-  FullName.replace (":", "_");
+  String FullName = buildFullName();
   
   const char* keys[] = {"name", "IP", "Version", "Hardware", 
                         "Network", "APName", "MAC", "TransmitCycle", 

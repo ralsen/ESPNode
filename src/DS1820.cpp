@@ -59,8 +59,7 @@ void SetupDS18B20(){
 
   numberOfDevices = DS18B20.getDeviceCount();
 #if(S_FS == true)
-  if(!numberOfDevices)
-    logit.entry("no DS1820 found");
+  logit.entry(String ("found: ") + numberOfDevices + String(" DS1820 devices"));
 #endif
 
   # if (S_DBG == true)
