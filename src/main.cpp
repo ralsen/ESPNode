@@ -135,7 +135,8 @@ void setup() { //KB38
 
     //Setup DS18b20 temperature sensor
 #if (S_DS1820 == true)
-  DBGLN("intialisiere die DS1820")
+  DBGLN("initialisiere die DS1820")
+  Serial.println("initialisiere die DS1820");
   SetupDS18B20();
 #endif
 #if (S_TOF == true)
@@ -197,8 +198,7 @@ void setup() { //KB38
   startWebServer();
 
   Serial.println("\r\neverything is initialized, let's go ahead now  ...\r\n");  
-  Serial.println(TimeServ.getTimestr());
-  #if(S_FS == true)  
+#if(S_FS == true)  
   logit.entry("System initialized ...");
 #endif
 }
@@ -217,6 +217,16 @@ void loop() {
       transmitData();
   }
   
+  if(doMeasuring){
+    doMeasuring = false;
+    #if (S_DS1820 == true)
+    DS1820_Measuring();
+    #endif
+    #if (S_TOF == true)
+    ToFDistance();
+    #endif
+  }
+
   #if (S_RELAY == true)
     if (key) {
       DBGLN("KEY");

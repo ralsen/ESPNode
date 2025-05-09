@@ -30,6 +30,8 @@ int key;            // holds the button codes for internal use
 static int  oldKey;           // counts the ticks how long a key is pressed
 static long blkcnt;
 int LEDCrit;
+volatile bool doMeasuring = false;
+
 
 // count object for ISR
 Ticker TIs_Uptime;
@@ -116,12 +118,7 @@ void TISs_MeasuringCycle(){
   }
   else{
     sysData.MeasuringCycle = cfgData.MeasuringCycle;
-    #if(S_DS1820 == true)
-    DS1820_Measuring();
-    #endif
-    #if(S_TOF == true)
-    ToFDistance();
-    #endif
+    doMeasuring = true;
   }
 }
 

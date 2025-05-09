@@ -37,34 +37,12 @@ extern class log_CL logit;
 
 ESP8266WebServer server(MyServerPort);
 
-String HomeHTML;
-String AppMenueHTML;
-String StatusMenueSwitchHTML;
-String InfoMenueHTML;
-String ConfMenueHTML;
-String RadioWifiStartHTML;
-String RadioWifiLineHTML;
-String RadioWifiEndHTML;
-String RadioLEDStartHTML;
-String RadioLEDEndHTML;
-String NameHTML;
 
 String q = "\"";
 String qd = "\":\"";
 String qc = "\",\"";
 
 void initHTML(){
-  HomeHTML = FPSTR(HOME_PAGE);
-  AppMenueHTML = FPSTR(APPMENU);
-  StatusMenueSwitchHTML = FPSTR(STATUSMENU);
-  InfoMenueHTML = FPSTR(INFOMENU);
-  ConfMenueHTML = FPSTR(CONFMENU);
-  RadioWifiStartHTML = FPSTR(RADIO_WIFI_START);
-  RadioWifiLineHTML = FPSTR(RADIO_WIFI_LINE);
-  RadioWifiEndHTML = FPSTR(RADIO_WIFI_END);
-  RadioLEDStartHTML = FPSTR(RADIO_LED_START);
-  RadioLEDEndHTML = FPSTR(RADIO_LED_END);
-  NameHTML = FPSTR(NAME);
 }
 
 void startWebServer(){ //FOL verbraucht auch so einiges
@@ -311,7 +289,7 @@ void handleLED(){ //FOL unklar warum das so kompliziert aussieht
   String output;
 
   DBGF(server.uri());
-  output = RadioLEDStartHTML;
+  output = FPSTR(RADIO_LED_START);
   if(cfgData.LED == true){
     output.replace("{ontext}", "checked=\"checked\"");
     output.replace("{offtext}", "");
@@ -320,7 +298,7 @@ void handleLED(){ //FOL unklar warum das so kompliziert aussieht
     output.replace("{ontext}", "");
     output.replace("{offtext}", "checked=\"checked\"");
   }
-  output += RadioLEDEndHTML;
+  output += FPSTR(RADIO_LED_END);
   server.send(200, W_TEXT_HTML, buildConfPage (output));
   sysData.CntPageDelivered++;
   DBGF("LED ist jetzt: ");
@@ -472,7 +450,7 @@ void ScanStart(){ //FOL 2KB
     DBGL(n);
     DBG((" networks found"));
     DBGLN("");
-    output += RadioWifiStartHTML;
+    output += FPSTR(RADIO_WIFI_START);
 
     for (int i = 0; i < n; ++i)
     {
@@ -482,7 +460,7 @@ void ScanStart(){ //FOL 2KB
       DBG(": ");
       DBG((WiFi.encryptionType(i) == ENC_TYPE_NONE)?"  ":"* ");
       DBG(WiFi.SSID(i));
-      output += RadioWifiLineHTML;
+      output += FPSTR(RADIO_WIFI_LINE);
       if(WiFi.encryptionType(i) == ENC_TYPE_NONE)
         output.replace("{CRYPT}", " - ");
       else
@@ -497,7 +475,7 @@ void ScanStart(){ //FOL 2KB
       delay(10);
     }
     output += "<h6>";
-    output += RadioWifiEndHTML;
+    output += FPSTR(RADIO_WIFI_END);
     output += "</h6>";
   }
   server.send(200, W_TEXT_HTML, buildConfPage(output));
@@ -507,12 +485,12 @@ void ScanStart(){ //FOL 2KB
 /*  all webpage building routines
  *
  */
- String buildPageFrame(String content) {
+ String buildPageFrame(const String& content) {
    // building the frame for all Pages
    // setup the pages with the content thats the same for all pages
    DBGF("buildPageFrame(String content)")
 
-   String WebPage = HomeHTML;
+   String WebPage = FPSTR(HOME_PAGE);
    WebPage.replace("{hostname}", String(cfgData.hostname));
    //WebPage.replace("{hostname}", content);
    WebPage.replace("{title}", String(cfgData.hostname));
@@ -520,32 +498,32 @@ void ScanStart(){ //FOL 2KB
    return WebPage;
  }
 
-String buildConfPage(String content){
+String buildConfPage(const String& content){
   DBGF("buildConfPage(String content)")
   String WebPage = buildPageFrame(content);
   WebPage.replace("{appmenu}", "");
   WebPage.replace("{mainpage}", "");
-  WebPage.replace("{confpage}", ConfMenueHTML);
+  WebPage.replace("{confpage}", FPSTR(CONFMENU));
   return WebPage;
 }
 
-String buildMainPage(String content){
+String buildMainPage(const String& content){
   DBGF("buildMainPage(String content)")
   String  WebPage = buildPageFrame(content);
-  WebPage.replace("{appmenu}", AppMenueHTML);
+  WebPage.replace("{appmenu}", FPSTR(APPMENU));
   WebPage.replace("{appmenu}", "");
-  WebPage.replace("{mainpage}", InfoMenueHTML);
+  WebPage.replace("{mainpage}", FPSTR(INFOMENU));
   WebPage.replace("{confpage}", "");
   WebPage.replace("{content}", content);
   return WebPage;
 }
 
-String buildAppPage(String content){
+String buildAppPage(const String& content){
   DBGF("buildAppPage(String str)")
   String WebPage = buildPageFrame(content);
-  WebPage.replace("{appmenu}", AppMenueHTML);
+  WebPage.replace("{appmenu}", FPSTR(APPMENU));
   #if(S_SWITCH == true)
-  WebPage.replace("{appmenu}", StatusMenueSwitchHTML);
+  WebPage.replace("{appmenu}", FPSTR(STATUSMENU));
   #else
   WebPage.replace("{appmenu}", "");
   #endif
@@ -554,11 +532,20 @@ String buildAppPage(String content){
   return WebPage;
 }
 
+String truncateFullname(const String& hostname) {
+  const size_t MAX_MDNS_HOSTNAME_LENGTH = 31;  // 31 sichtbare Zeichen
+
+  if (hostname.length() <= MAX_MDNS_HOSTNAME_LENGTH) {
+    return hostname;
+  } else {
+    return hostname.substring(0, MAX_MDNS_HOSTNAME_LENGTH);
+  }
+}
 String buildFullName(){
   DBGF("buildFullName()")
   String FullName = String(cfgData.hostname) + "-" + String(cfgData.MACAddress);
   FullName.replace (":", "");
-  return FullName;
+  return truncateFullname(FullName);
 } 
 
 String buildDict (){  //FOL 15KB
@@ -598,7 +585,7 @@ String buildTypeDict(){
   }
   httpRequestData = httpRequestData.substring(0, httpRequestData.length() - 2);
 #elif (S_TOF == true)
-  String httpRequestData = "Type" + qd + FNC_TYPE + qc + "distance" + qd + String(ToFRange) + q;
+  String httpRequestData = FNC_TYPE + qc + "distance" + qd + String(ToFRange) + q;
 #elif (S_SWITCH == true)
   String httpRequestData = FNC_TYPE + qc;
   httpRequestData += "ontime" + qd + String(sysData.ontime) + qc;
@@ -661,7 +648,7 @@ void buildInfoPage(){ //FOL 14KB
   String  output = "";
   DBGF("buildInfoPage()")
 
-  const char* keys[] = {"</h3>", "<br>Type: ", "<br>Hardw: ", "<br>Chip-ID: 0x",
+  const char* keys[] = {"</h3>", "<br>Hostname: ", "<br>Type: ", "<br>Hardw: ", "<br>Chip-ID: 0x",
                         "<br>MAC-Address: ", "<br>Network: ", "<br>Network-IP: ", "<br>Devicename: ", 
                         "<br>AP-Name: ", "<br>cfg-Size: 0x", "<br>Hash: 0x", "<br><br>Display: ",
                         "<br><br>uptime: ",
@@ -686,7 +673,7 @@ void buildInfoPage(){ //FOL 14KB
                         "<br>Cycles:                 "
 #endif                        
                       };
-  String values[] =   { Version + "<br><br>", FNC_TYPE, DEV_TYPE, String(cfgData.ChipID),
+  String values[] =   { Version + "<br><br>", buildFullName(), FNC_TYPE, DEV_TYPE, String(cfgData.ChipID),
                         String(cfgData.MACAddress), String(WiFi.SSID()), WiFi.localIP().toString(), String(cfgData.hostname),
                         String(cfgData.APname), String(sizeof(cfgData), HEX), String(cfgData.hash, HEX), (S_TFT_18 == true) ? "True" : "False",
                         String(sysData.uptime/86400) + " days - " + String((sysData.uptime/3600)%24) + " hours - " + String((sysData.uptime/60)%60) + " minutes - " + String(sysData.uptime%60) + " seconds",
@@ -726,13 +713,13 @@ void buildInfoPage(){ //FOL 14KB
 
     --------------------------------------------------------------------------------------------------------*/
 // !!! is urltext really needed ???
-int checkInput(String text, String URLText){
+int checkInput(const String& text, const String& URLText){
   String message="";
   String output;
   int x;
 
   DBGF("checkInput()");
-  output = NameHTML;
+  output = FPSTR(NAME);
   output.replace("{nametext}", text);
   output.replace("{urltext}", URLText);
   DBGF(server.args())
@@ -765,7 +752,7 @@ int checkInput(String text, String URLText){
 
 //FOL was ist der Unterschied zwischen _Bool und bool?
 // gibt es eine Funktion fü Strings
-bool string_isNumber(String str) {
+bool string_isNumber(const String& str) {
   char  buf[80];
   char *ptr;
 

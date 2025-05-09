@@ -59,6 +59,8 @@ int SetupToF(){
 int ToFRange;
 
 void ToFDistance(void){
+  int distance = 1234;
+
   if(!ToFPresent){
     ToFRange = -1;
     return;
@@ -69,8 +71,12 @@ void ToFDistance(void){
   {
     delay(1);
   }
-  int distance = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
+  Serial.println("");
+  Serial.println("getDistance");
+  distance = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
+  Serial.println("clearInterrupt");
   distanceSensor.clearInterrupt();
+  Serial.println("stopRanging");
   distanceSensor.stopRanging();
   sysData.CntMeasCyc++;
   ToFRange = distance;

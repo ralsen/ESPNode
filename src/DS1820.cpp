@@ -35,7 +35,7 @@ float             tempDevLast[ONE_WIRE_MAX_DEV]; //Previous temperature measurem
 
 //------------------------------------------
 //Convert device id to String
-String GetAddressToString(DeviceAddress deviceAddress){
+String GetAddressToString(const DeviceAddress& deviceAddress){
   String str = "";
   DBGF("GetAddressToString(DeviceAddress deviceAddress)");
   for (uint8_t i = 0; i < 8; i++){
@@ -62,9 +62,9 @@ void SetupDS18B20(){
   logit.entry(String ("found: ") + numberOfDevices + String(" DS1820 devices"));
 #endif
 
-  # if (S_DBG == true)
-    numberOfDevices = 2;
-  # endif
+//  # if (S_DBG == true)
+ //  numberOfDevices = 2;
+  // endif
 
   DBGL("DS1820 count: ");
   DBGLN(numberOfDevices);
@@ -102,6 +102,7 @@ void SetupDS18B20(){
 //Loop measuring the temperature
 void DS1820_Measuring(void){
   DBGF("!!! I S R !!! DS1820_Measuring()");
+  if (numberOfDevices > 0){ 
     for(int i=0; i<numberOfDevices; i++){
       float tempC = DS18B20.getTempC(devAddr[i]); //Measuring temperature in Celsius
       tempDev[i] = tempC; //Save the measured value to the array
@@ -109,6 +110,7 @@ void DS1820_Measuring(void){
     DS18B20.setWaitForConversion(false); //No waiting for measurement
     DS18B20.requestTemperatures(); //Initiate the temperature measurement
     sysData.CntMeasCyc++;
+  }
 }
 
 #endif //(S_DS1820 == true)

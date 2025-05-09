@@ -50,17 +50,16 @@ void ScanStart(void);
 void ScanEnd(void);
 
 void buildInfoPage(void);
-String buildConfPage(String);
-String buildNetworkPage(String);
-String buildAppPage(String);
-String buildMainPage(String);
+String buildConfPage(const String&);
+String buildAppPage(const String&);
+String buildMainPage(const String&);
 String buildDict (void);
 String buildTypeDict(void);
 String buildTypePage(void);
 String buildFullName(void);
 
-int checkInput(String, String);
-bool string_isNumber(String);
+int checkInput(const String&, const String&);
+bool string_isNumber(const String&);
 
 #if (S_TOF == true)
 String buildToFPage(void);

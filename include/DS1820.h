@@ -29,7 +29,7 @@
   extern        DeviceAddress devAddr[];
   
   void          DS1820_Measuring(void);
-  String        GetAddressToString(DeviceAddress deviceAddress);
+  String        GetAddressToString(const DeviceAddress& deviceAddress);
   void          SetupDS18B20(void);
   void          TempLoop(long now);
 
