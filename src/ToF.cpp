@@ -49,7 +49,7 @@ int SetupToF(){
   else{
     DBGLN("ToF-Sensor detected!");
     #if(S_FS == true)
-    logit.entry("ToF-Sensor detected.");
+      logit.entry("ToF-Sensor detected.");
     #endif
     ToFPresent = TOF_TRUE;
   }
@@ -67,9 +67,10 @@ void ToFDistance(void){
   }
   DBGF("!!! I S R !!! ToFDistance()");
   distanceSensor.startRanging(); //Write configuration bytes to initiate measurement
-  while (!distanceSensor.checkForDataReady())
+  //while (!distanceSensor.checkForDataReady())
   {
     delay(1);
+    Serial.print(" - delay");
   }
   Serial.println("");
   Serial.println("getDistance");
@@ -80,6 +81,8 @@ void ToFDistance(void){
   distanceSensor.stopRanging();
   sysData.CntMeasCyc++;
   ToFRange = distance;
+  Serial.print(ToFRange);
+  Serial.println("ToFRange: done.  ");
 }
 
 #endif //(S_TOF == true)

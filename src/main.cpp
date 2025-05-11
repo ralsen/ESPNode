@@ -213,6 +213,7 @@ void loop() {
   // beides wird inTasmota nicht gemacht, aber mdns.advertise, mdns.addserver u.ae.
   MDNS.update(); //KB13
   server.handleClient(); //KB14
+
   if ((!sysData.TransmitCycle) && (WiFi.getMode() != WIFI_AP)){
       transmitData();
   }
@@ -220,10 +221,10 @@ void loop() {
   if(doMeasuring){
     doMeasuring = false;
     #if (S_DS1820 == true)
-    DS1820_Measuring();
+      DS1820_Measuring();
     #endif
     #if (S_TOF == true)
-    ToFDistance();
+      ToFDistance();
     #endif
   }
 
