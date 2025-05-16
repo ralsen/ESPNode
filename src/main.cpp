@@ -107,7 +107,9 @@ void setup() { //KB38
   #if(S_TFT_18 == true)
     tft_println("Hash FAILED !!!");
   #endif
+  #if(S_FS == true)  
     logit.entry("Hash FAILED !!!");
+  #endif
     Serial.println(" Hash FAILED !!!\r\n loading default configuration");
     SetToDefault();
     ESP.eraseConfig();
@@ -122,17 +124,18 @@ void setup() { //KB38
   Serial.println(DEV_TYPE);
   Serial.print("Function:          ");
   Serial.println(FNC_TYPE);
-  logit.entry("--- Hello from device: " + FullName + " ---");
-  logit.entry("Hardware: " + String(DEV_TYPE));
-  logit.entry("Function: " + String(FNC_TYPE));
-  logit.entry("Version: " + String(VERNR));
-  logit.entry("Build: " + String(__DATE__) + " " + String(__TIME__));
-  logit.entry("Chip-ID: " + String(cfgData.ChipID));
-  logit.entry("MAC-Address: " + String(cfgData.MACAddress));
-  logit.entry("cfg-Size: " + String(sizeof(cfgData), HEX));
-  logit.entry("Hash: " + String(cfgData.hash, HEX));
-  logit.entry("LED: " + String(cfgData.LED));
-
+  #if(S_FS == true)  
+    logit.entry("--- Hello from device: " + FullName + " ---");
+    logit.entry("Hardware: " + String(DEV_TYPE));
+    logit.entry("Function: " + String(FNC_TYPE));
+    logit.entry("Version: " + String(VERNR));
+    logit.entry("Build: " + String(__DATE__) + " " + String(__TIME__));
+    logit.entry("Chip-ID: " + String(cfgData.ChipID));
+    logit.entry("MAC-Address: " + String(cfgData.MACAddress));
+    logit.entry("cfg-Size: " + String(sizeof(cfgData), HEX));
+    logit.entry("Hash: " + String(cfgData.hash, HEX));
+    logit.entry("LED: " + String(cfgData.LED));
+  #endif
     //Setup DS18b20 temperature sensor
 #if (S_DS1820 == true)
   DBGLN("initialisiere die DS1820")
