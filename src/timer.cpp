@@ -30,7 +30,7 @@ int key;            // holds the button codes for internal use
 static int  oldKey;           // counts the ticks how long a key is pressed
 static long blkcnt;
 int LEDCrit;
-volatile bool doMeasuring = false;
+volatile bool doMeasuring = true; // at first signalize that we have to measure
 
 
 // count object for ISR

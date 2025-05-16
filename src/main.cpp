@@ -138,6 +138,8 @@ void setup() { //KB38
   DBGLN("initialisiere die DS1820")
   Serial.println("initialisiere die DS1820");
   SetupDS18B20();
+  Serial.print("DS1820: ");
+  Serial.println(numberOfDevices);
 #endif
 #if (S_TOF == true)
   SetupToF();
@@ -214,10 +216,6 @@ void loop() {
   MDNS.update(); //KB13
   server.handleClient(); //KB14
 
-  if ((!sysData.TransmitCycle) && (WiFi.getMode() != WIFI_AP)){
-      transmitData();
-  }
-  
   if(doMeasuring){
     doMeasuring = false;
     #if (S_DS1820 == true)
@@ -243,6 +241,11 @@ void loop() {
     #if(S_TFT_18 == true)
     tft_display2Temps((int)(tempDev[1]), (int)(tempDev[0]));
     #endif
+  }
+  
+  // after everything is done, check if we need to transmit data
+  if ((!sysData.TransmitCycle) && (WiFi.getMode() != WIFI_AP)){
+      transmitData();
   }
 }
 

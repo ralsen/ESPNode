@@ -579,9 +579,8 @@ String buildTypeDict(){
   String minus = "-";
   String httpRequestData = FNC_TYPE + minus + String(numberOfDevices) + qc;
   for(int i=0;i<numberOfDevices;i++){
-    httpRequestData += "Adress_" + String(i) + qd + GetAddressToString(devAddr[i]) + qc;
     dtostrf(tempDev[i], 2, 2, buf);
-    httpRequestData += "Value_" + String(i) + qd + buf + qc;
+    httpRequestData += "Adress_" + String(i) + qd + GetAddressToString(devAddr[i]) + qc + "Value_" + String(i) + qd + buf + qc;
   }
   httpRequestData = httpRequestData.substring(0, httpRequestData.length() - 2);
 #elif (S_TOF == true)
