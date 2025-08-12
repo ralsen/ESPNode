@@ -110,6 +110,7 @@ void tft_textWait(int s){
     delay(1000);
   }
 }
+
 void tft_initR(int color){
     tft.initR(color);
 }

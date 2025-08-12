@@ -188,11 +188,26 @@ void setup() { //KB38
 
   LEDControl(BLKMODEOFF, -1);
   delay(1000);
-  
+
+#if(S_TFT_18 == true)
+  int x, y;
+  tft.setTextColor(ST7735_WHITE, ST7735_BLUE);
+  x = tft.getCursorX();
+  y = tft.getCursorY();
+  tft_print("wait for WLAN");
+#endif
+
   Serial.println("connecting ...");
   if (!WiFiStartClient())
     WiFiStartAP();//KB24
-  MDNS.addService("http", "tcp", 80);
+#if(S_TFT_18 == true)
+  tft.setCursor(x, y);
+  tft_print("IP: ");
+  tft_println(WiFi.localIP().toString());
+  tft_textWait(5);
+  tft_init2Temps();
+#endif
+    MDNS.addService("http", "tcp", 80);
 
   if (MDNS.begin(FullName)) {  //Start mDNS
     Serial.print("MDNS started with name: ");
